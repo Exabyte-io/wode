@@ -192,7 +192,7 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
 
 function createWorkflow({ appName, workflowData, workflowCls = Workflow, ...swArgs }) {
     const { name } = workflowData;
-    console.log(`creating ${appName} workflow ${name}`);
+    console.log(`wode: creating ${appName} workflow ${name}`);
     const wf = createWorkflowUnits({
         appName,
         workflowData,
