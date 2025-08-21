@@ -16,7 +16,20 @@ import { workflowData as allWorkflowData } from "./workflows";
         5. top-level subworkflows are added directly in the order also specified by "units"
  */
 function createWorkflows({ appName = null, workflowCls = Workflow, ...swArgs }) {
-    const apps = appName !== null ? [appName] : allApplications;
+    let apps = appName !== null ? [appName] : allApplications;
+    const allApplicationsFromWorkflowData = Object.keys(allWorkflowData.workflows);
+    // output warning if allApplications and allApplicationsFromWorkflowData do not match
+    if (appName === null) {
+        if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
+            // eslint-disable-next-line no-console
+            console.warn(
+                `Warning: allApplications and allApplicationsFromWorkflowData do not match: 
+                ${apps.sort().join(",")} !== ${allApplicationsFromWorkflowData.sort().join(",")}`,
+            );
+            console.warn("Using allApplicationsFromWorkflowData");
+        }
+        apps = allApplicationsFromWorkflowData;
+    }
     const wfs = [];
     const { workflows } = allWorkflowData;
     apps.map((name) => {
