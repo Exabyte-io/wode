@@ -119,7 +119,7 @@ function composeWorkflow({ workflow, unit, config, type, unitFactoryCls }) {
  * @param unitFactoryCls {*} unit factory class
  * @returns {*} constructed workflow
  */
-function createFromWorkflowUnits({ wfUnits, workflowCls, unitFactoryCls }) {
+function createFromWorkflowUnits({ wfUnits, workflowCls = Workflow, unitFactoryCls }) {
     let workflow, unit, config, type;
     wfUnits.map((wfUnit) => {
         ({ unit, config, type } = wfUnit);
@@ -185,7 +185,6 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
     return createFromWorkflowUnits({
         wfUnits,
         workflowCls,
-        subworkflowCls: swArgs.subworkflowCls,
         unitFactoryCls: swArgs.unitFactoryCls,
     });
 }

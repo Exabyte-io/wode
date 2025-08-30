@@ -3,29 +3,28 @@ import { createSubworkflowByName } from "../subworkflows";
 
 export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
-        // TODO: figure out how to avoid circular dependency on import in the platform webapp and re-enable or remove
-        // get _allRelaxationSubworkflows() {
-        //     /*
-        //     * NOTE: dynamic import is used here to avoid import errors on application start.
-        //     *       When `Workflow` is used in `AccountSelector` it attempts to import relaxation subworkflows.
-        //     *       The latter is constructed through using DAOProvider. Because DAOProvider is not yet defined at the point
-        //     *       when `AccountSelector` is imported the whole logic fails and prevent application start.
-        //      */
-        //     console.log("_allRelaxationSubworkflows", this.constructor._allRelaxationSubworkflows);
-        //     return this.constructor._allRelaxationSubworkflows ? this.constructor._allRelaxationSubworkflows : {
-        //         espresso: createSubworkflowByName({ appName: "espresso", swfName: "variable_cell_relaxation" }),
-        //         vasp: createSubworkflowByName({ appName: "vasp", swfName: "variable_cell_relaxation" }),
-        //     };
-        // }
+        static setRelaxationSubworkflows(mapping) {
+            this._allRelaxationSubworkflows = mapping;
+        }
+
+        get _allRelaxationSubworkflows() {
+            return this.constructor._allRelaxationSubworkflows || {};
+        }
 
         get relaxationSubworkflow() {
             // deciding on the application based on the first subworkflow
             const firstSubworkflow = this.subworkflows[0];
-            return this._allRelaxationSubworkflows[firstSubworkflow.application.name];
+            const mapping = this._allRelaxationSubworkflows || {};
+            const appName =
+                firstSubworkflow && firstSubworkflow.application
+                    ? firstSubworkflow.application.name
+                    : undefined;
+            return appName ? mapping[appName] : undefined;
         }
 
         isRelaxationSubworkflow(subworkflow) {
-            return Object.values(this._allRelaxationSubworkflows)
+            const mapping = this._allRelaxationSubworkflows || {};
+            return Object.values(mapping)
                 .map((sw) => sw.systemName)
                 .includes(subworkflow.systemName);
         }
