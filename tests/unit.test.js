@@ -4,11 +4,13 @@ import { expect } from "chai";
 import { createUnit } from "../src/subworkflows/create";
 import { builders } from "../src/units/builders";
 import { UnitFactory } from "../src/units/factory";
-import { createWorkflows } from "../src/workflows";
+import { createWorkflowConfigs, Workflow } from "../src/workflows";
 
 describe("units", () => {
     it("can be cloned with new flowchartId", () => {
-        const workflows = createWorkflows({});
+        const workflowConfigs = createWorkflowConfigs();
+        console.log("Cloning wfs:", workflowConfigs);
+        const workflows = workflowConfigs.map((wf) => new Workflow(wf));
         const exampleWorkflow = workflows[0];
         const exampleSubworkflow = exampleWorkflow.subworkflows[0];
         const exampleUnit = exampleSubworkflow.units[0];

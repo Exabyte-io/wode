@@ -1,13 +1,14 @@
 import { expect } from "chai";
 
-import { createWorkflows, Workflow } from "../src/workflows";
-import { createWorkflow } from "../src/workflows/create";
+import { createWorkflowConfigs, Workflow } from "../src/workflows";
+import { createWorkflowConfig } from "../src/workflows/create";
 import { workflowData as allWorkflowData } from "../src/workflows/workflows";
 
 describe("workflows", () => {
     it("can all be created", () => {
-        const workflows = createWorkflows({});
-        workflows.map((wf) => {
+        const workflowConfigs = createWorkflowConfigs();
+        workflowConfigs.map((wfConfig) => {
+            const wf = new Workflow(wfConfig);
             // eslint-disable-next-line no-unused-expressions
             expect(wf).to.exist;
             // eslint-disable-next-line no-unused-expressions
@@ -27,7 +28,7 @@ describe("workflows", () => {
 describe("workflow property", () => {
     it("isMultiMaterial is read correctly", () => {
         // Nudged Elastic Band is multi-material
-        const mmWorkflow = createWorkflow({
+        const mmWorkflow = createWorkflowConfig({
             appName: "espresso",
             workflowData: allWorkflowData.workflows.espresso.neb,
         });
@@ -36,7 +37,7 @@ describe("workflow property", () => {
     });
 
     it("properties are not empty", () => {
-        const workflow = createWorkflow({
+        const workflow = createWorkflowConfig({
             appName: "espresso",
             workflowData: allWorkflowData.workflows.espresso.total_energy,
         });
