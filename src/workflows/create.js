@@ -62,10 +62,9 @@ function createSubworkflowUnit({ appName, unitData, ...swArgs }) {
  * @param workflow {*|null} the workflow (if already initialized, no-op)
  * @param unit {*} workflow unit object
  * @param type {String} value in ["workflow", "subworkflow"]
- * @param workflowCls {*} workflow class
  * @returns {Workflow|*} workflow object
  */
-function createWorkflowHead({ workflow, unit, type, workflowCls }) {
+function createWorkflowHead({ workflow, unit, type }) {
     if (workflow) return workflow;
     let wf;
     switch (type) {
@@ -73,7 +72,7 @@ function createWorkflowHead({ workflow, unit, type, workflowCls }) {
             wf = unit;
             break;
         case "subworkflow":
-            wf = workflowCls.fromSubworkflow(unit);
+            wf = Workflow.fromSubworkflow(unit);
             break;
         default:
             throw new Error(`workflow type=${type} not understood.`);
@@ -119,7 +118,7 @@ function composeWorkflow({ workflow, unit, config, type, unitFactoryCls }) {
  * @param unitFactoryCls {*} unit factory class
  * @returns {*} constructed workflow
  */
-function createFromWorkflowUnits({ wfUnits, workflowCls = Workflow, unitFactoryCls }) {
+function createFromWorkflowUnits({ wfUnits, unitFactoryCls }) {
     let workflow, unit, config, type;
     wfUnits.map((wfUnit) => {
         ({ unit, config, type } = wfUnit);
@@ -128,7 +127,6 @@ function createFromWorkflowUnits({ wfUnits, workflowCls = Workflow, unitFactoryC
                 workflow,
                 unit,
                 type,
-                workflowCls,
             });
         } else {
             workflow = composeWorkflow({
@@ -152,7 +150,7 @@ function createFromWorkflowUnits({ wfUnits, workflowCls = Workflow, unitFactoryC
  * @param swArgs
  * @returns {*[]}
  */
-function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) {
+function createWorkflowUnits({ appName, workflowData, ...swArgs }) {
     const wfUnits = [];
     const { units } = workflowData;
     let unit, config;
@@ -164,7 +162,6 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
                 unit = createWorkflowUnits({
                     appName,
                     workflowData: unitData,
-                    workflowCls,
                     ...swArgs,
                 });
                 break;
@@ -184,23 +181,22 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
     });
     return createFromWorkflowUnits({
         wfUnits,
-        workflowCls,
         unitFactoryCls: swArgs.unitFactoryCls,
     });
 }
 
-function createWorkflow({ appName, workflowData, workflowCls = Workflow, ...swArgs }) {
+function createWorkflowConfig({ appName, workflowData, ...swArgs }) {
     const { name } = workflowData;
     console.log(`wode: creating ${appName} workflow ${name}`);
     const wf = createWorkflowUnits({
         appName,
         workflowData,
-        workflowCls,
         ...swArgs,
     });
     wf.setName(name);
     wf.applicationName = appName;
-    return wf;
+    // TODO: switch to returning JSON upstream, so that `wf` is already a plain object
+    return wf._json;
 }
 
-export { createWorkflow };
+export { createWorkflowConfig };

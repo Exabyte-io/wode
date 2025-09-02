@@ -3,7 +3,7 @@ import { allApplications } from "@exabyte-io/ade.js";
 // Import Template here to apply context provider patch
 // eslint-disable-next-line no-unused-vars
 import { Template } from "../patch";
-import { createWorkflow } from "./create";
+import { createWorkflowConfig } from "./create";
 import { Workflow } from "./workflow";
 import { workflowData as allWorkflowData } from "./workflows";
 
@@ -15,7 +15,7 @@ import { workflowData as allWorkflowData } from "./workflows";
         4. map units are added along with their workflows according to data in "units"
         5. top-level subworkflows are added directly in the order also specified by "units"
  */
-function createWorkflows({ appName = null, ...swArgs }) {
+function createWorkflowConfigs(appName = null) {
     let apps = appName !== null ? [appName] : allApplications;
     const allApplicationsFromWorkflowData = Object.keys(allWorkflowData.workflows);
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
@@ -36,10 +36,9 @@ function createWorkflows({ appName = null, ...swArgs }) {
         const { [name]: dataByApp } = workflows;
         Object.values(dataByApp).map((workflowData) => {
             wfs.push(
-                createWorkflow({
+                createWorkflowConfig({
                     appName: name,
                     workflowData,
-                    ...swArgs,
                 }),
             );
             return null;
@@ -49,4 +48,4 @@ function createWorkflows({ appName = null, ...swArgs }) {
     return wfs;
 }
 
-export { Workflow, createWorkflows };
+export { Workflow, createWorkflowConfigs };

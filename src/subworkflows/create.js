@@ -135,7 +135,6 @@ function createSubworkflow({
     AppRegistry = ApplicationRegistry,
     modelFactoryCls = ModelFactory,
     methodFactoryCls = MethodFactory,
-    subworkflowCls = Subworkflow,
     unitFactoryCls = UnitFactory,
     unitBuilders = builders,
 }) {
@@ -169,7 +168,7 @@ function createSubworkflow({
     }
 
     const { functions = {}, attributes = {}, ...cfg } = config;
-    let subworkflow = subworkflowCls.fromArguments(application, model, method, name, units, cfg);
+    let subworkflow = Subworkflow.fromArguments(application, model, method, name, units, cfg);
     subworkflow = applyConfig({ obj: subworkflow, config: { functions, attributes } });
     if (setSearchText) subworkflow.model.method.setSearchText(setSearchText);
     return subworkflow;
