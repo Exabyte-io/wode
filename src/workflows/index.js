@@ -15,9 +15,13 @@ import { workflowData as allWorkflowData } from "./workflows";
         4. map units are added along with their workflows according to data in "units"
         5. top-level subworkflows are added directly in the order also specified by "units"
  */
-function createWorkflowConfigs(appName = null) {
-    let apps = appName !== null ? [appName] : allApplications;
-    const allApplicationsFromWorkflowData = Object.keys(allWorkflowData.workflows);
+function createWorkflowConfigs(
+    appName = null,
+    applications = allApplications,
+    workflowData = allWorkflowData,
+) {
+    let apps = appName !== null ? [appName] : applications;
+    const allApplicationsFromWorkflowData = Object.keys(workflowData.workflows);
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
         if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
@@ -31,14 +35,14 @@ function createWorkflowConfigs(appName = null) {
         apps = allApplicationsFromWorkflowData;
     }
     const wfs = [];
-    const { workflows } = allWorkflowData;
+    const { workflows } = workflowData;
     apps.map((name) => {
         const { [name]: dataByApp } = workflows;
-        Object.values(dataByApp).map((workflowData) => {
+        Object.values(dataByApp).map((wfData) => {
             wfs.push(
                 createWorkflowConfig({
                     appName: name,
-                    workflowData,
+                    workflowData: wfData,
                 }),
             );
             return null;
