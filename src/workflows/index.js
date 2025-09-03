@@ -1,5 +1,3 @@
-import { allApplications } from "@exabyte-io/ade.js";
-
 // Import Template here to apply context provider patch
 // eslint-disable-next-line no-unused-vars
 import { Template } from "../patch";
@@ -15,40 +13,19 @@ import { workflowData as allWorkflowData } from "./workflows";
         4. map units are added along with their workflows according to data in "units"
         5. top-level subworkflows are added directly in the order also specified by "units"
  */
-function createWorkflowConfigs(
-    appName = null,
-    applications = allApplications,
-    workflowData = allWorkflowData,
-) {
-    let apps = appName !== null ? [appName] : applications;
-    const allApplicationsFromWorkflowData = Object.keys(workflowData.workflows);
-    // output warning if allApplications and allApplicationsFromWorkflowData do not match
-    if (appName === null) {
-        if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
-            // eslint-disable-next-line no-console
-            console.warn(
-                `Warning: allApplications and allApplicationsFromWorkflowData do not match: 
-                ${apps.sort().join(",")} !== ${allApplicationsFromWorkflowData.sort().join(",")}`,
-            );
-            console.warn("Using allApplicationsFromWorkflowData");
-        }
-        apps = allApplicationsFromWorkflowData;
-    }
+
+function createWorkflowConfigs(appName = null, data = allWorkflowData) {
+    const apps = appName ? [appName] : Object.keys(data.workflows || {});
     const wfs = [];
-    const { workflows } = workflowData;
-    apps.map((name) => {
-        const { [name]: dataByApp } = workflows;
-        Object.values(dataByApp).map((wfData) => {
-            wfs.push(
-                createWorkflowConfig({
-                    appName: name,
-                    workflowData: wfData,
-                }),
-            );
-            return null;
+    const { workflows } = data;
+
+    apps.forEach((name) => {
+        const dataByApp = workflows?.[name] || {};
+        Object.values(dataByApp).forEach((wf) => {
+            wfs.push(createWorkflowConfig({ appName: name, workflowData: wf }));
         });
-        return null;
     });
+
     return wfs;
 }
 
