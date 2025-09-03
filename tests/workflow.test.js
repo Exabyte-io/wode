@@ -28,10 +28,11 @@ describe("workflows", () => {
 describe("workflow property", () => {
     it("isMultiMaterial is read correctly", () => {
         // Nudged Elastic Band is multi-material
-        const mmWorkflow = createWorkflowConfig({
+        const mmWorkflowConfig = createWorkflowConfig({
             appName: "espresso",
             workflowData: allWorkflowData.workflows.espresso.neb,
         });
+        const mmWorkflow = new Workflow(mmWorkflowConfig);
         // eslint-disable-next-line no-unused-expressions
         expect(mmWorkflow.isMultiMaterial).to.be.true;
     });
