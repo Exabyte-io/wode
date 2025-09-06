@@ -5,9 +5,9 @@ const yaml = require("js-yaml");
 const allApplications = [
     "espresso",
     "jupyterLab",
-    "exabyteml",
     "nwchem",
     "python",
+    "python/ml",
     "shell",
     "vasp",
     "deepmd",
@@ -23,6 +23,11 @@ const JSONstringifyOrder = (obj, space) => {
 };
 
 const loadFile = (name, dir, file, type) => {
+    const entryPath = path.resolve(dir, file);
+    if (!fs.statSync(entryPath).isFile()) {
+        console.log(`Skipping ${entryPath} as it is not a file.`);
+        return;
+    }
     const obj = fs.readFileSync(path.resolve(dir, file), "utf8");
     const key = file.split(".")[0];
     allWorkflows[type][name][key] = yaml.load(obj);
