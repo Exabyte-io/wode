@@ -40,6 +40,7 @@
         "@babel/register": "^7.16.0",
         "@babel/runtime-corejs3": "7.16.8",
         "@exabyte-io/periodic-table.js": "2022.6.8-0",
+        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#7c37fa5e5abe0ad79b0741cdcee1a6a991c5b0de",
         "crypto-js": "^4.2.0",
         "js-yaml": "^4.1.0",
         "lodash": "^4.17.21",

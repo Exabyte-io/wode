@@ -1,3 +1,5 @@
+import { workflows as StandataWorkflows } from "@mat3ra/standata";
+
 // eslint-disable-next-line no-unused-vars
 import { createSubworkflowByName } from "../subworkflows";
 
@@ -7,8 +9,23 @@ export const RelaxationLogicMixin = (superclass) =>
             this._allRelaxationSubworkflows = mapping;
         }
 
+        // eslint-disable-next-line class-methods-use-this
         get _allRelaxationSubworkflows() {
-            return this.constructor._allRelaxationSubworkflows || {};
+            const allRelaxationWorkflows = StandataWorkflows.findEntitiesByTags("relaxation");
+            const mapping = {};
+            allRelaxationWorkflows.forEach((wfConfig) => {
+                const appName = wfConfig.application.name;
+                const wf = createSubworkflowByName({
+                    subworkflowData: wfConfig,
+                });
+
+                if (wf.subworkflows.length > 0) {
+                    // eslint-disable-next-line prefer-destructuring
+                    mapping[appName] = wf.subworkflows[0];
+                }
+            });
+
+            return mapping;
         }
 
         get relaxationSubworkflow() {
