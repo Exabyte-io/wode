@@ -1,6 +1,7 @@
+import { WorkflowStandata } from "@mat3ra/standata";
 import { expect } from "chai";
 
-import { createWorkflows, Workflow } from "../src/workflows";
+import { createWorkflows, Workflow } from "../src";
 import { createWorkflow } from "../src/workflows/create";
 import { workflowData as allWorkflowData } from "../src/workflows/workflows";
 
@@ -43,5 +44,36 @@ describe("workflow property", () => {
 
         // eslint-disable-next-line no-unused-expressions
         expect(workflow.properties).to.be.an("array").that.is.not.empty;
+    });
+});
+
+describe("relaxation logic", () => {
+    let espressoWorkflow;
+    beforeEach(() => {
+        const espressoWorkflowConfig = new WorkflowStandata().findEntitiesByTags(
+            "espresso",
+            "total_energy",
+        )[0];
+        espressoWorkflow = new Workflow(espressoWorkflowConfig);
+    });
+    it("relaxationSubworkflowsMapping returns correct mapping", () => {
+        const mapping = espressoWorkflow.relaxationSubworkflowsMapping;
+
+        // eslint-disable-next-line no-unused-expressions
+        expect(mapping).to.be.an("object");
+        // eslint-disable-next-line no-unused-expressions
+        expect(mapping.espresso).to.exist;
+
+        // Check that the mapping contains relaxation subworkflows
+        expect(mapping.espresso.systemName).to.equal("espresso-variable-cell-relaxation");
+    });
+
+    it("relaxationSubworkflow returns correct subworkflow for application", () => {
+        const espressoRelaxation = espressoWorkflow.relaxationSubworkflow;
+
+        // eslint-disable-next-line no-unused-expressions
+        expect(espressoRelaxation).to.exist;
+
+        expect(espressoRelaxation.systemName).to.equal("espresso-variable-cell-relaxation");
     });
 });
