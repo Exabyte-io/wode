@@ -5,42 +5,24 @@ import { createSubworkflowByName } from "../subworkflows";
 
 export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
-        // eslint-disable-next-line class-methods-use-this
-        get relaxationSubworkflowsMapping() {
-            const allRelaxationWorkflows = new WorkflowStandata().findEntitiesByTags("relaxation");
-            const mapping = {};
-            allRelaxationWorkflows.forEach((wfConfig) => {
-                const appName = wfConfig.subworkflows[0].application.name;
-                const subworkflowData = wfConfig.subworkflows[0];
-                mapping[appName] = subworkflowData;
-            });
-
-            return mapping;
-        }
-
         get relaxationSubworkflow() {
-            // deciding on the application based on the first subworkflow
-            const firstSubworkflow = this.subworkflows[0];
-            const mapping = this.relaxationSubworkflowsMapping || {};
-            const appName =
-                firstSubworkflow && firstSubworkflow.application
-                    ? firstSubworkflow.application.name
-                    : undefined;
-            return appName ? mapping[appName] : undefined;
+            const appName = this.subworkflows[0]?.application?.name;
+            if (!appName) return undefined;
+            const relaxationWorkflow = new WorkflowStandata().findEntitiesByTags(
+                "relaxation",
+                appName,
+            )[0];
+            return relaxationWorkflow?.subworkflows[0];
         }
 
         isRelaxationSubworkflow(subworkflow) {
-            const mapping = this.relaxationSubworkflowsMapping || {};
-            return Object.values(mapping)
-                .map((sw) => sw.systemName)
-                .includes(subworkflow.systemName);
+            const { relaxationSubworkflow } = this;
+            return relaxationSubworkflow?.systemName === subworkflow.systemName;
         }
 
         get hasRelaxation() {
-            return Boolean(
-                this.subworkflows.find((subworkflow) => {
-                    return this.isRelaxationSubworkflow(subworkflow);
-                }),
+            return this.subworkflows.some((subworkflow) =>
+                this.isRelaxationSubworkflow(subworkflow),
             );
         }
 
@@ -52,7 +34,9 @@ export const RelaxationLogicMixin = (superclass) =>
                 this.removeSubworkflow(relaxSubworkflow.id);
             } else {
                 const vcRelax = this.relaxationSubworkflow;
-                this.addSubworkflow(vcRelax, true);
+                if (vcRelax) {
+                    this.addSubworkflow(vcRelax, true);
+                }
             }
         }
     };

@@ -56,17 +56,6 @@ describe("relaxation logic", () => {
         )[0];
         espressoWorkflow = new Workflow(espressoWorkflowConfig);
     });
-    it("relaxationSubworkflowsMapping returns correct mapping", () => {
-        const mapping = espressoWorkflow.relaxationSubworkflowsMapping;
-
-        // eslint-disable-next-line no-unused-expressions
-        expect(mapping).to.be.an("object");
-        // eslint-disable-next-line no-unused-expressions
-        expect(mapping.espresso).to.exist;
-
-        // Check that the mapping contains relaxation subworkflows
-        expect(mapping.espresso.systemName).to.equal("espresso-variable-cell-relaxation");
-    });
 
     it("relaxationSubworkflow returns correct subworkflow for application", () => {
         const espressoRelaxation = espressoWorkflow.relaxationSubworkflow;
