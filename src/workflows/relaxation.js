@@ -1,4 +1,4 @@
-import { workflows as StandataWorkflows } from "@mat3ra/standata";
+import { WorkflowStandata } from "@mat3ra/standata";
 
 // eslint-disable-next-line no-unused-vars
 import { createSubworkflowByName } from "../subworkflows";
@@ -7,7 +7,7 @@ export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
         // eslint-disable-next-line class-methods-use-this
         get relaxationSubworkflowsMapping() {
-            const allRelaxationWorkflows = StandataWorkflows.findEntitiesByTags("relaxation");
+            const allRelaxationWorkflows = new WorkflowStandata().findEntitiesByTags("relaxation");
             const mapping = {};
             allRelaxationWorkflows.forEach((wfConfig) => {
                 const appName = wfConfig.application.name;
