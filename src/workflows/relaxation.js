@@ -11,14 +11,8 @@ export const RelaxationLogicMixin = (superclass) =>
             const mapping = {};
             allRelaxationWorkflows.forEach((wfConfig) => {
                 const appName = wfConfig.subworkflows[0].application.name;
-                const wf = createSubworkflowByName({
-                    subworkflowData: wfConfig,
-                });
-
-                if (wf.subworkflows.length > 0) {
-                    // eslint-disable-next-line prefer-destructuring
-                    mapping[appName] = wf.subworkflows[0];
-                }
+                const subworkflowData = wfConfig.subworkflows[0];
+                mapping[appName] = subworkflowData;
             });
 
             return mapping;
