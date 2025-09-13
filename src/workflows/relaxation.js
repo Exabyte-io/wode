@@ -10,7 +10,7 @@ export const RelaxationLogicMixin = (superclass) =>
             const allRelaxationWorkflows = new WorkflowStandata().findEntitiesByTags("relaxation");
             const mapping = {};
             allRelaxationWorkflows.forEach((wfConfig) => {
-                const appName = wfConfig.application.name;
+                const appName = wfConfig.subworkflows[0].application.name;
                 const wf = createSubworkflowByName({
                     subworkflowData: wfConfig,
                 });
