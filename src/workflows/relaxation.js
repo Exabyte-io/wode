@@ -5,12 +5,8 @@ import { createSubworkflowByName } from "../subworkflows";
 
 export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
-        static setRelaxationSubworkflows(mapping) {
-            this._allRelaxationSubworkflows = mapping;
-        }
-
         // eslint-disable-next-line class-methods-use-this
-        get _allRelaxationSubworkflows() {
+        get relaxationSubworkflowsMapping() {
             const allRelaxationWorkflows = StandataWorkflows.findEntitiesByTags("relaxation");
             const mapping = {};
             allRelaxationWorkflows.forEach((wfConfig) => {
@@ -31,7 +27,7 @@ export const RelaxationLogicMixin = (superclass) =>
         get relaxationSubworkflow() {
             // deciding on the application based on the first subworkflow
             const firstSubworkflow = this.subworkflows[0];
-            const mapping = this._allRelaxationSubworkflows || {};
+            const mapping = this.relaxationSubworkflowsMapping || {};
             const appName =
                 firstSubworkflow && firstSubworkflow.application
                     ? firstSubworkflow.application.name
@@ -40,7 +36,7 @@ export const RelaxationLogicMixin = (superclass) =>
         }
 
         isRelaxationSubworkflow(subworkflow) {
-            const mapping = this._allRelaxationSubworkflows || {};
+            const mapping = this.relaxationSubworkflowsMapping || {};
             return Object.values(mapping)
                 .map((sw) => sw.systemName)
                 .includes(subworkflow.systemName);
