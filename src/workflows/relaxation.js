@@ -8,10 +8,8 @@ export const RelaxationLogicMixin = (superclass) =>
         get relaxationSubworkflow() {
             const appName = this.subworkflows[0]?.application?.name;
             if (!appName) return undefined;
-            const relaxationWorkflow = new WorkflowStandata().findEntitiesByTags(
-                "relaxation",
-                appName,
-            )[0];
+            const workflowStandata = new WorkflowStandata();
+            const relaxationWorkflow = workflowStandata.getRelaxationWorkflowByApplication(appName);
             return relaxationWorkflow?.subworkflows[0];
         }
 

@@ -10,7 +10,6 @@ import _ from "underscore";
 import s from "underscore.string";
 
 import { UNIT_TYPES } from "../enums";
-// import { createSubworkflowByName } from "../subworkflows";
 import { Subworkflow } from "../subworkflows/subworkflow";
 import { MapUnit } from "../units";
 import { UnitFactory } from "../units/factory";
@@ -38,14 +37,6 @@ export class Workflow extends BaseWorkflow {
         this._MapUnit = MapUnit;
         if (!config.skipInitialize) this.initialize();
     }
-
-    // TODO: figure out how to avoid circular dependency on import in the platform webapp and re-enable or remove
-    // get _allRelaxationSubworkflows() {
-    //     return {
-    //         espresso: createSubworkflowByName({ appName: "espresso", swfName: "variable_cell_relaxation" }),
-    //         vasp: createSubworkflowByName({ appName: "vasp", swfName: "variable_cell_relaxation" }),
-    //     }
-    // }
 
     initialize() {
         const me = this;

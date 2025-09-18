@@ -50,4 +50,22 @@ function createWorkflows({ appName = null, workflowCls = Workflow, ...swArgs }) 
     return wfs;
 }
 
-export { Workflow, createWorkflows };
+function createWorkflowConfigs(applications, workflowData) {
+    const configs = [];
+    applications.forEach((app) => {
+        const appName = app.name;
+        const { [appName]: dataByApp } = workflowData.workflows;
+        Object.values(dataByApp).forEach((workflow) => {
+            configs.push({
+                application: appName,
+                name: workflow.name,
+                systemName: workflow.systemName,
+                description: workflow.description,
+                config: workflow.config,
+            });
+        });
+    });
+    return configs;
+}
+
+export { Workflow, createWorkflows, createWorkflowConfigs };
