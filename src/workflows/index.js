@@ -1,4 +1,6 @@
 import { allApplications } from "@exabyte-io/ade.js";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
+import schemas from "@mat3ra/esse/dist/js/schemas.json";
 
 // Import Template here to apply context provider patch
 // eslint-disable-next-line no-unused-vars
@@ -6,6 +8,9 @@ import { Template } from "../patch";
 import { createWorkflow } from "./create";
 import { Workflow } from "./workflow";
 import { workflowData as allWorkflowData } from "./workflows";
+
+// Running this to set schemas for validation, removing the redundant data from application-flavors tree: `flavors`
+JSONSchemasInterface.setSchemas(schemas);
 
 /*
     Workflow construction follows these rules:
@@ -15,9 +20,14 @@ import { workflowData as allWorkflowData } from "./workflows";
         4. map units are added along with their workflows according to data in "units"
         5. top-level subworkflows are added directly in the order also specified by "units"
  */
-function createWorkflows({ appName = null, workflowCls = Workflow, ...swArgs }) {
+function createWorkflows({
+    appName = null,
+    workflowCls = Workflow,
+    workflowData = allWorkflowData,
+    ...swArgs
+}) {
     let apps = appName !== null ? [appName] : allApplications;
-    const allApplicationsFromWorkflowData = Object.keys(allWorkflowData.workflows);
+    const allApplicationsFromWorkflowData = Object.keys(workflowData.workflows);
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
         if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
@@ -31,14 +41,14 @@ function createWorkflows({ appName = null, workflowCls = Workflow, ...swArgs }) 
         apps = allApplicationsFromWorkflowData;
     }
     const wfs = [];
-    const { workflows } = allWorkflowData;
+    const { workflows } = workflowData;
     apps.map((name) => {
         const { [name]: dataByApp } = workflows;
-        Object.values(dataByApp).map((workflowData) => {
+        Object.values(dataByApp).map((workflowDataForApp) => {
             wfs.push(
                 createWorkflow({
                     appName: name,
-                    workflowData,
+                    workflowDataForApp,
                     workflowCls,
                     ...swArgs,
                 }),
@@ -53,15 +63,12 @@ function createWorkflows({ appName = null, workflowCls = Workflow, ...swArgs }) 
 function createWorkflowConfigs(applications, workflowData) {
     const configs = [];
     applications.forEach((app) => {
-        const appName = app.name;
-        const { [appName]: dataByApp } = workflowData.workflows;
-        Object.values(dataByApp).forEach((workflow) => {
+        const workflows = createWorkflows({ appName: app, workflowData });
+        workflows.forEach((wf) => {
             configs.push({
-                application: appName,
-                name: workflow.name,
-                systemName: workflow.systemName,
-                description: workflow.description,
-                config: workflow.config,
+                application: app,
+                name: wf.prop("name"),
+                config: wf.toJSON(),
             });
         });
     });
