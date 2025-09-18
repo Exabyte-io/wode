@@ -31,6 +31,7 @@ describe("workflow property", () => {
         const mmWorkflow = createWorkflow({
             appName: "espresso",
             workflowData: allWorkflowData.workflows.espresso.neb,
+            workflowsData: allWorkflowData,
         });
         // eslint-disable-next-line no-unused-expressions
         expect(mmWorkflow.isMultiMaterial).to.be.true;
@@ -40,6 +41,7 @@ describe("workflow property", () => {
         const workflow = createWorkflow({
             appName: "espresso",
             workflowData: allWorkflowData.workflows.espresso.total_energy,
+            workflowsData: allWorkflowData,
         });
 
         // eslint-disable-next-line no-unused-expressions

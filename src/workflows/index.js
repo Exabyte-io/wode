@@ -23,11 +23,14 @@ JSONSchemasInterface.setSchemas(schemas);
 function createWorkflows({
     appName = null,
     workflowCls = Workflow,
-    workflowData = allWorkflowData,
+    workflowsData = allWorkflowData,
     ...swArgs
 }) {
     let apps = appName !== null ? [appName] : allApplications;
-    const allApplicationsFromWorkflowData = Object.keys(workflowData.workflows);
+    if (workflowsData === null) {
+        workflowsData = allWorkflowData;
+    }
+    const allApplicationsFromWorkflowData = Object.keys(workflowsData.workflows);
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
         if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
@@ -41,14 +44,15 @@ function createWorkflows({
         apps = allApplicationsFromWorkflowData;
     }
     const wfs = [];
-    const { workflows } = workflowData;
+    const { workflows } = workflowsData;
     apps.map((name) => {
         const { [name]: dataByApp } = workflows;
         Object.values(dataByApp).map((workflowDataForApp) => {
             wfs.push(
                 createWorkflow({
                     appName: name,
-                    workflowDataForApp,
+                    workflowData: workflowDataForApp,
+                    workflowsData,
                     workflowCls,
                     ...swArgs,
                 }),
@@ -60,10 +64,10 @@ function createWorkflows({
     return wfs;
 }
 
-function createWorkflowConfigs(applications, workflowData) {
+function createWorkflowConfigs(applications, workflowsData) {
     const configs = [];
     applications.forEach((app) => {
-        const workflows = createWorkflows({ appName: app, workflowData });
+        const workflows = createWorkflows({ appName: app, workflowsData });
         workflows.forEach((wf) => {
             configs.push({
                 application: app,

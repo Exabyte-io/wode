@@ -3,7 +3,6 @@ import { UnitFactory } from "../units";
 import { defaultMapConfig } from "../units/map";
 import { applyConfig, findUnit } from "../utils";
 import { Workflow } from "./workflow";
-import { workflowData as allWorkflowData } from "./workflows";
 
 /**
  * @summary Helper for creating Map units for complex workflows
@@ -41,12 +40,13 @@ function updateUnitConfigs({ subworkflowData, unitConfigs }) {
  * @summary Use subworkflow.createSubworkflow to create a Subworkflow unit
  * @param appName {String} application name
  * @param unitData {*} object containing subworkflow configuration data
+ * @param workflowData {*} object containing all workflow configuration data
  * @param swArgs {*} subworkflow classes
  * @returns {*} subworkflow object
  */
-function createSubworkflowUnit({ appName, unitData, ...swArgs }) {
+function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
     const { name: unitName, unitConfigs, config } = unitData;
-    const { subworkflows } = allWorkflowData;
+    const { subworkflows } = workflowData;
     const { [appName]: dataByApp } = subworkflows;
     let { [unitName]: subworkflowData } = dataByApp;
     subworkflowData.config = { ...subworkflowData.config, ...config };
@@ -152,7 +152,7 @@ function createFromWorkflowUnits({ wfUnits, workflowCls, unitFactoryCls }) {
  * @param swArgs
  * @returns {*[]}
  */
-function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) {
+function createWorkflowUnits({ appName, workflowData, workflowsData, workflowCls, ...swArgs }) {
     const wfUnits = [];
     const { units } = workflowData;
     let unit, config;
@@ -164,6 +164,7 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
                 unit = createWorkflowUnits({
                     appName,
                     workflowData: unitData,
+                    workflowsData,
                     workflowCls,
                     ...swArgs,
                 });
@@ -173,6 +174,7 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
                 unit = createSubworkflowUnit({
                     appName,
                     unitData,
+                    workflowData: workflowsData,
                     ...swArgs,
                 });
                 break;
@@ -190,12 +192,19 @@ function createWorkflowUnits({ appName, workflowData, workflowCls, ...swArgs }) 
     });
 }
 
-function createWorkflow({ appName, workflowData, workflowCls = Workflow, ...swArgs }) {
+function createWorkflow({
+    appName,
+    workflowData,
+    workflowsData,
+    workflowCls = Workflow,
+    ...swArgs
+}) {
     const { name } = workflowData;
     console.log(`wode: creating ${appName} workflow ${name}`);
     const wf = createWorkflowUnits({
         appName,
         workflowData,
+        workflowsData,
         workflowCls,
         ...swArgs,
     });

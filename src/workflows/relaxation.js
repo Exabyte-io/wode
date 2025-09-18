@@ -1,7 +1,6 @@
 import { WorkflowStandata } from "@mat3ra/standata";
 
-// eslint-disable-next-line no-unused-vars
-import { createSubworkflowByName } from "../subworkflows";
+import { Subworkflow } from "../subworkflows";
 
 export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
@@ -10,7 +9,7 @@ export const RelaxationLogicMixin = (superclass) =>
             if (!appName) return undefined;
             const workflowStandata = new WorkflowStandata();
             const relaxationWorkflow = workflowStandata.getRelaxationWorkflowByApplication(appName);
-            return relaxationWorkflow?.subworkflows[0];
+            return new Subworkflow(relaxationWorkflow.subworkflows[0]);
         }
 
         isRelaxationSubworkflow(subworkflow) {
