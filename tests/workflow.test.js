@@ -67,4 +67,19 @@ describe("relaxation logic", () => {
 
         expect(espressoRelaxation.systemName).to.equal("espresso-variable-cell-relaxation");
     });
+
+    it("toggles relaxation correctly", () => {
+        expect(espressoWorkflow.hasRelaxation).to.be.false;
+        espressoWorkflow.toggleRelaxation();
+        expect(espressoWorkflow.hasRelaxation).to.be.true;
+        expect(espressoWorkflow.relaxationSubworkflow).to.exist;
+        expect(espressoWorkflow.relaxationSubworkflow.systemName).to.equal(
+            "espresso-variable-cell-relaxation",
+        );
+
+        espressoWorkflow.toggleRelaxation();
+        expect(espressoWorkflow.hasRelaxation).to.be.false;
+        // relaxationSubworkflow getter always returns a relaxation subworkflow for the application
+        expect(espressoWorkflow.relaxationSubworkflow).to.exist;
+    });
 });
