@@ -6,8 +6,7 @@
         "test": "nyc --reporter=text mocha --recursive --bail --require @babel/register/lib --require tests/setup.js tests",
         "lint": "eslint src tests && prettier --write src tests",
         "lint:fix": "eslint --fix --cache src tests && prettier --write src tests",
-        "build:workflows": "node build_workflows.js",
-        "transpile": "babel --out-dir dist src; npm run build:workflows",
+        "transpile": "babel --out-dir dist src",
         "postinstall": "npm run transpile",
         "prettier": "prettier --check src tests",
         "prepare": "husky install || exit 0"
@@ -40,7 +39,7 @@
         "@babel/register": "^7.16.0",
         "@babel/runtime-corejs3": "7.16.8",
         "@exabyte-io/periodic-table.js": "2022.6.8-0",
-        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#fb3ef0fd8a4b52cce490de90a97f4997f315ef4f",
+        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#e1d14eba066b08d17ff3f8d2d0371656470d6d09",
         "crypto-js": "^4.2.0",
         "js-yaml": "^4.1.0",
         "lodash": "^4.17.21",

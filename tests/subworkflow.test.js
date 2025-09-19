@@ -1,4 +1,5 @@
 import ApplicationRegistry from "@exabyte-io/ade.js/dist/js/ApplicationRegistry";
+import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
 import { createSubworkflowByName } from "../src/subworkflows";
@@ -26,6 +27,7 @@ describe("subworkflows", () => {
         const subworkflow = createSubworkflowByName({
             appName: "espresso",
             swfName: "total_energy",
+            workflowsSunworkflowsMapByApplication: workflowSubforkflowMapByApplication,
         });
         const newContext = { testKey: "testValue" };
         subworkflow.updateContext(newContext);
