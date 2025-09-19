@@ -1,13 +1,14 @@
-import { WorkflowStandata } from "@mat3ra/standata";
+import { SubworkflowStandata } from "@mat3ra/standata";
 
 export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
         get relaxationSubworkflow() {
             const appName = this.subworkflows[0]?.application?.name;
             if (!appName) return undefined;
-            const workflowStandata = new WorkflowStandata();
-            const relaxationWorkflow = workflowStandata.getRelaxationWorkflowByApplication(appName);
-            return new this._Subworkflow(relaxationWorkflow.subworkflows[0]);
+            const subworkflowStandata = new SubworkflowStandata();
+            const relaxationSubworkflow =
+                subworkflowStandata.getRelaxationSubworkflowByApplication(appName);
+            return new this._Subworkflow(relaxationSubworkflow);
         }
 
         isRelaxationSubworkflow(subworkflow) {
