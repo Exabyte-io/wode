@@ -23,11 +23,13 @@ JSONSchemasInterface.setSchemas(schemas);
 function createWorkflows({
     appName = null,
     workflowCls = Workflow,
-    workflowsMapByApplication = workflowSubforkflowMapByApplication,
+    workflowsSunworkflowsMapByApplication = workflowSubforkflowMapByApplication,
     ...swArgs
 }) {
     let apps = appName !== null ? [appName] : allApplications;
-    const allApplicationsFromWorkflowData = Object.keys(workflowsMapByApplication.workflows);
+    const allApplicationsFromWorkflowData = Object.keys(
+        workflowsSunworkflowsMapByApplication.workflows,
+    );
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
         if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
@@ -41,7 +43,7 @@ function createWorkflows({
         apps = allApplicationsFromWorkflowData;
     }
     const wfs = [];
-    const { workflows } = workflowsMapByApplication;
+    const { workflows } = workflowsSunworkflowsMapByApplication;
     apps.map((name) => {
         const { [name]: dataByApp } = workflows;
         Object.values(dataByApp).map((workflowDataForApp) => {
@@ -49,7 +51,7 @@ function createWorkflows({
                 createWorkflow({
                     appName: name,
                     workflowData: workflowDataForApp,
-                    workflowsMapByApplication,
+                    workflowsSunworkflowsMapByApplication,
                     workflowCls,
                     ...swArgs,
                 }),
@@ -61,10 +63,10 @@ function createWorkflows({
     return wfs;
 }
 
-function createWorkflowConfigs(applications, workflowsMapByApplication) {
+function createWorkflowConfigs(applications, workflowsSunworkflowsMapByApplication) {
     const configs = [];
     applications.forEach((app) => {
-        const workflows = createWorkflows({ appName: app, workflowsMapByApplication });
+        const workflows = createWorkflows({ appName: app, workflowsSunworkflowsMapByApplication });
         workflows.forEach((wf) => {
             configs.push({
                 application: app,
