@@ -1,13 +1,13 @@
 import { allApplications } from "@exabyte-io/ade.js";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import schemas from "@mat3ra/esse/dist/js/schemas.json";
+import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 
 // Import Template here to apply context provider patch
 // eslint-disable-next-line no-unused-vars
 import { Template } from "../patch";
 import { createWorkflow } from "./create";
 import { Workflow } from "./workflow";
-import { workflowData as allWorkflowData } from "./workflows";
 
 // Running this to set schemas for validation, removing the redundant data from application-flavors tree: `flavors`
 JSONSchemasInterface.setSchemas(schemas);
@@ -23,14 +23,11 @@ JSONSchemasInterface.setSchemas(schemas);
 function createWorkflows({
     appName = null,
     workflowCls = Workflow,
-    workflowsData = allWorkflowData,
+    workflowsMapByApplication = workflowSubforkflowMapByApplication,
     ...swArgs
 }) {
     let apps = appName !== null ? [appName] : allApplications;
-    if (workflowsData === null) {
-        workflowsData = allWorkflowData;
-    }
-    const allApplicationsFromWorkflowData = Object.keys(workflowsData.workflows);
+    const allApplicationsFromWorkflowData = Object.keys(workflowsMapByApplication.workflows);
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
         if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
@@ -44,7 +41,7 @@ function createWorkflows({
         apps = allApplicationsFromWorkflowData;
     }
     const wfs = [];
-    const { workflows } = workflowsData;
+    const { workflows } = workflowsMapByApplication;
     apps.map((name) => {
         const { [name]: dataByApp } = workflows;
         Object.values(dataByApp).map((workflowDataForApp) => {
@@ -52,7 +49,7 @@ function createWorkflows({
                 createWorkflow({
                     appName: name,
                     workflowData: workflowDataForApp,
-                    workflowsData,
+                    workflowsMapByApplication,
                     workflowCls,
                     ...swArgs,
                 }),
@@ -64,10 +61,10 @@ function createWorkflows({
     return wfs;
 }
 
-function createWorkflowConfigs(applications, workflowsData) {
+function createWorkflowConfigs(applications, workflowsMapByApplication) {
     const configs = [];
     applications.forEach((app) => {
-        const workflows = createWorkflows({ appName: app, workflowsData });
+        const workflows = createWorkflows({ appName: app, workflowsMapByApplication });
         workflows.forEach((wf) => {
             configs.push({
                 application: app,

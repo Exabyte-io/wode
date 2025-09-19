@@ -152,7 +152,13 @@ function createFromWorkflowUnits({ wfUnits, workflowCls, unitFactoryCls }) {
  * @param swArgs
  * @returns {*[]}
  */
-function createWorkflowUnits({ appName, workflowData, workflowsData, workflowCls, ...swArgs }) {
+function createWorkflowUnits({
+    appName,
+    workflowData,
+    workflowsMapByApplication,
+    workflowCls,
+    ...swArgs
+}) {
     const wfUnits = [];
     const { units } = workflowData;
     let unit, config;
@@ -164,7 +170,7 @@ function createWorkflowUnits({ appName, workflowData, workflowsData, workflowCls
                 unit = createWorkflowUnits({
                     appName,
                     workflowData: unitData,
-                    workflowsData,
+                    workflowsMapByApplication,
                     workflowCls,
                     ...swArgs,
                 });
@@ -174,7 +180,7 @@ function createWorkflowUnits({ appName, workflowData, workflowsData, workflowCls
                 unit = createSubworkflowUnit({
                     appName,
                     unitData,
-                    workflowData: workflowsData,
+                    workflowData: workflowsMapByApplication,
                     ...swArgs,
                 });
                 break;
@@ -195,7 +201,7 @@ function createWorkflowUnits({ appName, workflowData, workflowsData, workflowCls
 function createWorkflow({
     appName,
     workflowData,
-    workflowsData,
+    workflowsMapByApplication,
     workflowCls = Workflow,
     ...swArgs
 }) {
@@ -204,7 +210,7 @@ function createWorkflow({
     const wf = createWorkflowUnits({
         appName,
         workflowData,
-        workflowsData,
+        workflowsMapByApplication,
         workflowCls,
         ...swArgs,
     });

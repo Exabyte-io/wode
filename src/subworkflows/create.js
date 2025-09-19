@@ -5,12 +5,12 @@ import {
     MethodFactory,
     ModelFactory,
 } from "@exabyte-io/mode.js";
+import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import _ from "lodash";
 
 import { UnitFactory } from "../units";
 import { builders } from "../units/builders";
 import { applyConfig } from "../utils";
-import { workflowData as allWorkflowData } from "../workflows/workflows";
 import { dynamicSubworkflowsByApp, getSurfaceEnergySubworkflowUnits } from "./dynamic";
 import { Subworkflow } from "./subworkflow";
 
@@ -179,11 +179,17 @@ function createSubworkflow({
  * @summary Convenience wrapper around createSubworkflow to create by app name and swf name
  * @param appName {String} application name
  * @param swfName {String} subworkflow name (snake_case.yml)
+ * @param workflowsMapByApplication {Object} object containing all workflow/subworkflow map by application
  * @param swArgs {Object} classes for instantiation
  * @returns {*} subworkflow object
  */
-function createSubworkflowByName({ appName, swfName, ...swArgs }) {
-    const { subworkflows } = allWorkflowData;
+function createSubworkflowByName({
+    appName,
+    swfName,
+    workflowsMapByApplication = workflowSubforkflowMapByApplication,
+    ...swArgs
+}) {
+    const { subworkflows } = workflowsMapByApplication;
     const { [appName]: allSubworkflowData } = subworkflows;
     const { [swfName]: subworkflowData } = allSubworkflowData;
     return createSubworkflow({
