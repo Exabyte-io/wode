@@ -12,7 +12,10 @@ export const RelaxationLogicMixin = (superclass) =>
 
         isRelaxationSubworkflow(subworkflow) {
             const { relaxationSubworkflow } = this;
-            return relaxationSubworkflow?.systemName === subworkflow.systemName;
+            return (
+                relaxationSubworkflow?.systemName !== undefined &&
+                relaxationSubworkflow.systemName === subworkflow.systemName
+            );
         }
 
         get hasRelaxation() {
