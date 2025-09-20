@@ -66,13 +66,25 @@ function createWorkflows({
 /**
  * @summary Create workflow configurations for all applications
  * @param applications {Array<String>} array of application names
+ * @param workflowCls {*} workflow class to instantiate
  * @param workflowSubworkflowMapByApplication {Object} object containing all workflow/subworkflow map by application
+ * @param swArgs {Object} other classes for instantiation
  * @returns {Array<Object>} array of workflow configurations
  */
-function createWorkflowConfigs(applications, workflowSubworkflowMapByApplication) {
+function createWorkflowConfigs({
+    applications,
+    workflowCls = Workflow,
+    workflowSubworkflowMapByApplication,
+    ...swArgs
+}) {
     const configs = [];
     applications.forEach((app) => {
-        const workflows = createWorkflows({ appName: app, workflowSubworkflowMapByApplication });
+        const workflows = createWorkflows({
+            appName: app,
+            workflowCls,
+            workflowSubworkflowMapByApplication,
+            ...swArgs,
+        });
         workflows.forEach((wf) => {
             configs.push({
                 application: app,
