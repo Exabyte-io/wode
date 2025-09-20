@@ -2,6 +2,8 @@ import { Utils } from "@mat3ra/utils";
 import _ from "underscore";
 
 export class UnitConfigBuilder {
+    static usePredefinedIds = false;
+
     constructor({ name, type, flowchartId }) {
         this.type = type;
         this._name = name;
@@ -10,7 +12,7 @@ export class UnitConfigBuilder {
         this._monitors = [];
         this._preProcessors = [];
         this._postProcessors = [];
-        this._flowchartId = flowchartId || this.constructor.generateFlowChartId();
+        this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
     }
 
     name(str) {
@@ -23,7 +25,8 @@ export class UnitConfigBuilder {
         return this;
     }
 
-    static generateFlowChartId() {
+    static generateFlowChartId(...args) {
+        if (UnitConfigBuilder.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }
 
