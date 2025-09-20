@@ -1,4 +1,4 @@
-import { getUUID } from "@mat3ra/code/dist/js/utils";
+import { Utils } from "@mat3ra/utils";
 import _ from "underscore";
 
 export class UnitConfigBuilder {
@@ -24,7 +24,7 @@ export class UnitConfigBuilder {
     }
 
     static generateFlowChartId() {
-        return getUUID();
+        return Utils.uuid.getUUID();
     }
 
     flowchartId(flowchartId) {

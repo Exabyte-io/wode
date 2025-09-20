@@ -4,11 +4,7 @@ import {
     ContextAndRenderFieldsMixin,
     NamedDefaultableRepetitionImportantSettingsInMemoryEntity,
 } from "@mat3ra/code/dist/js/entity";
-import {
-    calculateHashFromObject,
-    getUUID,
-    removeTimestampableKeysFromConfig,
-} from "@mat3ra/code/dist/js/utils";
+import { Utils } from "@mat3ra/utils";
 import lodash from "lodash";
 import { mix } from "mixwith";
 import _ from "underscore";
@@ -26,6 +22,8 @@ class BaseSubworkflow extends mix(NamedDefaultableRepetitionImportantSettingsInM
 ) {}
 
 export class Subworkflow extends BaseSubworkflow {
+    static usePredefinedIds = false;
+
     constructor(config) {
         super(config);
         this._Application = Application;
@@ -47,14 +45,16 @@ export class Subworkflow extends BaseSubworkflow {
         );
     }
 
-    static generateSubworkflowId() {
-        return getUUID();
+    static generateSubworkflowId(...args) {
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+        return Utils.uuid.getUUID();
     }
 
     static get defaultConfig() {
+        const defaultName = "New Subworkflow";
         return {
-            _id: this.generateSubworkflowId(),
-            name: "New Subworkflow",
+            _id: this.generateSubworkflowId(defaultName),
+            name: defaultName,
             application: Application.defaultConfig,
             model: Model.defaultConfig,
             properties: [],
@@ -87,7 +87,7 @@ export class Subworkflow extends BaseSubworkflow {
     ) {
         return new Cls({
             ...config,
-            _id: Cls.generateSubworkflowId(),
+            _id: Cls.generateSubworkflowId(name),
             name,
             application: application.toJSON(),
             properties: lodash.sortedUniq(
@@ -294,18 +294,18 @@ export class Subworkflow extends BaseSubworkflow {
     calculateHash() {
         const config = this.toJSON();
         const meaningfulFields = {
-            application: removeTimestampableKeysFromConfig(config.application),
+            application: Utils.specific.removeTimestampableKeysFromConfig(config.application),
             model: this._calculateModelHash(),
             units: _.map(this.units, (u) => u.calculateHash()).join(),
         };
-        return calculateHashFromObject(meaningfulFields);
+        return Utils.hash.calculateHashFromObject(meaningfulFields);
     }
 
     _calculateModelHash() {
         const { model } = this.toJSON();
         // ignore empty data object
         if (this.model.method.omitInHashCalculation) delete model.method.data;
-        return calculateHashFromObject(model);
+        return Utils.hash.calculateHashFromObject(model);
     }
 
     findUnitById(id) {

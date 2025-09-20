@@ -83,3 +83,29 @@ describe("relaxation logic", () => {
         expect(espressoWorkflow.relaxationSubworkflow).to.exist;
     });
 });
+
+describe("UUIDs", () => {
+    it("UUIDs are kept if predefined", () => {
+        const WorkflowCls = Workflow;
+        WorkflowCls.usePredefinedIds = true;
+        const workflow1 = createWorkflow({
+            appName: "espresso",
+            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowCls: WorkflowCls,
+        });
+
+        const id1 = workflow1._id;
+
+        const workflow2 = createWorkflow({
+            appName: "espresso",
+            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowCls: WorkflowCls,
+        });
+
+        const id2 = workflow2._id;
+        expect(id1).to.not.be.empty;
+        expect(id1).to.equal(id2);
+    });
+});

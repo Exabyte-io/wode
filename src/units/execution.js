@@ -5,7 +5,7 @@ import {
     removeCommentsFromSourceCode,
     removeEmptyLinesFromString,
     removeTimestampableKeysFromConfig,
-} from "@mat3ra/code/dist/js/utils";
+} from "@mat3ra/utils";
 import _ from "underscore";
 
 import { BaseUnit } from "./base";
