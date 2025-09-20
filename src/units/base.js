@@ -10,11 +10,13 @@ export class BaseUnit extends NamedDefaultableRepetitionRuntimeItemsImportantSet
     static usePredefinedIds = false;
 
     constructor(config) {
+        const flowchartId =
+            config.flowchartId || BaseUnit.generateFlowChartId.call(new.target, config.name);
         super({
             ...config,
             status: config.status || UNIT_STATUSES.idle,
             statusTrack: config.statusTrack || [],
-            flowchartId: config.flowchartId || BaseUnit.generateFlowChartId(config.name),
+            flowchartId,
             tags: config.tags || [],
         });
     }
@@ -84,7 +86,7 @@ export class BaseUnit extends NamedDefaultableRepetitionRuntimeItemsImportantSet
 
     clone(extraContext) {
         const flowchartIDOverrideConfigAsExtraContext = {
-            flowchartId: BaseUnit.generateFlowChartId(),
+            flowchartId: this.constructor.generateFlowChartId(),
             ...extraContext,
         };
         return super.clone(flowchartIDOverrideConfigAsExtraContext);
