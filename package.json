@@ -39,7 +39,7 @@
         "@babel/register": "^7.16.0",
         "@babel/runtime-corejs3": "7.16.8",
         "@exabyte-io/periodic-table.js": "2022.6.8-0",
-        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#87b2b0f3ffff8124a67cd0c85b6464c8f9db3a2e",
+        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#efb9b05b80241a8e2b21f9c659f4d014d191ee66",
         "crypto-js": "^4.2.0",
         "js-yaml": "^4.1.0",
         "lodash": "^4.17.21",
@@ -49,7 +49,7 @@
         "v20": "^0.1.0"
     },
     "devDependencies": {
-        "@exabyte-io/ade.js":  "git+https://github.com/Exabyte-io/ade.js.git#a603b2cd7514786772a7b1766e90066e1da352bc",
+        "@exabyte-io/ade.js": "2025.9.20-0",
         "@exabyte-io/application-flavors.js": "2025.8.20-0",
         "@exabyte-io/eslint-config": "2025.5.13-0",
         "@exabyte-io/ide.js": "2024.3.26-0",
