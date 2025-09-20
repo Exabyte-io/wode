@@ -179,17 +179,17 @@ function createSubworkflow({
  * @summary Convenience wrapper around createSubworkflow to create by app name and swf name
  * @param appName {String} application name
  * @param swfName {String} subworkflow name (snake_case.yml)
- * @param workflowsSunworkflowsMapByApplication {Object} object containing all workflow/subworkflow map by application
+ * @param workflowSubworkflowMapByApplication {Object} object containing all workflow/subworkflow map by application
  * @param swArgs {Object} classes for instantiation
  * @returns {*} subworkflow object
  */
 function createSubworkflowByName({
     appName,
     swfName,
-    workflowsSunworkflowsMapByApplication = workflowSubforkflowMapByApplication,
+    workflowSubworkflowMapByApplication = workflowSubforkflowMapByApplication,
     ...swArgs
 }) {
-    const { subworkflows } = workflowsSunworkflowsMapByApplication;
+    const { subworkflows } = workflowSubworkflowMapByApplication;
     const { [appName]: allSubworkflowData } = subworkflows;
     const { [swfName]: subworkflowData } = allSubworkflowData;
     return createSubworkflow({

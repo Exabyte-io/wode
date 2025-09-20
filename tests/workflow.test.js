@@ -31,7 +31,7 @@ describe("workflow property", () => {
         const mmWorkflow = createWorkflow({
             appName: "espresso",
             workflowData: workflowSubforkflowMapByApplication.workflows.espresso.neb,
-            workflowsSunworkflowsMapByApplication: workflowSubforkflowMapByApplication,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
         });
         // eslint-disable-next-line no-unused-expressions
         expect(mmWorkflow.isMultiMaterial).to.be.true;
@@ -41,7 +41,7 @@ describe("workflow property", () => {
         const workflow = createWorkflow({
             appName: "espresso",
             workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
-            workflowsSunworkflowsMapByApplication: workflowSubforkflowMapByApplication,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
         });
 
         // eslint-disable-next-line no-unused-expressions

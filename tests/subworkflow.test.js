@@ -27,7 +27,7 @@ describe("subworkflows", () => {
         const subworkflow = createSubworkflowByName({
             appName: "espresso",
             swfName: "total_energy",
-            workflowsSunworkflowsMapByApplication: workflowSubforkflowMapByApplication,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
         });
         const newContext = { testKey: "testValue" };
         subworkflow.updateContext(newContext);

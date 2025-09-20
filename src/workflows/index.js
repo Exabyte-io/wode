@@ -23,12 +23,12 @@ JSONSchemasInterface.setSchemas(schemas);
 function createWorkflows({
     appName = null,
     workflowCls = Workflow,
-    workflowsSunworkflowsMapByApplication = workflowSubforkflowMapByApplication,
+    workflowSubworkflowMapByApplication = workflowSubforkflowMapByApplication,
     ...swArgs
 }) {
     let apps = appName !== null ? [appName] : allApplications;
     const allApplicationsFromWorkflowData = Object.keys(
-        workflowsSunworkflowsMapByApplication.workflows,
+        workflowSubworkflowMapByApplication.workflows,
     );
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
@@ -43,7 +43,7 @@ function createWorkflows({
         apps = allApplicationsFromWorkflowData;
     }
     const wfs = [];
-    const { workflows } = workflowsSunworkflowsMapByApplication;
+    const { workflows } = workflowSubworkflowMapByApplication;
     apps.map((name) => {
         const { [name]: dataByApp } = workflows;
         Object.values(dataByApp).map((workflowDataForApp) => {
@@ -51,7 +51,7 @@ function createWorkflows({
                 createWorkflow({
                     appName: name,
                     workflowData: workflowDataForApp,
-                    workflowsSunworkflowsMapByApplication,
+                    workflowSubworkflowMapByApplication,
                     workflowCls,
                     ...swArgs,
                 }),
@@ -66,13 +66,13 @@ function createWorkflows({
 /**
  * @summary Create workflow configurations for all applications
  * @param applications {Array<String>} array of application names
- * @param workflowsSunworkflowsMapByApplication {Object} object containing all workflow/subworkflow map by application
+ * @param workflowSubworkflowMapByApplication {Object} object containing all workflow/subworkflow map by application
  * @returns {Array<Object>} array of workflow configurations
  */
-function createWorkflowConfigs(applications, workflowsSunworkflowsMapByApplication) {
+function createWorkflowConfigs(applications, workflowSubworkflowMapByApplication) {
     const configs = [];
     applications.forEach((app) => {
-        const workflows = createWorkflows({ appName: app, workflowsSunworkflowsMapByApplication });
+        const workflows = createWorkflows({ appName: app, workflowSubworkflowMapByApplication });
         workflows.forEach((wf) => {
             configs.push({
                 application: app,

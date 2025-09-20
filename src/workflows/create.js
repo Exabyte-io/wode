@@ -155,7 +155,7 @@ function createFromWorkflowUnits({ wfUnits, workflowCls, unitFactoryCls }) {
 function createWorkflowUnits({
     appName,
     workflowData,
-    workflowsSunworkflowsMapByApplication,
+    workflowSubworkflowMapByApplication,
     workflowCls,
     ...swArgs
 }) {
@@ -170,7 +170,7 @@ function createWorkflowUnits({
                 unit = createWorkflowUnits({
                     appName,
                     workflowData: unitData,
-                    workflowsSunworkflowsMapByApplication,
+                    workflowSubworkflowMapByApplication,
                     workflowCls,
                     ...swArgs,
                 });
@@ -180,7 +180,7 @@ function createWorkflowUnits({
                 unit = createSubworkflowUnit({
                     appName,
                     unitData,
-                    workflowData: workflowsSunworkflowsMapByApplication,
+                    workflowData: workflowSubworkflowMapByApplication,
                     ...swArgs,
                 });
                 break;
@@ -201,7 +201,7 @@ function createWorkflowUnits({
 function createWorkflow({
     appName,
     workflowData,
-    workflowsSunworkflowsMapByApplication,
+    workflowSubworkflowMapByApplication,
     workflowCls = Workflow,
     ...swArgs
 }) {
@@ -210,7 +210,7 @@ function createWorkflow({
     const wf = createWorkflowUnits({
         appName,
         workflowData,
-        workflowsSunworkflowsMapByApplication,
+        workflowSubworkflowMapByApplication,
         workflowCls,
         ...swArgs,
     });
