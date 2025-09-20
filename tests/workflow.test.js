@@ -5,9 +5,9 @@ import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from ".
 import { createWorkflow } from "../src/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
-const EXPECTED_WORKFLOW_ID = "00000000-0000-0000-0000-000000000000";
-const EXPECTED_SUBWORKFLOW_ID = "00000000-0000-0000-0000-000000000000";
-const EXPECTED_UNIT_ID = "00000000-0000-0000-0000-000000000000";
+const EXPECTED_WORKFLOW_ID = "6e937035-b03b-5b2c-a2ba-28f1f49d4a3d";
+const EXPECTED_SUBWORKFLOW_ID = "a27b9ca8-5618-528e-8f40-37c27883984f";
+const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
 
 describe("workflows", () => {
     it("can all be created", () => {
@@ -76,8 +76,8 @@ describe("workflows", () => {
             expect(workflow.subworkflows[0]._id).to.equal(EXPECTED_SUBWORKFLOW_ID);
 
             expect(workflow.subworkflows[0]).to.have.property("units");
-            expect(workflow.subworkflows[0].units[0]).to.have.property("_id");
-            expect(workflow.subworkflows[0].units[0]._id).to.equal(EXPECTED_UNIT_ID);
+            expect(workflow.subworkflows[0].units[0]).to.have.property("flowchartId");
+            expect(workflow.subworkflows[0].units[0].flowchartId).to.equal(EXPECTED_UNIT_ID);
         } finally {
             // Clean up - reset usePredefinedIds to false
             WorkflowCls.usePredefinedIds = false;
