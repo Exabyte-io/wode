@@ -63,6 +63,12 @@ function createWorkflows({
     return wfs;
 }
 
+/**
+ * @summary Create workflow configurations for all applications
+ * @param applications {Array<String>} array of application names
+ * @param workflowsSunworkflowsMapByApplication {Object} object containing all workflow/subworkflow map by application
+ * @returns {Array<Object>} array of workflow configurations
+ */
 function createWorkflowConfigs(applications, workflowsSunworkflowsMapByApplication) {
     const configs = [];
     applications.forEach((app) => {
