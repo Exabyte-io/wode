@@ -84,28 +84,25 @@ describe("relaxation logic", () => {
     });
 });
 
-describe("UUIDs", () => {
-    it("UUIDs are kept if predefined", () => {
-        const WorkflowCls = Workflow;
-        WorkflowCls.usePredefinedIds = true;
-        const workflow1 = createWorkflow({
-            appName: "espresso",
-            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
-            workflowCls: WorkflowCls,
-        });
+describe("Workflow UUIDs", () => {
+    afterEach(() => {
+        Workflow.usePredefinedIds = false;
+    });
 
-        const id1 = workflow1._id;
+    it("workflow UUIDs are kept if predefined", () => {
+        Workflow.usePredefinedIds = true;
 
-        const workflow2 = createWorkflow({
-            appName: "espresso",
-            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
-            workflowCls: WorkflowCls,
-        });
+        const createTestWorkflow = () =>
+            createWorkflow({
+                appName: "espresso",
+                workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
+                workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+                workflowCls: Workflow,
+            });
 
-        const id2 = workflow2._id;
-        expect(id1).to.not.be.empty;
-        expect(id1).to.equal(id2);
+        const workflow1 = createTestWorkflow();
+        const workflow2 = createTestWorkflow();
+        expect(workflow1).to.not.be.equal(undefined);
+        expect(workflow1._id).to.equal(workflow2._id);
     });
 });
