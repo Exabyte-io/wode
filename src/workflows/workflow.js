@@ -55,6 +55,7 @@ export class Workflow extends BaseWorkflow {
     }
 
     static generateWorkflowId(...args) {
+        args[0] = `workflow-${args[0]}`;
         if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }

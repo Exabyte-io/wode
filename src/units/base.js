@@ -20,7 +20,7 @@ export class BaseUnit extends NamedDefaultableRepetitionRuntimeItemsImportantSet
     }
 
     static generateFlowChartId(...args) {
-        if (BaseUnit.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }
 

@@ -46,6 +46,7 @@ export class Subworkflow extends BaseSubworkflow {
     }
 
     static generateSubworkflowId(...args) {
+        args[0] = `subworkflow-${args[0]}`;
         if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }
