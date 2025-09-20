@@ -138,7 +138,7 @@ describe("subworkflow UUIDs", () => {
             subworkflowCls: Subworkflow,
         });
 
-        expect(subworkflow1).to.not.be.equal(undefined);
+        expect(subworkflow1._id).to.not.be.equal("");
         expect(subworkflow1._id).to.equal(subworkflow2._id);
     });
 });

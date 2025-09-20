@@ -102,7 +102,7 @@ describe("Workflow UUIDs", () => {
 
         const workflow1 = createTestWorkflow();
         const workflow2 = createTestWorkflow();
-        expect(workflow1).to.not.be.equal(undefined);
+        expect(workflow1._id).to.not.be.equal("");
         expect(workflow1._id).to.equal(workflow2._id);
     });
 });
