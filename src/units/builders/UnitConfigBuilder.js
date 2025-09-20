@@ -26,7 +26,7 @@ export class UnitConfigBuilder {
     }
 
     static generateFlowChartId(...args) {
-        if (UnitConfigBuilder.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }
 
