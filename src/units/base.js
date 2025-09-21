@@ -1,24 +1,30 @@
 import { NamedDefaultableRepetitionRuntimeItemsImportantSettingsContextAndRenderHashedInMemoryEntity } from "@mat3ra/code/dist/js/entity";
 import { taggableMixin } from "@mat3ra/code/dist/js/entity/mixins/TaggableMixin";
-import { getUUID } from "@mat3ra/code/dist/js/utils";
+import { Utils } from "@mat3ra/utils";
 import lodash from "lodash";
 
 import { UNIT_STATUSES } from "../enums";
 
 // eslint-disable-next-line max-len
 export class BaseUnit extends NamedDefaultableRepetitionRuntimeItemsImportantSettingsContextAndRenderHashedInMemoryEntity {
+    static usePredefinedIds = false;
+
     constructor(config) {
+        const flowchartId =
+            config.flowchartId || BaseUnit.generateFlowChartId.call(new.target, config.name);
         super({
             ...config,
             status: config.status || UNIT_STATUSES.idle,
             statusTrack: config.statusTrack || [],
-            flowchartId: config.flowchartId || BaseUnit.generateFlowChartId(),
+            flowchartId,
             tags: config.tags || [],
         });
     }
 
-    static generateFlowChartId() {
-        return getUUID();
+    static generateFlowChartId(...args) {
+        args[0] = `flowchart-${args[0]}`;
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+        return Utils.uuid.getUUID();
     }
 
     get flowchartId() {
@@ -81,7 +87,7 @@ export class BaseUnit extends NamedDefaultableRepetitionRuntimeItemsImportantSet
 
     clone(extraContext) {
         const flowchartIDOverrideConfigAsExtraContext = {
-            flowchartId: BaseUnit.generateFlowChartId(),
+            flowchartId: this.constructor.generateFlowChartId(),
             ...extraContext,
         };
         return super.clone(flowchartIDOverrideConfigAsExtraContext);
