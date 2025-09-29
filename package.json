@@ -39,7 +39,7 @@
         "@babel/register": "^7.16.0",
         "@babel/runtime-corejs3": "7.16.8",
         "@exabyte-io/periodic-table.js": "2022.6.8-0",
-        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#efb9b05b80241a8e2b21f9c659f4d014d191ee66",
+        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#5204a507cf7ad97b0e75fe9c353f1c3790ec7383",
         "crypto-js": "^4.2.0",
         "js-yaml": "^4.1.0",
         "lodash": "^4.17.21",
@@ -80,7 +80,8 @@
         "@mat3ra/utils": "*",
         "@mat3ra/code": "*",
         "@mat3ra/esse": "*",
-        "@mat3ra/made": "*"
+        "@mat3ra/made": "*",
+        "@mat3ra/standata": "*"
     },
     "engines": {
         "node": ">=20.0.0"
