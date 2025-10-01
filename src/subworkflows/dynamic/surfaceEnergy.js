@@ -1,4 +1,4 @@
-import { removeNewLinesAndExtraSpaces } from "@mat3ra/code/dist/js/utils";
+import { Utils } from "@mat3ra/utils";
 
 function getIOUnitEndpointOptions(query, projection = "{}") {
     return {
@@ -42,7 +42,7 @@ function getSurfaceEnergySubworkflowUnits({ scfUnit, unitBuilders }) {
         "Bulk material does not exist!",
     ).build();
 
-    const query = removeNewLinesAndExtraSpaces(`{
+    const query = Utils.str.removeNewLinesAndExtraSpaces(`{
         'exabyteId': BULK.exabyteId,
         'data.name': 'total_energy',
         'group': {'$regex': ''.join((SUBWORKFLOW.application.shortName, ':'))}

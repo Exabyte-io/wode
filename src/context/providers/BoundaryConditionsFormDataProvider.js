@@ -1,6 +1,6 @@
 import JSONSchemaFormDataProvider from "@exabyte-io/ade.js/dist/js/context/JSONSchemaFormDataProvider";
-import { deepClone } from "@mat3ra/code/dist/js/utils";
 import { Made } from "@mat3ra/made";
+import { Utils } from "@mat3ra/utils";
 
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
@@ -40,7 +40,7 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
     }
 
     yieldDataForRendering() {
-        const data = deepClone(this.yieldData());
+        const data = Utils.clone.deepClone(this.yieldData());
         data.boundaryConditions.offset *= Made.coefficients.ANGSTROM_TO_BOHR;
         data.boundaryConditions.targetFermiEnergy *= Made.coefficients.EV_TO_RY;
         data.boundaryConditions.electricField *= Made.coefficients.EV_A_TO_RY_BOHR;

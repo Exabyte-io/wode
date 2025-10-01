@@ -2,15 +2,14 @@
 import { ComputedEntityMixin, getDefaultComputeConfig } from "@exabyte-io/ide.js";
 import { tree } from "@exabyte-io/mode.js";
 import { NamedDefaultableRepetitionContextAndRenderInMemoryEntity } from "@mat3ra/code/dist/js/entity";
-import { calculateHashFromObject, getUUID } from "@mat3ra/code/dist/js/utils";
 import workflowSchema from "@mat3ra/esse/dist/js/schema/workflow.json";
+import { Utils } from "@mat3ra/utils";
 import lodash from "lodash";
 import { mix } from "mixwith";
 import _ from "underscore";
 import s from "underscore.string";
 
 import { UNIT_TYPES } from "../enums";
-// import { createSubworkflowByName } from "../subworkflows";
 import { Subworkflow } from "../subworkflows/subworkflow";
 import { MapUnit } from "../units";
 import { UnitFactory } from "../units/factory";
@@ -30,7 +29,11 @@ export class Workflow extends BaseWorkflow {
 
     static jsonSchema = workflowSchema;
 
+    static usePredefinedIds = false;
+
     constructor(config) {
+        if (!config._id) config._id = Workflow.generateWorkflowId(config.name);
+
         super(config);
         this._Subworkflow = Subworkflow;
         this._UnitFactory = UnitFactory;
@@ -38,14 +41,6 @@ export class Workflow extends BaseWorkflow {
         this._MapUnit = MapUnit;
         if (!config.skipInitialize) this.initialize();
     }
-
-    // TODO: figure out how to avoid circular dependency on import in the platform webapp and re-enable or remove
-    // get _allRelaxationSubworkflows() {
-    //     return {
-    //         espresso: createSubworkflowByName({ appName: "espresso", swfName: "variable_cell_relaxation" }),
-    //         vasp: createSubworkflowByName({ appName: "vasp", swfName: "variable_cell_relaxation" }),
-    //     }
-    // }
 
     initialize() {
         const me = this;
@@ -59,8 +54,10 @@ export class Workflow extends BaseWorkflow {
         return defaultWorkflowConfig;
     }
 
-    static generateWorkflowId() {
-        return getUUID();
+    static generateWorkflowId(...args) {
+        args[0] = `workflow-${args[0]}`;
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+        return Utils.uuid.getUUID();
     }
 
     static fromSubworkflow(subworkflow, ClsConstructor = Workflow) {
@@ -290,7 +287,7 @@ export class Workflow extends BaseWorkflow {
                 const workflowConfig = defaultWorkflowConfig;
                 // eslint-disable-next-line no-case-declarations
                 const mapUnit = new this._MapUnit();
-                workflowConfig._id = this._Workflow.generateWorkflowId();
+                workflowConfig._id = this._Workflow.generateWorkflowId(workflowConfig.name);
                 this.prop("workflows").push(workflowConfig);
                 this._workflows = this.prop("workflows").map((x) => new this._Workflow(x));
                 mapUnit.setWorkflowId(workflowConfig._id);
@@ -306,7 +303,8 @@ export class Workflow extends BaseWorkflow {
 
     addMapUnit(mapUnit, mapWorkflow) {
         const mapWorkflowConfig = mapWorkflow.toJSON();
-        if (!mapWorkflowConfig._id) mapWorkflowConfig._id = this._Workflow.generateWorkflowId();
+        if (!mapWorkflowConfig._id)
+            mapWorkflowConfig._id = this._Workflow.generateWorkflowId(mapWorkflowConfig.name);
         mapUnit.setWorkflowId(mapWorkflowConfig._id);
         this.addUnit(mapUnit);
         this._json.workflows.push(mapWorkflowConfig);
@@ -348,6 +346,6 @@ export class Workflow extends BaseWorkflow {
             subworkflows: _.map(this.subworkflows, (sw) => sw.calculateHash()).join(),
             workflows: _.map(this.workflows, (w) => w.calculateHash()).join(),
         };
-        return calculateHashFromObject(meaningfulFields);
+        return Utils.hash.calculateHashFromObject(meaningfulFields);
     }
 }
