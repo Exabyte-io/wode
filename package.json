@@ -17,11 +17,9 @@
     },
     "main": "dist/index.js",
     "files": [
-        "/assets",
         "/dist",
         "/src",
-        ".babelrc",
-        "build_workflows.js"
+        ".babelrc"
     ],
     "author": "Exabyte Inc.",
     "bugs": {
