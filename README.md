@@ -3,12 +3,29 @@
 
 # wode
 
-WOrkflow DEfinitions in JavaScript - wode - houses entity definitions for use in the Mat3ra platform.
+WOrkflow DEfinitions - houses the definitions for:
 
+- `Workflow` - a workflow to be executed
+- `Subworkflow` - a logical collection of units of work defined by a unique `Applidation`, and `Model`
+- `Units` - one of the following:
+  - `AssertionUnit` - assert an expression
+  - `AssignmentUnit` - assign a value
+  - `ConditionUnit` - evaluate a condition
+  - `IOUnit` - Read or write data
+  - `ExecutionUnit` - execute an `ADe` `Application`
+  - `MapUnit` - create a dynamic number of units based on output of a previous unit
+  - `ReduceUnit` - collect the results of a fanned out operation
+
+Workflow configurations are processed at build time using `build_workflows.js` and compiled into
+a single JS file so that workflow configurations can be accessed in the browser runtime, not just
+in a NodeJS process.
+
+The relevant data parameterizing supported entities is housed in the
+[Standata](https://github.com/Exabyte-io/standata) repository.
 
 ## Installation
 
-For usage within a javascript project:
+For usage within a JavaScript project:
 
 ```bash
 npm install @mat3ra/wode
@@ -21,7 +38,7 @@ git clone https://github.com/Exabyte-io/wode.git
 ```
 
 
-## Contribution
+## Contributions
 
 This repository is an [open-source](LICENSE.md) work-in-progress and we welcome contributions.
 
@@ -46,7 +63,7 @@ npm run transpile
 npm run test
 ```
 
-## Using Linter
+### Using Linter
 
 Linter setup will prevent committing files that don't adhere to the code standard. It will
 attempt to fix what it can automatically prior to the commit in order to reduce diff noise. This can lead to "unexpected" behavior where a
@@ -80,30 +97,9 @@ In which case, you may need to then add the linter edits to your staging, which 
 file back to identical with the base branch, resulting in no staged changes whatsoever.
 
 
-WoDe
-====
+## Other
 
-The`WoDe` package synthesizes other entity definition (`De`) libraries
-in the Mat3ra workflow ecosystem and implements the following entities:
-
-- `Workflow` - a workflow to be executed on the Mat3ra platform
-- `Subworkflow` - a logical collection of units of work defined by a unique `Applidation`
-- `Units` - one of the following:
-  - `AssertionUnit` - assert an expression
-  - `AssignmentUnit` - assign a value
-  - `ConditionUnit` - evaluate a condition
-  - `IOUnit` - Read or write data
-  - `ExecutionUnit` - execute an `ADe` `Application`
-  - `MapUnit` - create a dynamic number of units based on output of a previous unit
-  - `ReduceUnit` - collect the results of a fanned out operation
-
-Workflow configurations are processed at build time using `build_workflows.js` and compiled into
-a single JS file so that workflow configurations can be accessed in the browser runtime, not just
-in a NodeJS process.
-
-
-Workflow Spec
--------------
+### Workflow Spec
 
 Workflows defined as configuration conform to the following specification:
 
@@ -152,8 +148,7 @@ Workflows defined as configuration conform to the following specification:
   - `[value]: {{constructorValue}}: Any` - value for a given constructor parameter
 
 
-Workflow Creation
------------------
+### Workflow Creation
 
 The Workflow instances associated with the workflow configurations are built by
 the `createWorkflows` function traversing all three levels (workflow, subworkflow, unit):
