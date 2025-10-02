@@ -48,15 +48,15 @@
         "v20": "^0.1.0"
     },
     "devDependencies": {
-        "@exabyte-io/ade.js": "2025.9.20-0",
+        "@mat3ra/ade": "^2025.10.2-2",
         "@exabyte-io/eslint-config": "2025.5.13-0",
         "@exabyte-io/ide.js": "2024.3.26-0",
-        "@exabyte-io/mode.js": "2024.4.28-0",
+        "@mat3ra/mode": "^2025.10.2-0",
         "@mat3ra/utils": "2025.9.20-0",
         "@mat3ra/code": "2025.7.15-0",
         "@mat3ra/esse": "2025.7.15-0",
         "@mat3ra/made": "2025.7.15-0",
-        "@mat3ra/standata": "2025.10.1-0",
+        "@mat3ra/standata": "2025.10.2-0",
         "chai": "^4.3.4",
         "eslint": "7.32.0",
         "eslint-config-airbnb": "19.0.2",
@@ -75,9 +75,9 @@
         "prettier": "^2.7.1"
     },
     "peerDependencies": {
-        "@exabyte-io/ade.js": "*",
+        "@mat3ra/ade": "*",
         "@exabyte-io/ide.js": "*",
-        "@exabyte-io/mode.js": "*",
+        "@mat3ra/mode": "*",
         "@mat3ra/standata": "*",
         "@mat3ra/utils": "*",
         "@mat3ra/code": "*",

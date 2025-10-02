@@ -1,4 +1,4 @@
-import { Application } from "@exabyte-io/ade.js";
+import { Application } from "@mat3ra/ade";
 import { Made } from "@mat3ra/made";
 
 class GlobalSettings {

@@ -1,5 +1,5 @@
 /* eslint-disable max-classes-per-file */
-import ContextProvider from "@exabyte-io/ade.js/dist/js/context/ContextProvider";
+import ContextProvider from "@mat3ra/ade/dist/js/context/ContextProvider";
 import { expect } from "chai";
 
 import { applicationContextMixin } from "../src/context/mixins/ApplicationContextMixin";

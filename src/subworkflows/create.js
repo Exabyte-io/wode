@@ -1,10 +1,10 @@
-import ApplicationRegistry from "@exabyte-io/ade.js/dist/js/ApplicationRegistry";
+import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
 import {
     default_methods as MethodConfigs,
     default_models as ModelConfigs,
     MethodFactory,
     ModelFactory,
-} from "@exabyte-io/mode.js";
+} from "@mat3ra/mode";
 import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import _ from "lodash";
 
