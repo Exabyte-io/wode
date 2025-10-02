@@ -1,9 +1,9 @@
-[![npm version](https://badge.fury.io/js/%40exabyte-io%2Fwode.js.svg)](https://badge.fury.io/js/%40exabyte-io%2Fwode.js)
+[![npm version](https://badge.fury.io/js/%40mat3ra%2Fwode.svg)](https://badge.fury.io/js/%40mat3ra%2Fwode)
 [![License: Apache](https://img.shields.io/badge/License-Apache-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 
-# wode.js
+# wode
 
-WOrkflow DEfinitions in JavaScript - wode.js - houses entity definitions for use in the Mat3ra platform.
+WOrkflow DEfinitions in JavaScript - wode - houses entity definitions for use in the Mat3ra platform.
 
 
 ## Installation
@@ -11,13 +11,13 @@ WOrkflow DEfinitions in JavaScript - wode.js - houses entity definitions for use
 For usage within a javascript project:
 
 ```bash
-npm install @exabyte-io/wode.js
+npm install @mat3ra/wode
 ```
 
 For development:
 
 ```bash
-git clone https://github.com/Exabyte-io/wode.js.git
+git clone https://github.com/Exabyte-io/wode.git
 ```
 
 
