@@ -1,4 +1,4 @@
-import { Application } from "@exabyte-io/ade.js";
+import { Application } from "@mat3ra/ade";
 import { expect } from "chai";
 
 import { createUnit } from "../src/subworkflows/create";

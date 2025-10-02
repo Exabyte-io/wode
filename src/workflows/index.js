@@ -1,4 +1,4 @@
-import { allApplications } from "@exabyte-io/ade.js";
+import { allApplications } from "@mat3ra/ade";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import schemas from "@mat3ra/esse/dist/js/schemas.json";
 import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
@@ -32,7 +32,7 @@ function createWorkflows({
     );
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
-        if (apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
+        if (apps && apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
             // eslint-disable-next-line no-console
             console.warn(
                 `Warning: allApplications and allApplicationsFromWorkflowData do not match: 

@@ -1,4 +1,4 @@
-import { Template } from "@exabyte-io/ade.js";
+import { Template } from "@mat3ra/ade";
 
 import { wodeProviders } from "./context/providers";
 

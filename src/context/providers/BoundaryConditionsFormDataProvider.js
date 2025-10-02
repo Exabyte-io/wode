@@ -1,4 +1,4 @@
-import JSONSchemaFormDataProvider from "@exabyte-io/ade.js/dist/js/context/JSONSchemaFormDataProvider";
+import JSONSchemaFormDataProvider from "@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider";
 import { Made } from "@mat3ra/made";
 import { Utils } from "@mat3ra/utils";
 

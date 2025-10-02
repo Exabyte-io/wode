@@ -1,8 +1,8 @@
 /* eslint-disable max-classes-per-file */
 import { ComputedEntityMixin, getDefaultComputeConfig } from "@exabyte-io/ide.js";
-import { tree } from "@exabyte-io/mode.js";
 import { NamedDefaultableRepetitionContextAndRenderInMemoryEntity } from "@mat3ra/code/dist/js/entity";
 import workflowSchema from "@mat3ra/esse/dist/js/schema/workflow.json";
+import { tree } from "@mat3ra/mode";
 import { Utils } from "@mat3ra/utils";
 import lodash from "lodash";
 import { mix } from "mixwith";

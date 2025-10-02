@@ -1,9 +1,9 @@
-import { Application } from "@exabyte-io/ade.js";
-import { Model, ModelFactory } from "@exabyte-io/mode.js";
+import { Application } from "@mat3ra/ade";
 import {
     ContextAndRenderFieldsMixin,
     NamedDefaultableRepetitionImportantSettingsInMemoryEntity,
 } from "@mat3ra/code/dist/js/entity";
+import { Model, ModelFactory } from "@mat3ra/mode";
 import { Utils } from "@mat3ra/utils";
 import lodash from "lodash";
 import { mix } from "mixwith";
