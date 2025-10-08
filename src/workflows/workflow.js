@@ -30,12 +30,18 @@ export class Workflow extends BaseWorkflow {
 
     static jsonSchema = workflowSchema;
 
-    constructor(config) {
+    constructor(
+        config,
+        _Subworkflow = Subworkflow,
+        _UnitFactory = UnitFactory,
+        _Workflow = Workflow,
+        _MapUnit = MapUnit,
+    ) {
         super(config);
-        this._Subworkflow = Subworkflow;
-        this._UnitFactory = UnitFactory;
-        this._Workflow = Workflow;
-        this._MapUnit = MapUnit;
+        this._Subworkflow = _Subworkflow;
+        this._UnitFactory = _UnitFactory;
+        this._Workflow = _Workflow;
+        this._MapUnit = _MapUnit;
         if (!config.skipInitialize) this.initialize();
     }
 

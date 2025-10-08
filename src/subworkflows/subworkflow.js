@@ -26,11 +26,16 @@ class BaseSubworkflow extends mix(NamedDefaultableRepetitionImportantSettingsInM
 ) {}
 
 export class Subworkflow extends BaseSubworkflow {
-    constructor(config) {
+    constructor(
+        config,
+        _Application = Application,
+        _ModelFactory = ModelFactory,
+        _UnitFactory = UnitFactory,
+    ) {
         super(config);
-        this._Application = Application;
-        this._ModelFactory = ModelFactory;
-        this._UnitFactory = UnitFactory;
+        this._Application = _Application;
+        this._ModelFactory = _ModelFactory;
+        this._UnitFactory = _UnitFactory;
         this.initialize();
     }
 
