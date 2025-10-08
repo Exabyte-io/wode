@@ -1,7 +1,8 @@
-import ApplicationRegistry from "@exabyte-io/ade.js/dist/js/ApplicationRegistry";
+import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
+import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
-import { createSubworkflowByName } from "../src/subworkflows";
+import { createSubworkflowByName, Subworkflow } from "../src/subworkflows";
 import { AssignmentUnit, ConditionUnit } from "../src/units";
 
 const assignmentUnitData = {
@@ -26,6 +27,7 @@ describe("subworkflows", () => {
         const subworkflow = createSubworkflowByName({
             appName: "espresso",
             swfName: "total_energy",
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
         });
         const newContext = { testKey: "testValue" };
         subworkflow.updateContext(newContext);
@@ -113,5 +115,30 @@ describe("subworkflows", () => {
         expect(subworkflow.application.version).to.be.equal("6.7.0");
         expect(subworkflow.units[0].application?.version).to.be.equal("6.7.0");
         expect(subworkflow.units[1].application?.version).to.be.equal(undefined);
+    });
+});
+
+describe("subworkflow UUIDs", () => {
+    afterEach(() => {
+        Subworkflow.usePredefinedIds = false;
+    });
+
+    it("subworkflow UUIDs are kept if predefined", () => {
+        Subworkflow.usePredefinedIds = true;
+
+        const subworkflow1 = createSubworkflowByName({
+            appName: "espresso",
+            swfName: "total_energy",
+            subworkflowCls: Subworkflow,
+        });
+
+        const subworkflow2 = createSubworkflowByName({
+            appName: "espresso",
+            swfName: "total_energy",
+            subworkflowCls: Subworkflow,
+        });
+
+        expect(subworkflow1._id).to.not.be.equal("");
+        expect(subworkflow1._id).to.equal(subworkflow2._id);
     });
 });

@@ -1,40 +1,27 @@
-// eslint-disable-next-line no-unused-vars
-import { createSubworkflowByName } from "../subworkflows";
+import { SubworkflowStandata } from "@mat3ra/standata";
 
 export const RelaxationLogicMixin = (superclass) =>
     class extends superclass {
-        // TODO: figure out how to avoid circular dependency on import in the platform webapp and re-enable or remove
-        // get _allRelaxationSubworkflows() {
-        //     /*
-        //     * NOTE: dynamic import is used here to avoid import errors on application start.
-        //     *       When `Workflow` is used in `AccountSelector` it attempts to import relaxation subworkflows.
-        //     *       The latter is constructed through using DAOProvider. Because DAOProvider is not yet defined at the point
-        //     *       when `AccountSelector` is imported the whole logic fails and prevent application start.
-        //      */
-        //     console.log("_allRelaxationSubworkflows", this.constructor._allRelaxationSubworkflows);
-        //     return this.constructor._allRelaxationSubworkflows ? this.constructor._allRelaxationSubworkflows : {
-        //         espresso: createSubworkflowByName({ appName: "espresso", swfName: "variable_cell_relaxation" }),
-        //         vasp: createSubworkflowByName({ appName: "vasp", swfName: "variable_cell_relaxation" }),
-        //     };
-        // }
-
         get relaxationSubworkflow() {
-            // deciding on the application based on the first subworkflow
-            const firstSubworkflow = this.subworkflows[0];
-            return this._allRelaxationSubworkflows[firstSubworkflow.application.name];
+            const appName = this.subworkflows[0]?.application?.name;
+            if (!appName) return undefined;
+            const subworkflowStandata = new SubworkflowStandata();
+            const relaxationSubworkflow =
+                subworkflowStandata.getRelaxationSubworkflowByApplication(appName);
+            return new this._Subworkflow(relaxationSubworkflow);
         }
 
         isRelaxationSubworkflow(subworkflow) {
-            return Object.values(this._allRelaxationSubworkflows)
-                .map((sw) => sw.systemName)
-                .includes(subworkflow.systemName);
+            const { relaxationSubworkflow } = this;
+            return (
+                relaxationSubworkflow?.systemName !== undefined &&
+                relaxationSubworkflow.systemName === subworkflow.systemName
+            );
         }
 
         get hasRelaxation() {
-            return Boolean(
-                this.subworkflows.find((subworkflow) => {
-                    return this.isRelaxationSubworkflow(subworkflow);
-                }),
+            return this.subworkflows.some((subworkflow) =>
+                this.isRelaxationSubworkflow(subworkflow),
             );
         }
 
@@ -46,7 +33,9 @@ export const RelaxationLogicMixin = (superclass) =>
                 this.removeSubworkflow(relaxSubworkflow.id);
             } else {
                 const vcRelax = this.relaxationSubworkflow;
-                this.addSubworkflow(vcRelax, true);
+                if (vcRelax) {
+                    this.addSubworkflow(vcRelax, true);
+                }
             }
         }
     };

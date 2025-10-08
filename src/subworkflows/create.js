@@ -1,16 +1,16 @@
-import ApplicationRegistry from "@exabyte-io/ade.js/dist/js/ApplicationRegistry";
+import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
 import {
     default_methods as MethodConfigs,
     default_models as ModelConfigs,
     MethodFactory,
     ModelFactory,
-} from "@exabyte-io/mode.js";
+} from "@mat3ra/mode";
+import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import _ from "lodash";
 
 import { UnitFactory } from "../units";
 import { builders } from "../units/builders";
 import { applyConfig } from "../utils";
-import { workflowData as allWorkflowData } from "../workflows/workflows";
 import { dynamicSubworkflowsByApp, getSurfaceEnergySubworkflowUnits } from "./dynamic";
 import { Subworkflow } from "./subworkflow";
 
@@ -179,11 +179,17 @@ function createSubworkflow({
  * @summary Convenience wrapper around createSubworkflow to create by app name and swf name
  * @param appName {String} application name
  * @param swfName {String} subworkflow name (snake_case.yml)
+ * @param workflowSubworkflowMapByApplication {Object} object containing all workflow/subworkflow map by application
  * @param swArgs {Object} classes for instantiation
  * @returns {*} subworkflow object
  */
-function createSubworkflowByName({ appName, swfName, ...swArgs }) {
-    const { subworkflows } = allWorkflowData;
+function createSubworkflowByName({
+    appName,
+    swfName,
+    workflowSubworkflowMapByApplication = workflowSubforkflowMapByApplication,
+    ...swArgs
+}) {
+    const { subworkflows } = workflowSubworkflowMapByApplication;
     const { [appName]: allSubworkflowData } = subworkflows;
     const { [swfName]: subworkflowData } = allSubworkflowData;
     return createSubworkflow({

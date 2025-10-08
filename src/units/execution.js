@@ -1,11 +1,6 @@
-import { Template } from "@exabyte-io/ade.js";
-import ApplicationRegistry from "@exabyte-io/ade.js/dist/js/ApplicationRegistry";
-import {
-    calculateHashFromObject,
-    removeCommentsFromSourceCode,
-    removeEmptyLinesFromString,
-    removeTimestampableKeysFromConfig,
-} from "@mat3ra/code/dist/js/utils";
+import { Template } from "@mat3ra/ade";
+import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
+import { Utils } from "@mat3ra/utils";
 import _ from "underscore";
 
 import { BaseUnit } from "./base";
@@ -87,9 +82,11 @@ export class ExecutionUnit extends BaseUnit {
      */
     get hashFromArrayInputContent() {
         const objectForHashing = this._getInput().map((i) => {
-            return removeEmptyLinesFromString(removeCommentsFromSourceCode(i.content));
+            return Utils.str.removeEmptyLinesFromString(
+                Utils.str.removeCommentsFromSourceCode(i.content),
+            );
         });
-        return calculateHashFromObject(objectForHashing);
+        return Utils.hash.calculateHashFromObject(objectForHashing);
     }
 
     get name() {
@@ -242,9 +239,11 @@ export class ExecutionUnit extends BaseUnit {
     getHashObject() {
         return {
             ...super.getHashObject(),
-            application: removeTimestampableKeysFromConfig(this.application.toJSON()),
-            executable: removeTimestampableKeysFromConfig(this.executable.toJSON()),
-            flavor: removeTimestampableKeysFromConfig(this.flavor.toJSON()),
+            application: Utils.specific.removeTimestampableKeysFromConfig(
+                this.application.toJSON(),
+            ),
+            executable: Utils.specific.removeTimestampableKeysFromConfig(this.executable.toJSON()),
+            flavor: Utils.specific.removeTimestampableKeysFromConfig(this.flavor.toJSON()),
             input: this.hashFromArrayInputContent,
         };
     }
