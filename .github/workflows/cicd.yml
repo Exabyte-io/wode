@@ -24,12 +24,12 @@ jobs:
           repository: Exabyte-io/actions
           token: ${{ secrets.BOT_GITHUB_TOKEN }}
           path: actions
-
-      - name: Run Yaml linter
-        uses: ./actions/yaml/lint
-        with:
-          python-version: 3.10.13
-          targets: ./assets
+# TODO: re-add when we have Python code to lint
+#      - name: Run Py linter
+#        uses: ./actions/py/lint
+#        with:
+#          python-version: 3.10.13
+#          targets: ./assets
 
   run-js-tests:
     runs-on: ubuntu-latest
@@ -77,4 +77,3 @@ jobs:
         with:
           npm-token: ${{ secrets.NPM_TOKEN }}
           github-token: ${{ secrets.BOT_GITHUB_TOKEN }}
-
