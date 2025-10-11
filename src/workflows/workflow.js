@@ -39,9 +39,7 @@ export class Workflow extends BaseWorkflow {
         _MapUnit = MapUnit,
     ) {
         if (!config._id) config._id = Workflow.generateWorkflowId(config.name);
-
         super(config);
-
         this._Subworkflow = _Subworkflow;
         this._UnitFactory = _UnitFactory;
         this._Workflow = _Workflow;
