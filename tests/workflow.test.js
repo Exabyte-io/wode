@@ -5,8 +5,8 @@ import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from ".
 import { createWorkflow } from "../src/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
-const EXPECTED_WORKFLOW_ID = "6e937035-b03b-5b2c-a2ba-28f1f49d4a3d";
-const EXPECTED_SUBWORKFLOW_ID = "a27b9ca8-5618-528e-8f40-37c27883984f";
+const EXPECTED_WORKFLOW_ID = "512cb2cc-5cca-52c7-9dd9-1d2b57196188";
+const EXPECTED_SUBWORKFLOW_ID = "82673aa1-c4d7-5b2c-b216-7579760fdfaf";
 const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
 
 describe("workflows", () => {
@@ -103,8 +103,7 @@ describe("workflows", () => {
 });
 
 describe("workflow property", () => {
-    // TODO: unskip when all WFs are added to Standata
-    it.skip("isMultiMaterial is read correctly", () => {
+    it("isMultiMaterial is read correctly", () => {
         // Nudged Elastic Band is multi-material
         const mmWorkflow = createWorkflow({
             appName: "espresso",
