@@ -92,9 +92,10 @@ export class Subworkflow extends BaseSubworkflow {
         Cls = Subworkflow,
     ) {
         const idName = config.attributes?.name || name;
+        const { functions, attributes, ...cleanConfig } = config;
 
         return new Cls({
-            ...config,
+            ...cleanConfig,
             _id: Cls.generateSubworkflowId(idName),
             name,
             application: application.toJSON(),
