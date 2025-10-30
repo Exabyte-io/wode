@@ -249,7 +249,7 @@ export class ExecutionUnit extends BaseUnit {
     }
 
     toJSON() {
-        return this.clean({
+        const json = this.clean({
             ...super.toJSON(),
             executable: this.executable.toJSON(),
             flavor: this.flavor.toJSON(),
@@ -259,5 +259,10 @@ export class ExecutionUnit extends BaseUnit {
             // TODO: figure out the problem with storing context below
             // context: this.storedContext,
         });
+
+        // Remove results from executable
+        if (json.executable?.results) delete json.executable.results;
+
+        return json;
     }
 }
