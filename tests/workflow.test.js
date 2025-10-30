@@ -5,8 +5,8 @@ import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from ".
 import { createWorkflow } from "../src/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
-const EXPECTED_WORKFLOW_ID = "512cb2cc-5cca-52c7-9dd9-1d2b57196188";
-const EXPECTED_SUBWORKFLOW_ID = "82673aa1-c4d7-5b2c-b216-7579760fdfaf";
+const EXPECTED_WORKFLOW_ID = "464ccdc8-bc26-5fae-813c-ee73fe639101";
+const EXPECTED_SUBWORKFLOW_ID = "233bb8cf-3b4a-5378-84d9-a6a95a2ab43d";
 const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
 
 describe("workflows", () => {
