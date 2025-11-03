@@ -5,7 +5,7 @@ import {
     MethodFactory,
     ModelFactory,
 } from "@mat3ra/mode";
-import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
+import { ApplicationMethodStandata, workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import _ from "lodash";
 
 import { UnitFactory } from "../units";
@@ -40,12 +40,19 @@ function createModel({ config, modelFactoryCls }) {
  * @summary Create method from subworkflow data
  * @param config {Object} method configuration
  * @param methodFactoryCls {any}
+ * @param applicationConfig {Object} application configuration
  * @returns {{method, setSearchText}}
  */
-function createMethod({ config, methodFactoryCls }) {
+function createMethod({ config, methodFactoryCls, applicationConfig = {} }) {
     const { name, setSearchText = null, config: methodConfig = {} } = config;
     const defaultConfig = _getConfigFromModelOrMethodName(name, "Method");
-    const method = methodFactoryCls.create({ ...defaultConfig, ...methodConfig });
+    const defaultConfigForApp =
+        new ApplicationMethodStandata().getDefaultMethodConfigForApplication(applicationConfig);
+    const method = methodFactoryCls.create({
+        ...defaultConfig,
+        ...defaultConfigForApp,
+        ...methodConfig,
+    });
     return { method, setSearchText };
 }
 
@@ -61,7 +68,11 @@ function createTopLevel({ subworkflowData, modelFactoryCls, methodFactoryCls, Ap
     const { application: appConfig, model: modelConfig, method: methodConfig } = subworkflowData;
     const application = AppRegistry.createApplication(appConfig);
     const model = createModel({ config: modelConfig, modelFactoryCls });
-    const { method, setSearchText } = createMethod({ config: methodConfig, methodFactoryCls });
+    const { method, setSearchText } = createMethod({
+        config: methodConfig,
+        methodFactoryCls,
+        applicationConfig: appConfig,
+    });
     return {
         application,
         model,
@@ -168,8 +179,8 @@ function createSubworkflow({
         });
     }
 
-    const { functions = {}, attributes = {}, ...cfg } = config;
-    let subworkflow = subworkflowCls.fromArguments(application, model, method, name, units, cfg);
+    let subworkflow = subworkflowCls.fromArguments(application, model, method, name, units, config);
+    const { functions = {}, attributes = {} } = config;
     subworkflow = applyConfig({ obj: subworkflow, config: { functions, attributes } });
     if (setSearchText) subworkflow.model.method.setSearchText(setSearchText);
     return subworkflow;

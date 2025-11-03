@@ -8,6 +8,7 @@ export const RelaxationLogicMixin = (superclass) =>
             const subworkflowStandata = new SubworkflowStandata();
             const relaxationSubworkflow =
                 subworkflowStandata.getRelaxationSubworkflowByApplication(appName);
+            if (!relaxationSubworkflow) return undefined;
             return new this._Subworkflow(relaxationSubworkflow);
         }
 

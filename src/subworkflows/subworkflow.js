@@ -91,9 +91,12 @@ export class Subworkflow extends BaseSubworkflow {
         config = {},
         Cls = Subworkflow,
     ) {
+        const nameForIdGeneration = config.attributes?.name || name;
+        const { functions, attributes, ...cleanConfig } = config;
+
         return new Cls({
-            ...config,
-            _id: Cls.generateSubworkflowId(name),
+            ...cleanConfig,
+            _id: Cls.generateSubworkflowId(nameForIdGeneration),
             name,
             application: application.toJSON(),
             properties: lodash.sortedUniq(
