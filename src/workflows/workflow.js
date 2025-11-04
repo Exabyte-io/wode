@@ -38,7 +38,14 @@ export class Workflow extends BaseWorkflow {
         _Workflow = Workflow,
         _MapUnit = MapUnit,
     ) {
-        if (!config._id) config._id = Workflow.generateWorkflowId(config.name);
+        if (!config._id) {
+            config._id = Workflow.generateWorkflowId(
+                config.name,
+                config.properties,
+                config.subworkflows,
+                config.applicationName,
+            );
+        }
         super(config);
         this._Subworkflow = _Subworkflow;
         this._UnitFactory = _UnitFactory;
@@ -59,9 +66,20 @@ export class Workflow extends BaseWorkflow {
         return defaultWorkflowConfig;
     }
 
-    static generateWorkflowId(...args) {
-        args[0] = `workflow-${args[0]}`;
-        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+    static generateWorkflowId(
+        name,
+        properties = null,
+        subworkflows = null,
+        applicationName = null,
+    ) {
+        const propsInfo = properties?.length ? properties.sort().join(",") : "";
+        const swInfo = subworkflows?.length
+            ? subworkflows.map((sw) => sw.name || "unknown").join(",")
+            : "";
+        const seed = [`workflow-${name}`, applicationName, propsInfo, swInfo]
+            .filter((p) => p)
+            .join("-");
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(seed);
         return Utils.uuid.getUUID();
     }
 
@@ -71,6 +89,7 @@ export class Workflow extends BaseWorkflow {
             subworkflows: [subworkflow.toJSON()],
             units: setNextLinks(setUnitsHead([subworkflow.getAsUnit().toJSON()])),
             properties: subworkflow.properties,
+            applicationName: subworkflow.application.name,
         };
         return new ClsConstructor(config);
     }
@@ -292,7 +311,12 @@ export class Workflow extends BaseWorkflow {
                 const workflowConfig = defaultWorkflowConfig;
                 // eslint-disable-next-line no-case-declarations
                 const mapUnit = new this._MapUnit();
-                workflowConfig._id = this._Workflow.generateWorkflowId(workflowConfig.name);
+                workflowConfig._id = this._Workflow.generateWorkflowId(
+                    workflowConfig.name,
+                    workflowConfig.properties,
+                    workflowConfig.subworkflows,
+                    this.applicationName,
+                );
                 this.prop("workflows").push(workflowConfig);
                 this._workflows = this.prop("workflows").map((x) => new this._Workflow(x));
                 mapUnit.setWorkflowId(workflowConfig._id);
@@ -308,8 +332,14 @@ export class Workflow extends BaseWorkflow {
 
     addMapUnit(mapUnit, mapWorkflow) {
         const mapWorkflowConfig = mapWorkflow.toJSON();
-        if (!mapWorkflowConfig._id)
-            mapWorkflowConfig._id = this._Workflow.generateWorkflowId(mapWorkflowConfig.name);
+        if (!mapWorkflowConfig._id) {
+            mapWorkflowConfig._id = this._Workflow.generateWorkflowId(
+                mapWorkflowConfig.name,
+                mapWorkflowConfig.properties,
+                mapWorkflowConfig.subworkflows,
+                mapWorkflow.applicationName || this.applicationName,
+            );
+        }
         mapUnit.setWorkflowId(mapWorkflowConfig._id);
         this.addUnit(mapUnit);
         this._json.workflows.push(mapWorkflowConfig);

@@ -50,9 +50,18 @@ export class Subworkflow extends BaseSubworkflow {
         );
     }
 
-    static generateSubworkflowId(...args) {
-        args[0] = `subworkflow-${args[0]}`;
-        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+    static generateSubworkflowId(name, application = null, model = null, method = null) {
+        const appName = application ? application.name || application : "";
+        const modelInfo = model
+            ? `${(model.toJSON?.() || model).type}-${(model.toJSON?.() || model).subtype || ""}`
+            : "";
+        const methodInfo = method
+            ? `${(method.toJSON?.() || method).type}-${(method.toJSON?.() || method).subtype || ""}`
+            : "";
+        const seed = [`subworkflow-${name}`, appName, modelInfo, methodInfo]
+            .filter((p) => p)
+            .join("-");
+        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(seed);
         return Utils.uuid.getUUID();
     }
 
@@ -96,7 +105,7 @@ export class Subworkflow extends BaseSubworkflow {
 
         return new Cls({
             ...cleanConfig,
-            _id: Cls.generateSubworkflowId(nameForIdGeneration),
+            _id: Cls.generateSubworkflowId(nameForIdGeneration, application, model, method),
             name,
             application: application.toJSON(),
             properties: lodash.sortedUniq(
