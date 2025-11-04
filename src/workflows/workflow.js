@@ -42,6 +42,7 @@ export class Workflow extends BaseWorkflow {
             config._id = Workflow.generateWorkflowId(
                 config.name,
                 config.properties,
+                config.subworkflows,
                 config.applicationName,
             );
         }
@@ -88,6 +89,7 @@ export class Workflow extends BaseWorkflow {
             subworkflows: [subworkflow.toJSON()],
             units: setNextLinks(setUnitsHead([subworkflow.getAsUnit().toJSON()])),
             properties: subworkflow.properties,
+            applicationName: subworkflow.application.name,
         };
         return new ClsConstructor(config);
     }
@@ -312,6 +314,7 @@ export class Workflow extends BaseWorkflow {
                 workflowConfig._id = this._Workflow.generateWorkflowId(
                     workflowConfig.name,
                     workflowConfig.properties,
+                    workflowConfig.subworkflows,
                     this.applicationName,
                 );
                 this.prop("workflows").push(workflowConfig);
@@ -333,6 +336,7 @@ export class Workflow extends BaseWorkflow {
             mapWorkflowConfig._id = this._Workflow.generateWorkflowId(
                 mapWorkflowConfig.name,
                 mapWorkflowConfig.properties,
+                mapWorkflowConfig.subworkflows,
                 mapWorkflow.applicationName || this.applicationName,
             );
         }
