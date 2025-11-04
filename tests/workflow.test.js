@@ -5,7 +5,7 @@ import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from ".
 import { createWorkflow } from "../src/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
-const EXPECTED_WORKFLOW_ID = "464ccdc8-bc26-5fae-813c-ee73fe639101";
+const EXPECTED_WORKFLOW_ID = "cd826954-8c96-59f7-b2de-f36ce2d86105";
 const EXPECTED_SUBWORKFLOW_ID = "233bb8cf-3b4a-5378-84d9-a6a95a2ab43d";
 const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
 
@@ -99,6 +99,23 @@ describe("workflows", () => {
             UnitFactory.MapUnit.usePredefinedIds = false;
             UnitFactory.ProcessingUnit.usePredefinedIds = false;
         }
+    });
+
+    it("generates non-colliding predefined IDs", () => {
+        Workflow.usePredefinedIds = true;
+        const workflow1 = createWorkflow({
+            appName: "espresso",
+            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowCls: Workflow,
+        });
+        const workflow2 = createWorkflow({
+            appName: "vasp",
+            workflowData: workflowSubforkflowMapByApplication.workflows.vasp.total_energy,
+            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowCls: Workflow,
+        });
+        expect(workflow1._id).to.not.equal(workflow2._id);
     });
 });
 
