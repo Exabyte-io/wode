@@ -104,7 +104,6 @@ export class Subworkflow extends BaseSubworkflow {
         const { functions, attributes, ...cleanConfig } = config;
 
         // Set the method on the model so it can be properly serialized
-        model.setProp("method", method.toJSON());
         model.setMethod(method);
 
         return new Cls({
@@ -115,7 +114,10 @@ export class Subworkflow extends BaseSubworkflow {
             properties: lodash.sortedUniq(
                 lodash.flatten(units.filter((x) => x.resultNames).map((x) => x.resultNames)),
             ),
-            model: model.toJSON(),
+            model: {
+                ...model.toJSON(),
+                method: method.toJSON(),
+            },
             units: units.map((unit) => (unit.toJSON ? unit.toJSON() : unit)),
         });
     }
