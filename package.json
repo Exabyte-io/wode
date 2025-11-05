@@ -51,7 +51,7 @@
         "@mat3ra/ade": "^2025.10.2-2",
         "@exabyte-io/eslint-config": "2025.5.13-0",
         "@exabyte-io/ide.js": "2024.3.26-0",
-        "@mat3ra/mode": "2025.11.5-0",
+        "@mat3ra/mode": "2025.11.5-1",
         "@mat3ra/utils": "2025.9.20-0",
         "@mat3ra/code": "2025.7.15-0",
         "@mat3ra/esse": "2025.7.15-0",
