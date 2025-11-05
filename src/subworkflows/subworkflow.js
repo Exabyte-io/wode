@@ -103,6 +103,9 @@ export class Subworkflow extends BaseSubworkflow {
         const nameForIdGeneration = config.attributes?.name || name;
         const { functions, attributes, ...cleanConfig } = config;
 
+        // Set the method on the model so it can be properly serialized
+        model.setMethod(method);
+
         return new Cls({
             ...cleanConfig,
             _id: Cls.generateSubworkflowId(nameForIdGeneration, application, model, method),
