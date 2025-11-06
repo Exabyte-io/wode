@@ -226,7 +226,7 @@ export class Subworkflow extends BaseSubworkflow {
         const ctx = {
             ...context,
             application: this.application,
-            methodData: this.model.method.data,
+            methodData: this.model.Method.data,
             model: this.model.toJSON(),
             // context below is assembled from context providers and passed to units to override theirs
             ...this.context,
@@ -305,7 +305,7 @@ export class Subworkflow extends BaseSubworkflow {
     }
 
     get methodData() {
-        return this.model.method.data;
+        return this.model.Method.data;
     }
 
     /**
@@ -325,7 +325,7 @@ export class Subworkflow extends BaseSubworkflow {
     _calculateModelHash() {
         const { model } = this.toJSON();
         // ignore empty data object
-        if (this.model.method.omitInHashCalculation) delete model.method.data;
+        if (this.model.Method.omitInHashCalculation) delete model.method.data;
         return Utils.hash.calculateHashFromObject(model);
     }
 
