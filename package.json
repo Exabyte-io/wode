@@ -3,23 +3,23 @@
     "version": "0.0.0",
     "description": "WOrkflow DEfinitions",
     "scripts": {
-        "test": "nyc --reporter=text mocha --recursive --bail --require @babel/register/lib --require tests/setup.js tests",
-        "lint": "eslint src tests && prettier --write src tests",
-        "lint:fix": "eslint --fix --cache src tests && prettier --write src tests",
-        "transpile": "babel --out-dir dist src",
+        "test": "nyc --reporter=text mocha --recursive --bail --require @babel/register/lib --require tests/js/setup.js tests/js",
+        "lint": "eslint src/js tests/js && prettier --write src/js tests/js",
+        "lint:fix": "eslint --fix --cache src/js tests/js && prettier --write src/js tests/js",
+        "transpile": "babel --out-dir dist src/js",
         "postinstall": "npm run transpile",
-        "prettier": "prettier --check src tests",
+        "prettier": "prettier --check src/js tests/js",
         "prepare": "husky install || exit 0"
     },
     "repository": {
         "type": "git",
         "url": "https://github.com/Exabyte-io/wode.git"
     },
-    "main": "dist/index.js",
+    "main": "dist/js/index.js",
     "files": [
         "/assets",
         "/dist",
-        "/src",
+        "/src/js",
         ".babelrc",
         "build_workflows.js"
     ],
@@ -88,7 +88,7 @@
         "node": ">=20.0.0"
     },
     "lint-staged": {
-        "*.js": "eslint --cache --fix",
-        "*.{js,css}": "prettier --write"
+        "src/js/**/*.js": ["eslint --cache --fix", "prettier --write"],
+        "tests/js/**/*.js": ["eslint --cache --fix", "prettier --write"]
     }
 }

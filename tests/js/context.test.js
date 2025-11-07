@@ -2,9 +2,9 @@
 import ContextProvider from "@mat3ra/ade/dist/js/context/ContextProvider";
 import { expect } from "chai";
 
-import { applicationContextMixin } from "../src/context/mixins/ApplicationContextMixin";
-import { materialContextMixin } from "../src/context/mixins/MaterialContextMixin";
-import { globalSettings } from "../src/context/providers/settings";
+import { applicationContextMixin } from "../../src/js/context/mixins/ApplicationContextMixin";
+import { materialContextMixin } from "../../src/js/context/mixins/MaterialContextMixin";
+import { globalSettings } from "../../src/js/context/providers/settings";
 
 class MockMaterial {
     static createDefault() {
