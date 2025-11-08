@@ -54,9 +54,6 @@ git_describe_command = "git describe --tags --long"
 [tool.setuptools.packages.find]
 where = ["src/py"]
 
-[tool.setuptools.package-data]
-"*" = ["py.typed"]
-
 [tool.black]
 line-length = 120
 target-version = ['py310']
