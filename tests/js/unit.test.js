@@ -1,11 +1,11 @@
 import { Application } from "@mat3ra/ade";
 import { expect } from "chai";
 
-import { createUnit } from "../src/subworkflows/create";
-import { AssignmentUnit, BaseUnit, ExecutionUnit } from "../src/units";
-import { builders } from "../src/units/builders";
-import { UnitFactory } from "../src/units/factory";
-import { createWorkflows } from "../src/workflows";
+import { createUnit } from "../../src/js/subworkflows/create";
+import { AssignmentUnit, BaseUnit, ExecutionUnit } from "../../src/js/units";
+import { builders } from "../../src/js/units/builders";
+import { UnitFactory } from "../../src/js/units/factory";
+import { createWorkflows } from "../../src/js/workflows";
 
 describe("units", () => {
     it("can be cloned with new flowchartId", () => {

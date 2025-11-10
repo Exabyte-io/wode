@@ -2,8 +2,8 @@ import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
 import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
-import { createSubworkflowByName, Subworkflow } from "../src/subworkflows";
-import { AssignmentUnit, ConditionUnit } from "../src/units";
+import { createSubworkflowByName, Subworkflow } from "../../src/js/subworkflows";
+import { AssignmentUnit, ConditionUnit } from "../../src/js/units";
 
 const assignmentUnitData = {
     type: "assignment",

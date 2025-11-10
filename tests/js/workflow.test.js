@@ -1,8 +1,8 @@
 import { WorkflowStandata, workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
-import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from "../src";
-import { createWorkflow } from "../src/workflows/create";
+import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from "../../src/js";
+import { createWorkflow } from "../../src/js/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
 const EXPECTED_WORKFLOW_ID = "cd826954-8c96-59f7-b2de-f36ce2d86105";
