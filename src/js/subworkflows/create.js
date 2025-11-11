@@ -48,7 +48,7 @@ function createMethod({ config, methodFactoryCls, applicationConfig = {} }) {
     const { name, setSearchText = null, config: methodConfig = {} } = config;
     const defaultConfig = _getConfigFromModelOrMethodName(name, "Method");
     const defaultConfigForApp = new ApplicationMethodStandata(
-        MethodConversionHandler.convertToSimple,
+        MethodConversionHandler.convertToSimple.bind(MethodConversionHandler),
     ).getDefaultMethodConfigForApplication(applicationConfig);
     const method = methodFactoryCls.create({
         ...defaultConfig,
