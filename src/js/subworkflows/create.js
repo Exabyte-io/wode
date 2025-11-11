@@ -2,6 +2,7 @@ import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
 import {
     default_methods as MethodConfigs,
     default_models as ModelConfigs,
+    MethodConversionHandler,
     MethodFactory,
     ModelFactory,
 } from "@mat3ra/mode";
@@ -47,7 +48,10 @@ function createMethod({ config, methodFactoryCls, applicationConfig = {} }) {
     const { name, setSearchText = null, config: methodConfig = {} } = config;
     const defaultConfig = _getConfigFromModelOrMethodName(name, "Method");
     const defaultConfigForApp =
-        new ApplicationMethodStandata().getDefaultMethodConfigForApplication(applicationConfig);
+        new ApplicationMethodStandata().getDefaultMethodConfigForApplication(
+            applicationConfig,
+            MethodConversionHandler,
+        );
     const method = methodFactoryCls.create({
         ...defaultConfig,
         ...defaultConfigForApp,

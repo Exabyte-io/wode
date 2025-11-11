@@ -56,7 +56,7 @@
         "@mat3ra/code": "2025.10.24-0",
         "@mat3ra/esse": "2025.10.8-0",
         "@mat3ra/made": "2025.7.15-0",
-        "@mat3ra/standata": "2025.11.4-0",
+        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#1d09833663b579b13927c247e327bd7716c8a01e",
         "chai": "^4.3.4",
         "eslint": "7.32.0",
         "eslint-config-airbnb": "19.0.2",
