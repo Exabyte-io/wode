@@ -47,11 +47,12 @@ function createModel({ config, modelFactoryCls }) {
 function createMethod({ config, methodFactoryCls, applicationConfig = {} }) {
     const { name, setSearchText = null, config: methodConfig = {} } = config;
     const defaultConfig = _getConfigFromModelOrMethodName(name, "Method");
-    const defaultConfigForAppCategorized =
+    const defaultConfigForApp =
         new ApplicationMethodStandata().getDefaultMethodConfigForApplication(applicationConfig);
-    const defaultConfigForAppSimple = MethodConversionHandler.convertToSimple(
-        defaultConfigForAppCategorized,
-    );
+    const defaultConfigForAppSimple =
+        defaultConfigForApp && defaultConfigForApp.units
+            ? MethodConversionHandler.convertToSimple(defaultConfigForApp)
+            : defaultConfigForApp;
     const method = methodFactoryCls.create({
         ...defaultConfig,
         ...defaultConfigForAppSimple,
