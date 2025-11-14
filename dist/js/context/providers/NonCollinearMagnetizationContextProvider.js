@@ -4,11 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.NonCollinearMagnetizationContextProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
+var _ade = require("@mat3ra/ade");
 var _lodash = _interopRequireDefault(require("lodash"));
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-class NonCollinearMagnetizationContextProvider extends _JSONSchemaFormDataProvider.default {
+class NonCollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
     this.initMaterialContextMixin();

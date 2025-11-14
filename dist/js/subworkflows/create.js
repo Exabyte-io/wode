@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.createSubworkflow = createSubworkflow;
 exports.createSubworkflowByName = createSubworkflowByName;
 exports.createUnit = createUnit;
-var _ApplicationRegistry = _interopRequireDefault(require("@mat3ra/ade/dist/js/ApplicationRegistry"));
+var _ade = require("@mat3ra/ade");
 var _mode = require("@mat3ra/mode");
 var _standata = require("@mat3ra/standata");
 var _lodash = _interopRequireDefault(require("lodash"));
@@ -202,7 +202,7 @@ function createDynamicUnits({
 }
 function createSubworkflow({
   subworkflowData,
-  AppRegistry = _ApplicationRegistry.default,
+  AppRegistry = _ade.ApplicationRegistry,
   modelFactoryCls = _mode.ModelFactory,
   methodFactoryCls = _mode.MethodFactory,
   subworkflowCls = _subworkflow.Subworkflow,

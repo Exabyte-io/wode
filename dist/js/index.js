@@ -45,6 +45,12 @@ Object.defineProperty(exports, "createSubworkflowByName", {
     return _subworkflows.createSubworkflowByName;
   }
 });
+Object.defineProperty(exports, "createWorkflow", {
+  enumerable: true,
+  get: function () {
+    return _workflows.createWorkflow;
+  }
+});
 Object.defineProperty(exports, "createWorkflowConfigs", {
   enumerable: true,
   get: function () {

@@ -4,9 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _ContextProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/ContextProvider"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-class ExecutableContextProvider extends _ContextProvider.default {
+var _ade = require("@mat3ra/ade");
+class ExecutableContextProvider extends _ade.ContextProvider {
   constructor(config) {
     super({
       ...config,

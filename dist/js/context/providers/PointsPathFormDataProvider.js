@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PointsPathFormDataProvider = exports.ExplicitPointsPathFormDataProvider = exports.ExplicitPointsPath2PIBAFormDataProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
+var _ade = require("@mat3ra/ade");
 var _math = require("@mat3ra/code/dist/js/math");
 var _made = require("@mat3ra/made");
 var _underscore = _interopRequireDefault(require("underscore.string"));
@@ -16,7 +16,7 @@ function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e
 
 const defaultPoint = "Г";
 const defaultSteps = 10;
-class PointsPathFormDataProvider extends _JSONSchemaFormDataProvider.default {
+class PointsPathFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
     this.initMaterialContextMixin();

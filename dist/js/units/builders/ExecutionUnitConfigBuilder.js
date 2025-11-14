@@ -4,10 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.ExecutionUnitConfigBuilder = void 0;
-var _ApplicationRegistry = _interopRequireDefault(require("@mat3ra/ade/dist/js/ApplicationRegistry"));
+var _ade = require("@mat3ra/ade");
 var _enums = require("../../enums");
 var _UnitConfigBuilder = require("./UnitConfigBuilder");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /* eslint-disable class-methods-use-this */
 
 class ExecutionUnitConfigBuilder extends _UnitConfigBuilder.UnitConfigBuilder {
@@ -51,7 +50,7 @@ class ExecutionUnitConfigBuilder extends _UnitConfigBuilder.UnitConfigBuilder {
    * @returns {Executable} The created executable instance
    */
   _createExecutable(application, execName) {
-    return _ApplicationRegistry.default.getExecutableByName(application.name, execName);
+    return _ade.ApplicationRegistry.getExecutableByName(application.name, execName);
   }
 
   /**
@@ -61,7 +60,7 @@ class ExecutionUnitConfigBuilder extends _UnitConfigBuilder.UnitConfigBuilder {
    * @returns {Flavor} The created flavor instance
    */
   _createFlavor(executable, flavorName) {
-    return _ApplicationRegistry.default.getFlavorByName(executable, flavorName);
+    return _ade.ApplicationRegistry.getFlavorByName(executable, flavorName);
   }
 }
 exports.ExecutionUnitConfigBuilder = ExecutionUnitConfigBuilder;

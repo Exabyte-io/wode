@@ -4,12 +4,11 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.BoundaryConditionsFormDataProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
+var _ade = require("@mat3ra/ade");
 var _made = require("@mat3ra/made");
 var _utils = require("@mat3ra/utils");
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-class BoundaryConditionsFormDataProvider extends _JSONSchemaFormDataProvider.default {
+class BoundaryConditionsFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
     this.initMaterialContextMixin();

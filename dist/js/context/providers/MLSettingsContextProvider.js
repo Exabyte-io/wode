@@ -4,10 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.MLSettingsContextProvider = void 0;
-var _ContextProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/ContextProvider"));
+var _ade = require("@mat3ra/ade");
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-class MLSettingsContextProvider extends _ContextProvider.default {
+class MLSettingsContextProvider extends _ade.ContextProvider {
   constructor(config) {
     super(config);
     this.initApplicationContextMixin();

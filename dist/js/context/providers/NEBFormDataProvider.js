@@ -4,9 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.NEBFormDataProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-class NEBFormDataProvider extends _JSONSchemaFormDataProvider.default {
+var _ade = require("@mat3ra/ade");
+class NEBFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   // eslint-disable-next-line class-methods-use-this
   get defaultData() {
     return {

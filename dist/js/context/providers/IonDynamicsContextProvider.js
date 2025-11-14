@@ -4,15 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.IonDynamicsContextProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+var _ade = require("@mat3ra/ade");
 const defaultMDConfig = {
   numberOfSteps: 100,
   timeStep: 5.0,
   electronMass: 100.0,
   temperature: 300.0
 };
-class IonDynamicsContextProvider extends _JSONSchemaFormDataProvider.default {
+class IonDynamicsContextProvider extends _ade.JSONSchemaFormDataProvider {
   // eslint-disable-next-line class-methods-use-this
   get defaultData() {
     return defaultMDConfig;

@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.ExecutionUnit = void 0;
 var _ade = require("@mat3ra/ade");
-var _ApplicationRegistry = _interopRequireDefault(require("@mat3ra/ade/dist/js/ApplicationRegistry"));
 var _utils = require("@mat3ra/utils");
 var _underscore = _interopRequireDefault(require("underscore"));
 var _base = require("./base");
@@ -18,9 +17,9 @@ class ExecutionUnit extends _base.BaseUnit {
    * @override this method to provide entities from other sources
    */
   _initApplication(config) {
-    this._application = _ApplicationRegistry.default.createApplication(config.application);
-    this._executable = _ApplicationRegistry.default.getExecutableByConfig(this._application.name, config.executable);
-    this._flavor = _ApplicationRegistry.default.getFlavorByConfig(this._executable, config.flavor);
+    this._application = _ade.ApplicationRegistry.createApplication(config.application);
+    this._executable = _ade.ApplicationRegistry.getExecutableByConfig(this._application.name, config.executable);
+    this._flavor = _ade.ApplicationRegistry.getFlavorByConfig(this._executable, config.flavor);
     this._templates = this._flavor ? this._flavor.inputAsTemplates : [];
   }
 
@@ -28,14 +27,14 @@ class ExecutionUnit extends _base.BaseUnit {
    * @override this method to provide default executable from other source
    */
   _getDefaultExecutable() {
-    return _ApplicationRegistry.default.getExecutableByName(this.application.name);
+    return _ade.ApplicationRegistry.getExecutableByName(this.application.name);
   }
 
   /**
    * @override this method to provide default flavor from other source
    */
   _getDefaultFlavor() {
-    return _ApplicationRegistry.default.getFlavorByName(this.executable.name);
+    return _ade.ApplicationRegistry.getFlavorByName(this.executable.name);
   }
 
   /**
@@ -49,14 +48,14 @@ class ExecutionUnit extends _base.BaseUnit {
    * @override this method to provide custom input from other sources
    */
   _getInput() {
-    return this.input || _ApplicationRegistry.default.getInputAsRenderedTemplates(this.flavor, this.getCombinedContext()) || [];
+    return this.input || _ade.ApplicationRegistry.getInputAsRenderedTemplates(this.flavor, this.getCombinedContext()) || [];
   }
 
   /**
    * @override this method to provide custom input as templates
    */
   _getInputAsTemplates() {
-    return _ApplicationRegistry.default.getInputAsTemplates(this.flavor);
+    return _ade.ApplicationRegistry.getInputAsTemplates(this.flavor);
   }
   _initRuntimeItems(keys, config) {
     this._initApplication(config);

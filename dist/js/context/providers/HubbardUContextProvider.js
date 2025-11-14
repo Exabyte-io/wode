@@ -4,15 +4,14 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.HubbardUContextProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
+var _ade = require("@mat3ra/ade");
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const defaultHubbardConfig = {
   atomicSpecies: "",
   atomicOrbital: "2p",
   hubbardUValue: 1.0
 };
-class HubbardUContextProvider extends _JSONSchemaFormDataProvider.default {
+class HubbardUContextProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
     this.initMaterialContextMixin();

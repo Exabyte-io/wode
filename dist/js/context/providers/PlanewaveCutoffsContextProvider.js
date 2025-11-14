@@ -4,9 +4,8 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PlanewaveCutoffsContextProvider = void 0;
-var _ContextProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/ContextProvider"));
+var _ade = require("@mat3ra/ade");
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const cutoffConfig = {
   vasp: {},
   // assuming default cutoffs for VASP
@@ -16,7 +15,7 @@ const cutoffConfig = {
     density: 200
   }
 };
-class PlanewaveCutoffsContextProvider extends _ContextProvider.default {
+class PlanewaveCutoffsContextProvider extends _ade.ContextProvider {
   constructor(config) {
     super(config);
     this.initApplicationContextMixin();

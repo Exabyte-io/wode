@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.PointsGridFormDataProvider = void 0;
-var _JSONSchemaFormDataProvider = _interopRequireDefault(require("@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider"));
+var _ade = require("@mat3ra/ade");
 var _constants = require("@mat3ra/code/dist/js/constants");
 var _math = require("@mat3ra/code/dist/js/math");
 var _made = require("@mat3ra/made");
@@ -12,7 +12,7 @@ var _lodash = _interopRequireDefault(require("lodash"));
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
 var _settings = require("./settings");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-class PointsGridFormDataProvider extends _JSONSchemaFormDataProvider.default {
+class PointsGridFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
     this.initMaterialContextMixin();

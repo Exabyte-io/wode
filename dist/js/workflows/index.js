@@ -9,6 +9,12 @@ Object.defineProperty(exports, "Workflow", {
     return _workflow.Workflow;
   }
 });
+Object.defineProperty(exports, "createWorkflow", {
+  enumerable: true,
+  get: function () {
+    return _create.createWorkflow;
+  }
+});
 exports.createWorkflowConfigs = createWorkflowConfigs;
 exports.createWorkflows = createWorkflows;
 var _ade = require("@mat3ra/ade");
