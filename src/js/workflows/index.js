@@ -96,4 +96,4 @@ function createWorkflowConfigs({
     return configs;
 }
 
-export { Workflow, createWorkflows, createWorkflowConfigs };
+export { Workflow, createWorkflows, createWorkflowConfigs, createWorkflow };
