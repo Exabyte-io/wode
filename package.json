@@ -47,9 +47,9 @@
         "v20": "^0.1.0"
     },
     "devDependencies": {
-        "@mat3ra/ade": "^2025.10.2-2",
+        "@mat3ra/ade": "git+https://github.com/Exabyte-io/ade.js.git#34ba9839acef89c167514a13a8708071e1f462b2",
         "@exabyte-io/eslint-config": "2025.5.13-0",
-        "@exabyte-io/ide.js": "2024.3.26-0",
+        "@mat3ra/ide": "git+https://github.com/Exabyte-io/ide.js.git#ed72bee7b847f77c482d4cc678fbdcd78bf7246d",
         "@mat3ra/mode": "2025.11.13-0",
         "@mat3ra/utils": "2025.9.20-0",
         "@mat3ra/code": "2025.10.24-0",
