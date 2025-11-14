@@ -1,5 +1,5 @@
 /* eslint-disable class-methods-use-this */
-import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
+import { ApplicationRegistry } from "@mat3ra/ade";
 
 import { UNIT_TYPES } from "../../enums";
 import { UnitConfigBuilder } from "./UnitConfigBuilder";

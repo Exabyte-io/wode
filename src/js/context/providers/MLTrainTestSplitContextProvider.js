@@ -1,4 +1,4 @@
-import ContextProvider from "@mat3ra/ade/dist/js/context/ContextProvider";
+import { ContextProvider } from "@mat3ra/ade";
 
 import { applicationContextMixin } from "../mixins/ApplicationContextMixin";
 

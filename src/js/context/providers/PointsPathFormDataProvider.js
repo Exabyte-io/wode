@@ -1,6 +1,6 @@
 /* eslint-disable max-classes-per-file */
 /* eslint react/prop-types: 0 */
-import JSONSchemaFormDataProvider from "@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider";
+import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
 import { math as codeJSMath } from "@mat3ra/code/dist/js/math";
 import { Made } from "@mat3ra/made";
 import s from "underscore.string";

@@ -1,4 +1,4 @@
-import JSONSchemaFormDataProvider from "@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider";
+import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
 
 export class NEBFormDataProvider extends JSONSchemaFormDataProvider {
     // eslint-disable-next-line class-methods-use-this

@@ -1,4 +1,4 @@
-import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
+import { ApplicationRegistry } from "@mat3ra/ade";
 import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 

@@ -1,5 +1,4 @@
-import { Template } from "@mat3ra/ade";
-import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
+import { ApplicationRegistry, Template } from "@mat3ra/ade";
 import { Utils } from "@mat3ra/utils";
 import _ from "underscore";
 
