@@ -4,9 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.Workflow = void 0;
-var _ide = require("@exabyte-io/ide.js");
 var _entity = require("@mat3ra/code/dist/js/entity");
 var _workflow = _interopRequireDefault(require("@mat3ra/esse/dist/js/schema/workflow.json"));
+var _ide = require("@mat3ra/ide");
 var _mode = require("@mat3ra/mode");
 var _utils = require("@mat3ra/utils");
 var _lodash = _interopRequireDefault(require("lodash"));
