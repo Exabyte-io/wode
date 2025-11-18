@@ -75,7 +75,7 @@
     },
     "peerDependencies": {
         "@mat3ra/ade": "*",
-        "@exabyte-io/ide.js": "*",
+        "@mat3ra/ide": "*",
         "@mat3ra/mode": "*",
         "@mat3ra/standata": "*",
         "@mat3ra/utils": "*",
