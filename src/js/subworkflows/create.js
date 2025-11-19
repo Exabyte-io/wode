@@ -1,4 +1,4 @@
-import ApplicationRegistry from "@mat3ra/ade/dist/js/ApplicationRegistry";
+import { ApplicationRegistry } from "@mat3ra/ade";
 import {
     default_methods as MethodConfigs,
     default_models as ModelConfigs,

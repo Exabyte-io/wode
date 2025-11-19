@@ -1,4 +1,4 @@
-import JSONSchemaFormDataProvider from "@mat3ra/ade/dist/js/context/JSONSchemaFormDataProvider";
+import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
 
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
