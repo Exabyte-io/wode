@@ -50,12 +50,15 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
     }
 
     get jsonSchema() {
-        return JSONSchemasInterface.getPatchedSchemaById("boundary-conditions-provider", {
-            type: { default: this.defaultData.type },
-            offset: { default: this.defaultData.offset },
-            electricField: { default: this.defaultData.electricField },
-            targetFermiEnergy: { default: this.defaultData.targetFermiEnergy },
-        });
+        return JSONSchemasInterface.getPatchedSchemaById(
+            "context-providers-directory/boundary-conditions-provider",
+            {
+                type: { default: this.defaultData.type },
+                offset: { default: this.defaultData.offset },
+                electricField: { default: this.defaultData.electricField },
+                targetFermiEnergy: { default: this.defaultData.targetFermiEnergy },
+            },
+        );
     }
 }
 
