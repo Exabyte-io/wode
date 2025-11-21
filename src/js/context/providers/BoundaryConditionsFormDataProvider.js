@@ -1,4 +1,5 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+import BoundaryConditionsProviderSchema from "@mat3ra/esse/dist/js/schema/context_providers_directory/boundary_conditions_provider.json";
 import { Made } from "@mat3ra/made";
 import { Utils } from "@mat3ra/utils";
 
@@ -24,6 +25,7 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
         };
     }
 
+    // TODO: MOVE to WA/wove instantiation
     // eslint-disable-next-line class-methods-use-this
     get uiSchema() {
         return {
@@ -47,33 +49,29 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
         return data;
     }
 
+    // eslint-disable-next-line class-methods-use-this
+    getPatchedSchemaWithDefaults(schema, defaults) {
+        const patchedSchema = Utils.clone.deepClone(schema);
+
+        if (!patchedSchema.properties) {
+            return patchedSchema;
+        }
+
+        Object.entries(defaults).forEach(([propertyName, defaultValue]) => {
+            const propertySchema = patchedSchema.properties?.[propertyName];
+            if (propertySchema && typeof propertySchema === "object") {
+                propertySchema.default = defaultValue;
+            }
+        });
+
+        return patchedSchema;
+    }
+
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            type: "object",
-            properties: {
-                type: {
-                    type: "string",
-                    title: "Type",
-                    default: this.defaultData.type,
-                },
-                offset: {
-                    type: "number",
-                    title: "Offset (A)",
-                    default: this.defaultData.offset,
-                },
-                electricField: {
-                    type: "number",
-                    title: "Electric Field (eV/A)",
-                    default: this.defaultData.electricField,
-                },
-                targetFermiEnergy: {
-                    type: "number",
-                    title: "Target Fermi Energy (eV)",
-                    default: this.defaultData.targetFermiEnergy,
-                },
-            },
-        };
+        return this.getPatchedSchemaWithDefaults(
+            BoundaryConditionsProviderSchema,
+            this.defaultData,
+        );
     }
 }
 

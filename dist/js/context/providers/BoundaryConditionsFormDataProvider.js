@@ -5,9 +5,11 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BoundaryConditionsFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _boundary_conditions_provider = _interopRequireDefault(require("@mat3ra/esse/dist/js/schema/context_providers_directory/boundary_conditions_provider.json"));
 var _made = require("@mat3ra/made");
 var _utils = require("@mat3ra/utils");
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class BoundaryConditionsFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
@@ -27,6 +29,7 @@ class BoundaryConditionsFormDataProvider extends _ade.JSONSchemaFormDataProvider
     };
   }
 
+  // TODO: MOVE to WA/wove instantiation
   // eslint-disable-next-line class-methods-use-this
   get uiSchema() {
     return {
@@ -52,33 +55,23 @@ class BoundaryConditionsFormDataProvider extends _ade.JSONSchemaFormDataProvider
     data.boundaryConditions.electricField *= _made.Made.coefficients.EV_A_TO_RY_BOHR;
     return data;
   }
-  get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      type: "object",
-      properties: {
-        type: {
-          type: "string",
-          title: "Type",
-          default: this.defaultData.type
-        },
-        offset: {
-          type: "number",
-          title: "Offset (A)",
-          default: this.defaultData.offset
-        },
-        electricField: {
-          type: "number",
-          title: "Electric Field (eV/A)",
-          default: this.defaultData.electricField
-        },
-        targetFermiEnergy: {
-          type: "number",
-          title: "Target Fermi Energy (eV)",
-          default: this.defaultData.targetFermiEnergy
-        }
+
+  // eslint-disable-next-line class-methods-use-this
+  getPatchedSchemaWithDefaults(schema, defaults) {
+    const patchedSchema = _utils.Utils.clone.deepClone(schema);
+    if (!patchedSchema.properties) {
+      return patchedSchema;
+    }
+    Object.entries(defaults).forEach(([propertyName, defaultValue]) => {
+      const propertySchema = patchedSchema.properties?.[propertyName];
+      if (propertySchema && typeof propertySchema === "object") {
+        propertySchema.default = defaultValue;
       }
-    };
+    });
+    return patchedSchema;
+  }
+  get jsonSchema() {
+    return this.getPatchedSchemaWithDefaults(_boundary_conditions_provider.default, this.defaultData);
   }
 }
 exports.BoundaryConditionsFormDataProvider = BoundaryConditionsFormDataProvider;
