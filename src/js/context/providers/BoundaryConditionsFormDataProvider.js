@@ -1,5 +1,5 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
-import BoundaryConditionsProviderSchema from "@mat3ra/esse/dist/js/schema/context_providers_directory/boundary_conditions_provider.json";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import { Made } from "@mat3ra/made";
 import { Utils } from "@mat3ra/utils";
 
@@ -49,29 +49,13 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
         return data;
     }
 
-    // eslint-disable-next-line class-methods-use-this
-    getPatchedSchemaWithDefaults(schema, defaults) {
-        const patchedSchema = Utils.clone.deepClone(schema);
-
-        if (!patchedSchema.properties) {
-            return patchedSchema;
-        }
-
-        Object.entries(defaults).forEach(([propertyName, defaultValue]) => {
-            const propertySchema = patchedSchema.properties?.[propertyName];
-            if (propertySchema && typeof propertySchema === "object") {
-                propertySchema.default = defaultValue;
-            }
-        });
-
-        return patchedSchema;
-    }
-
     get jsonSchema() {
-        return this.getPatchedSchemaWithDefaults(
-            BoundaryConditionsProviderSchema,
-            this.defaultData,
-        );
+        return JSONSchemasInterface.getPatchedSchemaById("boundary-conditions-provider", {
+            type: { default: this.defaultData.type },
+            offset: { default: this.defaultData.offset },
+            electricField: { default: this.defaultData.electricField },
+            targetFermiEnergy: { default: this.defaultData.targetFermiEnergy },
+        });
     }
 }
 

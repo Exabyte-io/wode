@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.BoundaryConditionsFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
-var _boundary_conditions_provider = _interopRequireDefault(require("@mat3ra/esse/dist/js/schema/context_providers_directory/boundary_conditions_provider.json"));
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _made = require("@mat3ra/made");
 var _utils = require("@mat3ra/utils");
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
@@ -55,23 +55,21 @@ class BoundaryConditionsFormDataProvider extends _ade.JSONSchemaFormDataProvider
     data.boundaryConditions.electricField *= _made.Made.coefficients.EV_A_TO_RY_BOHR;
     return data;
   }
-
-  // eslint-disable-next-line class-methods-use-this
-  getPatchedSchemaWithDefaults(schema, defaults) {
-    const patchedSchema = _utils.Utils.clone.deepClone(schema);
-    if (!patchedSchema.properties) {
-      return patchedSchema;
-    }
-    Object.entries(defaults).forEach(([propertyName, defaultValue]) => {
-      const propertySchema = patchedSchema.properties?.[propertyName];
-      if (propertySchema && typeof propertySchema === "object") {
-        propertySchema.default = defaultValue;
+  get jsonSchema() {
+    return _JSONSchemasInterface.default.getPatchedSchemaById("boundary-conditions-provider", {
+      type: {
+        default: this.defaultData.type
+      },
+      offset: {
+        default: this.defaultData.offset
+      },
+      electricField: {
+        default: this.defaultData.electricField
+      },
+      targetFermiEnergy: {
+        default: this.defaultData.targetFermiEnergy
       }
     });
-    return patchedSchema;
-  }
-  get jsonSchema() {
-    return this.getPatchedSchemaWithDefaults(_boundary_conditions_provider.default, this.defaultData);
   }
 }
 exports.BoundaryConditionsFormDataProvider = BoundaryConditionsFormDataProvider;
