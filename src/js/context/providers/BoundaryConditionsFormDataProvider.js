@@ -51,7 +51,7 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/boundary-conditions-provider",
+            "context-providers-directory/boundary-conditions-data-provider",
             {
                 type: { default: this.defaultData.type },
                 offset: { default: this.defaultData.offset },

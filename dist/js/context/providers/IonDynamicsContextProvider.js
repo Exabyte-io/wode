@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.IonDynamicsContextProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const defaultMDConfig = {
   numberOfSteps: 100,
   timeStep: 5.0,
@@ -29,33 +31,20 @@ class IonDynamicsContextProvider extends _ade.JSONSchemaFormDataProvider {
 
   // eslint-disable-next-line class-methods-use-this
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      type: "object",
-      description: "Important parameters for molecular dynamics calculation",
-      properties: {
-        numberOfSteps: {
-          type: "integer",
-          title: "numberOfSteps",
-          default: defaultMDConfig.numberOfSteps
-        },
-        timeStep: {
-          type: "number",
-          title: "timeStep (Hartree a.u.)",
-          default: defaultMDConfig.timeStep
-        },
-        electronMass: {
-          type: "number",
-          title: "Effective electron mass",
-          default: defaultMDConfig.electronMass
-        },
-        temperature: {
-          type: "number",
-          title: "Ionic temperature (K)",
-          default: defaultMDConfig.temperature
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/ion-dynamics-context-provider", {
+      numberOfSteps: {
+        default: defaultMDConfig.numberOfSteps
+      },
+      timeStep: {
+        default: defaultMDConfig.timeStep
+      },
+      electronMass: {
+        default: defaultMDConfig.electronMass
+      },
+      temperature: {
+        default: defaultMDConfig.temperature
       }
-    };
+    });
   }
 }
 exports.IonDynamicsContextProvider = IonDynamicsContextProvider;

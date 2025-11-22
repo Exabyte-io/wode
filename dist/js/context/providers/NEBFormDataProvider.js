@@ -5,6 +5,8 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NEBFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class NEBFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   // eslint-disable-next-line class-methods-use-this
   get defaultData() {
@@ -20,18 +22,11 @@ class NEBFormDataProvider extends _ade.JSONSchemaFormDataProvider {
     };
   }
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: " ",
-      description: "Number of intermediate NEB images.",
-      type: "object",
-      properties: {
-        nImages: {
-          type: "number",
-          default: this.defaultData.nImages
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/neb-data-provider", {
+      nImages: {
+        default: this.defaultData.nImages
       }
-    };
+    });
   }
 }
 exports.NEBFormDataProvider = NEBFormDataProvider;

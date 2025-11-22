@@ -1,3 +1,5 @@
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
+
 import { HubbardUContextProvider } from "./HubbardUContextProvider";
 
 const defaultHubbardConfig = {
@@ -44,32 +46,16 @@ export class HubbardContextProviderLegacy extends HubbardUContextProvider {
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard parameters for DFT+U calculation.",
-            type: "array",
-            uniqueItems: true,
-            minItems: 1,
-            items: {
-                type: "object",
-                properties: {
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Atomic species",
-                        enum: this.uniqueElementsWithLabels,
-                    },
-                    atomicSpeciesIndex: {
-                        type: "integer",
-                        title: "Species index",
-                    },
-                    hubbardUValue: {
-                        type: "number",
-                        title: "Hubbard U (eV)",
-                        default: defaultHubbardConfig.hubbardUValue,
-                    },
+        return JSONSchemasInterface.getPatchedSchemaById(
+            "context-providers-directory/hubbard-legacy-context-provider",
+            {
+                "items.properties.atomicSpecies": {
+                    enum: this.uniqueElementsWithLabels,
+                },
+                "items.properties.hubbardUValue": {
+                    default: defaultHubbardConfig.hubbardUValue,
                 },
             },
-        };
+        );
     }
 }

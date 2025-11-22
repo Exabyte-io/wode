@@ -5,7 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.PlanewaveCutoffsContextProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const cutoffConfig = {
   vasp: {},
   // assuming default cutoffs for VASP
@@ -44,22 +46,14 @@ class PlanewaveCutoffsContextProvider extends _ade.ContextProvider {
     return this._cutoffConfigPerApplication.density || null;
   }
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: " ",
-      description: "Planewave cutoff parameters for electronic wavefunctions and density. Units are specific to simulation engine.",
-      type: "object",
-      properties: {
-        wavefunction: {
-          type: "number",
-          default: this.defaultECUTWFC
-        },
-        density: {
-          type: "number",
-          default: this.defaultECUTRHO
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/planewave-cutoffs-context-provider", {
+      wavefunction: {
+        default: this.defaultECUTWFC
+      },
+      density: {
+        default: this.defaultECUTRHO
       }
-    };
+    });
   }
 }
 exports.PlanewaveCutoffsContextProvider = PlanewaveCutoffsContextProvider;

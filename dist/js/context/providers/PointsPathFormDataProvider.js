@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.PointsPathFormDataProvider = exports.ExplicitPointsPathFormDataProvider = exports.ExplicitPointsPath2PIBAFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
 var _math = require("@mat3ra/code/dist/js/math");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _made = require("@mat3ra/made");
 var _underscore = _interopRequireDefault(require("underscore.string"));
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
@@ -34,29 +35,16 @@ class PointsPathFormDataProvider extends _ade.JSONSchemaFormDataProvider {
     return this.reciprocalLattice.symmetryPoints;
   }
   get jsonSchema() {
-    // no need to pass context to get symmetry points on client
     const points = [].concat(this.symmetryPoints).map(x => x.point);
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: " ",
-      description: "path in reciprocal space",
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          point: {
-            type: "string",
-            default: defaultPoint,
-            enum: points
-          },
-          steps: {
-            type: "integer",
-            default: defaultSteps
-          }
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/points-path-data-provider", {
+      "items.properties.point": {
+        default: defaultPoint,
+        enum: points
       },
-      minItems: 1
-    };
+      "items.properties.steps": {
+        default: defaultSteps
+      }
+    });
   }
 
   // eslint-disable-next-line class-methods-use-this

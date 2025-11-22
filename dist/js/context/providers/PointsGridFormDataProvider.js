@@ -7,6 +7,7 @@ exports.PointsGridFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
 var _constants = require("@mat3ra/code/dist/js/constants");
 var _math = require("@mat3ra/code/dist/js/math");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _made = require("@mat3ra/made");
 var _lodash = _interopRequireDefault(require("lodash"));
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
@@ -88,49 +89,33 @@ class PointsGridFormDataProvider extends _ade.JSONSchemaFormDataProvider {
     return this.reciprocalLattice.reciprocalVectorRatios.map(r => Number(_math.math.numberToPrecision(r, 3)));
   }
   get jsonSchema() {
-    const vector = {
-      type: "array",
-      items: {
-        type: "number"
-      },
-      minItems: 3,
-      maxItems: 3
-    };
+    // Helper function to create vector schema with defaults
     const vector_ = (defaultValue, isStringType = false) => {
       const isArray = Array.isArray(defaultValue);
       return {
-        ...vector,
+        type: "array",
         items: {
           type: isStringType ? "string" : "number",
           ...(isArray ? {} : {
             default: defaultValue
           })
         },
+        minItems: 3,
+        maxItems: 3,
         ...(isArray ? {
           default: defaultValue
         } : {})
       };
     };
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      description: `3D grid with shifts. Default min value for ${this._metricDescription[this.gridMetricType]} is ${this._getDefaultGridMetricValue(this.gridMetricType)}.`,
-      type: "object",
-      properties: {
-        dimensions: vector_(this._defaultDimensions, this.isUsingJinjaVariables),
-        shifts: vector_(this.getDefaultShift()),
-        reciprocalVectorRatios: vector_(this.reciprocalVectorRatios),
-        gridMetricType: {
-          type: "string",
-          enum: ["KPPRA", "spacing"],
-          default: "KPPRA"
-        },
-        gridMetricValue: {
-          type: "number"
-        },
-        preferGridMetric: {
-          type: "boolean"
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/points-grid-data-provider", {
+      dimensions: vector_(this._defaultDimensions, this.isUsingJinjaVariables),
+      shifts: vector_(this.getDefaultShift()),
+      reciprocalVectorRatios: vector_(this.reciprocalVectorRatios),
+      gridMetricType: {
+        default: "KPPRA"
       },
+      description: `3D grid with shifts. Default min value for ${this._metricDescription[this.gridMetricType]} is ${this._getDefaultGridMetricValue(this.gridMetricType)}.`,
+      required: ["dimensions", "shifts"],
       dependencies: {
         gridMetricType: {
           oneOf: [{
@@ -169,9 +154,8 @@ class PointsGridFormDataProvider extends _ade.JSONSchemaFormDataProvider {
             }
           }]
         }
-      },
-      required: ["dimensions", "shifts"]
-    };
+      }
+    });
   }
   get uiSchema() {
     const _arraySubStyle = (emptyValue = 0) => {

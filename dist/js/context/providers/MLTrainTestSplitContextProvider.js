@@ -5,7 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MLTrainTestSplitContextProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class MLTrainTestSplitContextProvider extends _ade.ContextProvider {
   constructor(config) {
     super(config);
@@ -27,20 +29,11 @@ class MLTrainTestSplitContextProvider extends _ade.ContextProvider {
     };
   }
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: " ",
-      description: "Fraction held as the test set. For example, a value of 0.2 corresponds to an 80/20 train/test split.",
-      type: "object",
-      properties: {
-        fraction_held_as_test_set: {
-          type: "number",
-          default: this.defaultData.fraction_held_as_test_set,
-          minimum: 0,
-          maximum: 1
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/ml-train-test-split-context-provider", {
+      fraction_held_as_test_set: {
+        default: this.defaultData.fraction_held_as_test_set
       }
-    };
+    });
   }
 }
 exports.MLTrainTestSplitContextProvider = MLTrainTestSplitContextProvider;

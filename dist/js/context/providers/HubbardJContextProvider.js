@@ -4,7 +4,9 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.HubbardJContextProvider = void 0;
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _HubbardUContextProvider = require("./HubbardUContextProvider");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 const defaultHubbardConfig = {
   paramType: "U",
   atomicSpecies: "",
@@ -34,41 +36,22 @@ class HubbardJContextProvider extends _HubbardUContextProvider.HubbardUContextPr
     };
   }
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: "",
-      description: "Hubbard parameters for DFT+U+J calculation.",
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          paramType: {
-            type: "string",
-            title: "Species",
-            enum: ["U", "J", "B", "E2", "E3"],
-            default: defaultHubbardConfig.paramType
-          },
-          atomicSpecies: {
-            type: "string",
-            title: "Species",
-            enum: this.uniqueElementsWithLabels,
-            default: this.firstElement
-          },
-          atomicOrbital: {
-            type: "string",
-            title: "Orbital",
-            enum: this.orbitalList,
-            default: defaultHubbardConfig.atomicOrbital
-          },
-          value: {
-            type: "number",
-            title: "Value (eV)",
-            default: defaultHubbardConfig.value
-          }
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/hubbard-j-context-provider", {
+      "items.properties.paramType": {
+        default: defaultHubbardConfig.paramType
       },
-      minItems: 1
-    };
+      "items.properties.atomicSpecies": {
+        enum: this.uniqueElementsWithLabels,
+        default: this.firstElement
+      },
+      "items.properties.atomicOrbital": {
+        enum: this.orbitalList,
+        default: defaultHubbardConfig.atomicOrbital
+      },
+      "items.properties.value": {
+        default: defaultHubbardConfig.value
+      }
+    });
   }
 }
 exports.HubbardJContextProvider = HubbardJContextProvider;

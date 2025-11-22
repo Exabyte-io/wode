@@ -56,7 +56,7 @@ class BoundaryConditionsFormDataProvider extends _ade.JSONSchemaFormDataProvider
     return data;
   }
   get jsonSchema() {
-    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/boundary-conditions-provider", {
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/boundary-conditions-data-provider", {
       type: {
         default: this.defaultData.type
       },

@@ -1,4 +1,5 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import lodash from "lodash";
 
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
@@ -134,135 +135,38 @@ export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormData
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description:
-                "Set initial parameters for non-collinear spin magnetic (SOC) calculation.",
-            type: "object",
-            properties: {
-                isStartingMagnetization: {
-                    type: "boolean",
-                    title: "Set starting magnetization",
-                    default: true,
-                },
+        return JSONSchemasInterface.getPatchedSchemaById(
+            "context-providers-directory/non-collinear-magnetization-context-provider",
+            {
+                isExistingChargeDensity: { default: false },
+                isStartingMagnetization: { default: true },
+                isArbitrarySpinAngle: { default: false },
+                isConstrainedMagnetization: { default: false },
+                isFixedMagnetization: { default: true },
                 startingMagnetization: {
-                    type: "array",
                     minItems: this.uniqueElementsWithLabels.length,
                     maxItems: this.uniqueElementsWithLabels.length,
-                    items: {
-                        type: "object",
-                        properties: {
-                            atomicSpecies: {
-                                type: "string",
-                                title: "Atomic species",
-                            },
-                            value: {
-                                type: "number",
-                                title: "Starting magnetization",
-                                default: 0.0,
-                                minimum: -1.0,
-                                maximum: 1.0,
-                            },
-                        },
-                    },
                 },
-                isExistingChargeDensity: {
-                    type: "boolean",
-                    title: "Start calculation from existing charge density",
-                    default: false,
-                },
-                lforcet: {
-                    title: "Set lforcet to",
-                    type: "boolean",
-                    oneOf: [
-                        { const: true, title: "True" },
-                        { const: false, title: "False" },
-                    ],
-                },
-                isArbitrarySpinDirection: {
-                    type: "boolean",
-                    title: "Set spin directions",
-                    default: false,
+                "startingMagnetization.items.properties.value": {
+                    default: 0.0,
+                    minimum: -1.0,
+                    maximum: 1.0,
                 },
                 spinAngles: {
-                    type: "array",
                     minItems: this.uniqueElementsWithLabels.length,
                     maxItems: this.uniqueElementsWithLabels.length,
-                    items: {
-                        type: "object",
-                        properties: {
-                            atomicSpecies: {
-                                type: "string",
-                                title: "Atomic species",
-                            },
-                            angle1: {
-                                type: "number",
-                                title: "Angle1 (deg)",
-                                default: 0.0,
-                            },
-                            angle2: {
-                                type: "number",
-                                title: "Angle2 (deg)",
-                                default: 0.0,
-                            },
-                        },
-                    },
                 },
-                isConstrainedMagnetization: {
-                    type: "boolean",
-                    title: "Set constrained magnetization",
-                    default: false,
+                "spinAngles.items.properties.angle1": { default: 0.0 },
+                "spinAngles.items.properties.angle2": { default: 0.0 },
+                "constrainedMagnetization.properties.constrainType": {
+                    default: "atomic direction",
                 },
-                constrainedMagnetization: {
-                    type: "object",
-                    properties: {
-                        constrainType: {
-                            type: "string",
-                            title: "Constrain type",
-                            enum: [
-                                "none",
-                                "total",
-                                "atomic",
-                                "total direction",
-                                "atomic direction",
-                            ],
-                            default: "atomic direction",
-                        },
-                        lambda: {
-                            type: "number",
-                            title: "lambda",
-                            default: 0.0,
-                        },
-                    },
-                },
-                isFixedMagnetization: {
-                    type: "boolean",
-                    title: "Set Fixed magnetization (only applicable to constrained magnetization of 'total' type)",
-                    default: true,
-                },
-                fixedMagnetization: {
-                    type: "object",
-                    properties: {
-                        x: {
-                            type: "number",
-                            title: "X-component",
-                            default: 0.0,
-                        },
-                        y: {
-                            type: "number",
-                            title: "Y-component",
-                            default: 0.0,
-                        },
-                        z: {
-                            type: "number",
-                            title: "Z-component",
-                            default: 0.0,
-                        },
-                    },
-                },
+                "constrainedMagnetization.properties.lambda": { default: 0.0 },
+                "fixedMagnetization.properties.x": { default: 0.0 },
+                "fixedMagnetization.properties.y": { default: 0.0 },
+                "fixedMagnetization.properties.z": { default: 0.0 },
             },
-        };
+        );
     }
 }
 

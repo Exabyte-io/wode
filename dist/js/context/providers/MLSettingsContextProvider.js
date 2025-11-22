@@ -5,7 +5,9 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.MLSettingsContextProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 class MLSettingsContextProvider extends _ade.ContextProvider {
   constructor(config) {
     super(config);
@@ -28,23 +30,14 @@ class MLSettingsContextProvider extends _ade.ContextProvider {
     };
   }
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: " ",
-      description: "Settings important to machine learning runs.",
-      type: "object",
-      properties: {
-        target_column_name: {
-          type: "string",
-          default: this.defaultData.target_column_name
-        },
-        problem_category: {
-          type: "string",
-          default: this.defaultData.problem_category,
-          enum: ["regression", "classification", "clustering"]
-        }
+    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/ml-settings-context-provider", {
+      target_column_name: {
+        default: this.defaultData.target_column_name
+      },
+      problem_category: {
+        default: this.defaultData.problem_category
       }
-    };
+    });
   }
 }
 exports.MLSettingsContextProvider = MLSettingsContextProvider;

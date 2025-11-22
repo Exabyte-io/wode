@@ -1,4 +1,5 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
@@ -66,34 +67,22 @@ export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard U parameters for DFT+U or DFT+U+V calculation.",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Atomic species",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.firstElement,
-                    },
-                    atomicOrbital: {
-                        type: "string",
-                        title: "Atomic orbital",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    hubbardUValue: {
-                        type: "number",
-                        title: "Hubbard U (eV)",
-                        default: defaultHubbardConfig.hubbardUValue,
-                    },
+        return JSONSchemasInterface.getPatchedSchemaById(
+            "context-providers-directory/hubbard-u-context-provider",
+            {
+                "items.properties.atomicSpecies": {
+                    enum: this.uniqueElementsWithLabels,
+                    default: this.firstElement,
+                },
+                "items.properties.atomicOrbital": {
+                    enum: this.orbitalList,
+                    default: defaultHubbardConfig.atomicOrbital,
+                },
+                "items.properties.hubbardUValue": {
+                    default: defaultHubbardConfig.hubbardUValue,
                 },
             },
-        };
+        );
     }
 }
 
