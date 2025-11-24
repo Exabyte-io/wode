@@ -6,6 +6,8 @@ import { Utils } from "@mat3ra/utils";
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
 export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/boundary-conditions-data-provider";
+
     constructor(config) {
         super(config);
         this.initMaterialContextMixin();
@@ -22,6 +24,16 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
             offset: this.boundaryConditions.offset || 0,
             electricField: 0,
             targetFermiEnergy: 0,
+        };
+    }
+
+    get jsonSchemaPatchConfig() {
+        const defaults = this.defaultData;
+        return {
+            type: { default: defaults.type },
+            offset: { default: defaults.offset },
+            electricField: { default: defaults.electricField },
+            targetFermiEnergy: { default: defaults.targetFermiEnergy },
         };
     }
 
@@ -51,13 +63,8 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/boundary-conditions-data-provider",
-            {
-                type: { default: this.defaultData.type },
-                offset: { default: this.defaultData.offset },
-                electricField: { default: this.defaultData.electricField },
-                targetFermiEnergy: { default: this.defaultData.targetFermiEnergy },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }
