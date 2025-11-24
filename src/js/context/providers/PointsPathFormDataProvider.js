@@ -13,6 +13,8 @@ const defaultPoint = "Г";
 const defaultSteps = 10;
 
 export class PointsPathFormDataProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/points-path-data-provider";
+
     constructor(config) {
         super(config);
         this.initMaterialContextMixin();
@@ -33,20 +35,24 @@ export class PointsPathFormDataProvider extends JSONSchemaFormDataProvider {
         return this.reciprocalLattice.symmetryPoints;
     }
 
-    get jsonSchema() {
+    get jsonSchemaPatchConfig() {
         const points = [].concat(this.symmetryPoints).map((x) => x.point);
 
-        return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/points-path-data-provider",
-            {
-                "items.properties.point": {
-                    default: defaultPoint,
-                    enum: points,
-                },
-                "items.properties.steps": {
-                    default: defaultSteps,
-                },
+        return {
+            "items.properties.point": {
+                default: defaultPoint,
+                enum: points,
             },
+            "items.properties.steps": {
+                default: defaultSteps,
+            },
+        };
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 

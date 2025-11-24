@@ -9,6 +9,8 @@ import { materialContextMixin } from "../mixins/MaterialContextMixin";
 import { globalSettings } from "./settings";
 
 export class PointsGridFormDataProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/points-grid-data-provider";
+
     constructor(config) {
         super(config);
         this.initMaterialContextMixin();
@@ -92,7 +94,7 @@ export class PointsGridFormDataProvider extends JSONSchemaFormDataProvider {
         );
     }
 
-    get jsonSchema() {
+    get jsonSchemaPatchConfig() {
         // Helper function to create vector schema with defaults
         const vector_ = (defaultValue, isStringType = false) => {
             const isArray = Array.isArray(defaultValue);
@@ -108,56 +110,60 @@ export class PointsGridFormDataProvider extends JSONSchemaFormDataProvider {
             };
         };
 
-        return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/points-grid-data-provider",
-            {
-                dimensions: vector_(this._defaultDimensions, this.isUsingJinjaVariables),
-                shifts: vector_(this.getDefaultShift()),
-                reciprocalVectorRatios: vector_(this.reciprocalVectorRatios),
-                gridMetricType: { default: "KPPRA" },
-                description: `3D grid with shifts. Default min value for ${
-                    this._metricDescription[this.gridMetricType]
-                } is ${this._getDefaultGridMetricValue(this.gridMetricType)}.`,
-                required: ["dimensions", "shifts"],
-                dependencies: {
-                    gridMetricType: {
-                        oneOf: [
-                            {
-                                properties: {
-                                    gridMetricType: { enum: ["KPPRA"] },
-                                    gridMetricValue: {
-                                        type: "integer",
-                                        minimum: 1,
-                                        title: "Value",
-                                        default: this.gridMetricValue,
-                                    },
-                                    preferGridMetric: {
-                                        type: "boolean",
-                                        title: "prefer KPPRA",
-                                        default: this.preferGridMetric,
-                                    },
+        return {
+            dimensions: vector_(this._defaultDimensions, this.isUsingJinjaVariables),
+            shifts: vector_(this.getDefaultShift()),
+            reciprocalVectorRatios: vector_(this.reciprocalVectorRatios),
+            gridMetricType: { default: "KPPRA" },
+            description: `3D grid with shifts. Default min value for ${
+                this._metricDescription[this.gridMetricType]
+            } is ${this._getDefaultGridMetricValue(this.gridMetricType)}.`,
+            required: ["dimensions", "shifts"],
+            dependencies: {
+                gridMetricType: {
+                    oneOf: [
+                        {
+                            properties: {
+                                gridMetricType: { enum: ["KPPRA"] },
+                                gridMetricValue: {
+                                    type: "integer",
+                                    minimum: 1,
+                                    title: "Value",
+                                    default: this.gridMetricValue,
+                                },
+                                preferGridMetric: {
+                                    type: "boolean",
+                                    title: "prefer KPPRA",
+                                    default: this.preferGridMetric,
                                 },
                             },
-                            {
-                                properties: {
-                                    gridMetricType: { enum: ["spacing"] },
-                                    gridMetricValue: {
-                                        type: "number",
-                                        minimum: 0,
-                                        title: "Value [1/Å]",
-                                        default: this.gridMetricValue,
-                                    },
-                                    preferGridMetric: {
-                                        type: "boolean",
-                                        title: "prefer spacing",
-                                        default: this.preferGridMetric,
-                                    },
+                        },
+                        {
+                            properties: {
+                                gridMetricType: { enum: ["spacing"] },
+                                gridMetricValue: {
+                                    type: "number",
+                                    minimum: 0,
+                                    title: "Value [1/Å]",
+                                    default: this.gridMetricValue,
+                                },
+                                preferGridMetric: {
+                                    type: "boolean",
+                                    title: "prefer spacing",
+                                    default: this.preferGridMetric,
                                 },
                             },
-                        ],
-                    },
+                        },
+                    ],
                 },
             },
+        };
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 

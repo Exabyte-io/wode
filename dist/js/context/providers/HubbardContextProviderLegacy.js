@@ -16,6 +16,7 @@ const defaultHubbardConfig = {
 class HubbardContextProviderLegacy extends _HubbardUContextProvider.HubbardUContextProvider {
   constructor(...args) {
     super(...args);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/hubbard-legacy-context-provider");
     _defineProperty(this, "speciesIndexFromSpecies", species => {
       return this.uniqueElementsWithLabels?.length > 0 ? this.uniqueElementsWithLabels.indexOf(species) + 1 : null;
     });
@@ -32,6 +33,16 @@ class HubbardContextProviderLegacy extends _HubbardUContextProvider.HubbardUCont
       atomicSpecies: this.firstElement,
       atomicSpeciesIndex: this.uniqueElementsWithLabels?.length > 0 ? 1 : null
     }];
+  }
+  get jsonSchemaPatchConfig() {
+    return {
+      "items.properties.atomicSpecies": {
+        enum: this.uniqueElementsWithLabels
+      },
+      "items.properties.hubbardUValue": {
+        default: defaultHubbardConfig.hubbardUValue
+      }
+    };
   }
   get uiSchemaStyled() {
     return {
@@ -51,14 +62,7 @@ class HubbardContextProviderLegacy extends _HubbardUContextProvider.HubbardUCont
     };
   }
   get jsonSchema() {
-    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/hubbard-legacy-context-provider", {
-      "items.properties.atomicSpecies": {
-        enum: this.uniqueElementsWithLabels
-      },
-      "items.properties.hubbardUValue": {
-        default: defaultHubbardConfig.hubbardUValue
-      }
-    });
+    return _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
   }
 }
 exports.HubbardContextProviderLegacy = HubbardContextProviderLegacy;

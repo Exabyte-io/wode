@@ -5,6 +5,8 @@ import lodash from "lodash";
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
 export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/non-collinear-magnetization-context-provider";
+
     constructor(config) {
         super(config);
         this.initMaterialContextMixin();
@@ -134,38 +136,42 @@ export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormData
         };
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            isExistingChargeDensity: { default: false },
+            isStartingMagnetization: { default: true },
+            isArbitrarySpinAngle: { default: false },
+            isConstrainedMagnetization: { default: false },
+            isFixedMagnetization: { default: true },
+            startingMagnetization: {
+                minItems: this.uniqueElementsWithLabels.length,
+                maxItems: this.uniqueElementsWithLabels.length,
+            },
+            "startingMagnetization.items.properties.value": {
+                default: 0.0,
+                minimum: -1.0,
+                maximum: 1.0,
+            },
+            spinAngles: {
+                minItems: this.uniqueElementsWithLabels.length,
+                maxItems: this.uniqueElementsWithLabels.length,
+            },
+            "spinAngles.items.properties.angle1": { default: 0.0 },
+            "spinAngles.items.properties.angle2": { default: 0.0 },
+            "constrainedMagnetization.properties.constrainType": {
+                default: "atomic direction",
+            },
+            "constrainedMagnetization.properties.lambda": { default: 0.0 },
+            "fixedMagnetization.properties.x": { default: 0.0 },
+            "fixedMagnetization.properties.y": { default: 0.0 },
+            "fixedMagnetization.properties.z": { default: 0.0 },
+        };
+    }
+
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/non-collinear-magnetization-context-provider",
-            {
-                isExistingChargeDensity: { default: false },
-                isStartingMagnetization: { default: true },
-                isArbitrarySpinAngle: { default: false },
-                isConstrainedMagnetization: { default: false },
-                isFixedMagnetization: { default: true },
-                startingMagnetization: {
-                    minItems: this.uniqueElementsWithLabels.length,
-                    maxItems: this.uniqueElementsWithLabels.length,
-                },
-                "startingMagnetization.items.properties.value": {
-                    default: 0.0,
-                    minimum: -1.0,
-                    maximum: 1.0,
-                },
-                spinAngles: {
-                    minItems: this.uniqueElementsWithLabels.length,
-                    maxItems: this.uniqueElementsWithLabels.length,
-                },
-                "spinAngles.items.properties.angle1": { default: 0.0 },
-                "spinAngles.items.properties.angle2": { default: 0.0 },
-                "constrainedMagnetization.properties.constrainType": {
-                    default: "atomic direction",
-                },
-                "constrainedMagnetization.properties.lambda": { default: 0.0 },
-                "fixedMagnetization.properties.x": { default: 0.0 },
-                "fixedMagnetization.properties.y": { default: 0.0 },
-                "fixedMagnetization.properties.z": { default: 0.0 },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

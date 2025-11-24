@@ -13,6 +13,8 @@ const defaultHubbardConfig = {
 };
 
 export class HubbardVContextProvider extends HubbardUContextProvider {
+    jsonSchemaId = "context-providers-directory/hubbard-v-context-provider";
+
     get defaultData() {
         return [
             {
@@ -33,6 +35,37 @@ export class HubbardVContextProvider extends HubbardUContextProvider {
         return this.uniqueElementsWithLabels?.length > 1
             ? this.uniqueElementsWithLabels[1]
             : this.firstSpecies;
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstSpecies,
+            },
+            "items.properties.siteIndex": {
+                default: defaultHubbardConfig.siteIndex,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.atomicSpecies2": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.secondSpecies,
+            },
+            "items.properties.siteIndex2": {
+                default:
+                    this.uniqueElementsWithLabels?.length > 1 ? 2 : defaultHubbardConfig.siteIndex2,
+            },
+            "items.properties.atomicOrbital2": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.hubbardVValue": {
+                default: defaultHubbardConfig.hubbardVValue,
+            },
+        };
     }
 
     get uiSchemaStyled() {
@@ -56,37 +89,8 @@ export class HubbardVContextProvider extends HubbardUContextProvider {
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/hubbard-v-context-provider",
-            {
-                "items.properties.atomicSpecies": {
-                    enum: this.uniqueElementsWithLabels,
-                    default: this.firstSpecies,
-                },
-                "items.properties.siteIndex": {
-                    default: defaultHubbardConfig.siteIndex,
-                },
-                "items.properties.atomicOrbital": {
-                    enum: this.orbitalList,
-                    default: defaultHubbardConfig.atomicOrbital,
-                },
-                "items.properties.atomicSpecies2": {
-                    enum: this.uniqueElementsWithLabels,
-                    default: this.secondSpecies,
-                },
-                "items.properties.siteIndex2": {
-                    default:
-                        this.uniqueElementsWithLabels?.length > 1
-                            ? 2
-                            : defaultHubbardConfig.siteIndex2,
-                },
-                "items.properties.atomicOrbital2": {
-                    enum: this.orbitalList,
-                    default: defaultHubbardConfig.atomicOrbital,
-                },
-                "items.properties.hubbardVValue": {
-                    default: defaultHubbardConfig.hubbardVValue,
-                },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

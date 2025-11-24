@@ -4,6 +4,8 @@ import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface
 import { applicationContextMixin } from "../mixins/ApplicationContextMixin";
 
 export class MLTrainTestSplitContextProvider extends ContextProvider {
+    jsonSchemaId = "context-providers-directory/ml-train-test-split-context-provider";
+
     constructor(config) {
         super(config);
         this.initApplicationContextMixin();
@@ -24,12 +26,16 @@ export class MLTrainTestSplitContextProvider extends ContextProvider {
         };
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            fraction_held_as_test_set: { default: this.defaultData.fraction_held_as_test_set },
+        };
+    }
+
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/ml-train-test-split-context-provider",
-            {
-                fraction_held_as_test_set: { default: this.defaultData.fraction_held_as_test_set },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

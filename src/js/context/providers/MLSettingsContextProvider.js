@@ -4,6 +4,8 @@ import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface
 import { applicationContextMixin } from "../mixins/ApplicationContextMixin";
 
 export class MLSettingsContextProvider extends ContextProvider {
+    jsonSchemaId = "context-providers-directory/ml-settings-context-provider";
+
     constructor(config) {
         super(config);
         this.initApplicationContextMixin();
@@ -25,13 +27,17 @@ export class MLSettingsContextProvider extends ContextProvider {
         };
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            target_column_name: { default: this.defaultData.target_column_name },
+            problem_category: { default: this.defaultData.problem_category },
+        };
+    }
+
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/ml-settings-context-provider",
-            {
-                target_column_name: { default: this.defaultData.target_column_name },
-                problem_category: { default: this.defaultData.problem_category },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

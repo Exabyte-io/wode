@@ -13,6 +13,8 @@ const cutoffConfig = {
 };
 
 export class PlanewaveCutoffsContextProvider extends ContextProvider {
+    jsonSchemaId = "context-providers-directory/planewave-cutoffs-context-provider";
+
     constructor(config) {
         super(config);
         this.initApplicationContextMixin();
@@ -33,6 +35,13 @@ export class PlanewaveCutoffsContextProvider extends ContextProvider {
         };
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            wavefunction: { default: this.defaultData.wavefunction },
+            density: { default: this.defaultData.density },
+        };
+    }
+
     get _cutoffConfigPerApplication() {
         return cutoffConfig[this.application.name];
     }
@@ -47,11 +56,8 @@ export class PlanewaveCutoffsContextProvider extends ContextProvider {
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/planewave-cutoffs-context-provider",
-            {
-                wavefunction: { default: this.defaultECUTWFC },
-                density: { default: this.defaultECUTRHO },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

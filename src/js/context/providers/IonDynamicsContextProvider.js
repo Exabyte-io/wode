@@ -9,9 +9,20 @@ const defaultMDConfig = {
 };
 
 export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/ion-dynamics-context-provider";
+
     // eslint-disable-next-line class-methods-use-this
     get defaultData() {
         return defaultMDConfig;
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            numberOfSteps: { default: this.defaultData.numberOfSteps },
+            timeStep: { default: this.defaultData.timeStep },
+            electronMass: { default: this.defaultData.electronMass },
+            temperature: { default: this.defaultData.temperature },
+        };
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -24,16 +35,10 @@ export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
         };
     }
 
-    // eslint-disable-next-line class-methods-use-this
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/ion-dynamics-context-provider",
-            {
-                numberOfSteps: { default: defaultMDConfig.numberOfSteps },
-                timeStep: { default: defaultMDConfig.timeStep },
-                electronMass: { default: defaultMDConfig.electronMass },
-                temperature: { default: defaultMDConfig.temperature },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

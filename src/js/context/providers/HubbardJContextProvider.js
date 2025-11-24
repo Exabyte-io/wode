@@ -10,6 +10,8 @@ const defaultHubbardConfig = {
 };
 
 export class HubbardJContextProvider extends HubbardUContextProvider {
+    jsonSchemaId = "context-providers-directory/hubbard-j-context-provider";
+
     get defaultData() {
         return [
             {
@@ -17,6 +19,25 @@ export class HubbardJContextProvider extends HubbardUContextProvider {
                 atomicSpecies: this.firstElement,
             },
         ];
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.paramType": {
+                default: defaultHubbardConfig.paramType,
+            },
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstElement,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.value": {
+                default: defaultHubbardConfig.value,
+            },
+        };
     }
 
     get uiSchemaStyled() {
@@ -37,23 +58,8 @@ export class HubbardJContextProvider extends HubbardUContextProvider {
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/hubbard-j-context-provider",
-            {
-                "items.properties.paramType": {
-                    default: defaultHubbardConfig.paramType,
-                },
-                "items.properties.atomicSpecies": {
-                    enum: this.uniqueElementsWithLabels,
-                    default: this.firstElement,
-                },
-                "items.properties.atomicOrbital": {
-                    enum: this.orbitalList,
-                    default: defaultHubbardConfig.atomicOrbital,
-                },
-                "items.properties.value": {
-                    default: defaultHubbardConfig.value,
-                },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

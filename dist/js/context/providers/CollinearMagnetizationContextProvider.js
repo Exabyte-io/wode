@@ -15,6 +15,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 class CollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/collinear-magnetization-context-provider");
     _defineProperty(this, "indexOfElement", element => {
       return this.uniqueElementsWithLabels.indexOf(element) + 1;
     });
@@ -47,6 +48,26 @@ class CollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvi
       totalMagnetization: 0.0
     };
   }
+  get jsonSchemaPatchConfig() {
+    return {
+      "properties.startingMagnetization": {
+        maxItems: this.uniqueElementsWithLabels.length
+      },
+      "properties.startingMagnetization.items.properties.atomicSpecies": {
+        enum: this.uniqueElementsWithLabels,
+        default: this.firstElement
+      },
+      "properties.startingMagnetization.items.properties.value": {
+        default: 0.0
+      },
+      "properties.isTotalMagnetization": {
+        default: false
+      },
+      "properties.totalMagnetization": {
+        default: 0.0
+      }
+    };
+  }
   get uiSchemaStyled() {
     return {
       startingMagnetization: {
@@ -68,24 +89,7 @@ class CollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvi
     };
   }
   get jsonSchema() {
-    return _JSONSchemasInterface.default.getPatchedSchemaById("context-providers-directory/collinear-magnetization-context-provider", {
-      "properties.startingMagnetization": {
-        maxItems: this.uniqueElementsWithLabels.length
-      },
-      "properties.startingMagnetization.items.properties.atomicSpecies": {
-        enum: this.uniqueElementsWithLabels,
-        default: this.firstElement
-      },
-      "properties.startingMagnetization.items.properties.value": {
-        default: 0.0
-      },
-      "properties.isTotalMagnetization": {
-        default: false
-      },
-      "properties.totalMagnetization": {
-        default: 0.0
-      }
-    });
+    return _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
   }
 }
 exports.CollinearMagnetizationContextProvider = CollinearMagnetizationContextProvider;

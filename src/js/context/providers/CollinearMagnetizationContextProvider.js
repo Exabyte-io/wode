@@ -5,6 +5,8 @@ import lodash from "lodash";
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
 export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/collinear-magnetization-context-provider";
+
     constructor(config) {
         super(config);
 
@@ -35,6 +37,27 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
             ],
             isTotalMagnetization: false,
             totalMagnetization: 0.0,
+        };
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            "properties.startingMagnetization": {
+                maxItems: this.uniqueElementsWithLabels.length,
+            },
+            "properties.startingMagnetization.items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstElement,
+            },
+            "properties.startingMagnetization.items.properties.value": {
+                default: 0.0,
+            },
+            "properties.isTotalMagnetization": {
+                default: false,
+            },
+            "properties.totalMagnetization": {
+                default: 0.0,
+            },
         };
     }
 
@@ -73,25 +96,8 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/collinear-magnetization-context-provider",
-            {
-                "properties.startingMagnetization": {
-                    maxItems: this.uniqueElementsWithLabels.length,
-                },
-                "properties.startingMagnetization.items.properties.atomicSpecies": {
-                    enum: this.uniqueElementsWithLabels,
-                    default: this.firstElement,
-                },
-                "properties.startingMagnetization.items.properties.value": {
-                    default: 0.0,
-                },
-                "properties.isTotalMagnetization": {
-                    default: false,
-                },
-                "properties.totalMagnetization": {
-                    default: 0.0,
-                },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }

@@ -10,6 +10,8 @@ const defaultHubbardConfig = {
 };
 
 export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/hubbard-u-context-provider";
+
     constructor(config) {
         super(config);
 
@@ -51,6 +53,22 @@ export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
         ];
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstElement,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.hubbardUValue": {
+                default: defaultHubbardConfig.hubbardUValue,
+            },
+        };
+    }
+
     get uiSchemaStyled() {
         return {
             "ui:options": {
@@ -68,20 +86,8 @@ export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
 
     get jsonSchema() {
         return JSONSchemasInterface.getPatchedSchemaById(
-            "context-providers-directory/hubbard-u-context-provider",
-            {
-                "items.properties.atomicSpecies": {
-                    enum: this.uniqueElementsWithLabels,
-                    default: this.firstElement,
-                },
-                "items.properties.atomicOrbital": {
-                    enum: this.orbitalList,
-                    default: defaultHubbardConfig.atomicOrbital,
-                },
-                "items.properties.hubbardUValue": {
-                    default: defaultHubbardConfig.hubbardUValue,
-                },
-            },
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
         );
     }
 }
