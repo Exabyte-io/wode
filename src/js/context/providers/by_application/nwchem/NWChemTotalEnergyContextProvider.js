@@ -1,4 +1,5 @@
 import { PERIODIC_TABLE } from "@exabyte-io/periodic-table.js";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import lodash from "lodash";
 import _ from "underscore";
 import s from "underscore.string";
@@ -10,6 +11,9 @@ import { workflowContextMixin } from "../../../mixins/WorkflowContextMixin";
 import ExecutableContextProvider from "../ExecutableContextProvider";
 
 export default class NWChemTotalEnergyContextProvider extends ExecutableContextProvider {
+    jsonSchemaId =
+        "context-providers-directory/by-application/nwchem-total-energy-context-provider";
+
     _material = undefined;
 
     constructor(config) {
@@ -18,6 +22,10 @@ export default class NWChemTotalEnergyContextProvider extends ExecutableContextP
         this.initWorkflowContextMixin();
         this.initJobContextMixin();
         this.initMaterialContextMixin();
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     get atomicPositionsWithoutConstraints() {

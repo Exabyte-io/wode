@@ -21,7 +21,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 class QEPWXContextProvider extends _ExecutableContextProvider.default {
   constructor(config) {
     super(config);
-    _defineProperty(this, "jsonSchemaId", "context-providers-directory/by-application/qepwx-context-provider");
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/by-application/qe-pwx-context-provider");
     _defineProperty(this, "_material", undefined);
     _defineProperty(this, "_materials", []);
     this.initMaterialsContextMixin();
@@ -59,25 +59,24 @@ class QEPWXContextProvider extends _ExecutableContextProvider.default {
   static NTYP_WITH_LABELS(material) {
     return this.uniqueElementsWithLabels(material).length;
   }
-  jsonSchemaPatchConfig(material) {
-    return {
-      properties: {
-        IBRAV: 0,
-        RESTART_MODE: this.RESTART_MODE,
-        ATOMIC_SPECIES: this.ATOMIC_SPECIES(material),
-        ATOMIC_SPECIES_WITH_LABELS: this.ATOMIC_SPECIES_WITH_LABELS(material),
-        NAT: QEPWXContextProvider.NAT(material),
-        NTYP: QEPWXContextProvider.NTYP(material),
-        NTYP_WITH_LABELS: QEPWXContextProvider.NTYP_WITH_LABELS(material),
-        ATOMIC_POSITIONS: QEPWXContextProvider.atomicPositionsWithConstraints(material),
-        ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: QEPWXContextProvider.atomicPositions(material),
-        CELL_PARAMETERS: QEPWXContextProvider.CELL_PARAMETERS(material)
-      }
-    };
+  get jsonSchema() {
+    return _JSONSchemasInterface.default.getSchemaById(this.jsonSchemaId);
   }
   buildQEPWXContext(material) {
-    const schema = _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig(material));
-    return schema.properties;
+    const IBRAV = 0; // use CELL_PARAMETERS to define Bravais lattice
+
+    return {
+      IBRAV,
+      RESTART_MODE: this.RESTART_MODE,
+      ATOMIC_SPECIES: this.ATOMIC_SPECIES(material),
+      ATOMIC_SPECIES_WITH_LABELS: this.ATOMIC_SPECIES_WITH_LABELS(material),
+      NAT: QEPWXContextProvider.NAT(material),
+      NTYP: QEPWXContextProvider.NTYP(material),
+      NTYP_WITH_LABELS: QEPWXContextProvider.NTYP_WITH_LABELS(material),
+      ATOMIC_POSITIONS: QEPWXContextProvider.atomicPositionsWithConstraints(material),
+      ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: QEPWXContextProvider.atomicPositions(material),
+      CELL_PARAMETERS: QEPWXContextProvider.CELL_PARAMETERS(material)
+    };
   }
   getDataPerMaterial() {
     if (!this.materials || this.materials.length <= 1) return {};

@@ -1,3 +1,4 @@
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import lodash from "lodash";
 
 import { jobContextMixin } from "../../../mixins/JobContextMixin";
@@ -10,6 +11,8 @@ import ExecutableContextProvider from "../ExecutableContextProvider";
 import QEPWXContextProvider from "./QEPWXContextProvider";
 
 export default class QENEBContextProvider extends ExecutableContextProvider {
+    jsonSchemaId = "context-providers-directory/by-application/qe-neb-context-provider";
+
     _material = undefined;
 
     _materials = [];
@@ -24,6 +27,10 @@ export default class QENEBContextProvider extends ExecutableContextProvider {
         this.initWorkflowContextMixin();
         this.initMaterialContextMixin();
         this.initMaterialsSetContextMixin();
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     getData() {

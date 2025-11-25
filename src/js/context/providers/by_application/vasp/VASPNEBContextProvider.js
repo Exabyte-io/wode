@@ -1,3 +1,5 @@
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
+
 import { jobContextMixin } from "../../../mixins/JobContextMixin";
 import { materialContextMixin } from "../../../mixins/MaterialContextMixin";
 import { materialsContextMixin } from "../../../mixins/MaterialsContextMixin";
@@ -8,6 +10,8 @@ import ExecutableContextProvider from "../ExecutableContextProvider";
 import VASPContextProvider from "./VASPContextProvider";
 
 export default class VASPNEBContextProvider extends ExecutableContextProvider {
+    jsonSchemaId = "context-providers-directory/by-application/vasp-neb-context-provider";
+
     _materials = [];
 
     constructor(config) {
@@ -18,6 +22,10 @@ export default class VASPNEBContextProvider extends ExecutableContextProvider {
         this.initMethodDataContextMixin();
         this.initWorkflowContextMixin();
         this.initJobContextMixin();
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     getData() {

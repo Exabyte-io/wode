@@ -11,7 +11,7 @@ import { workflowContextMixin } from "../../../mixins/WorkflowContextMixin";
 import ExecutableContextProvider from "../ExecutableContextProvider";
 
 export default class QEPWXContextProvider extends ExecutableContextProvider {
-    jsonSchemaId = "context-providers-directory/by-application/qepwx-context-provider";
+    jsonSchemaId = "context-providers-directory/by-application/qe-pwx-context-provider";
 
     _material = undefined;
 
@@ -60,31 +60,25 @@ export default class QEPWXContextProvider extends ExecutableContextProvider {
         return this.uniqueElementsWithLabels(material).length;
     }
 
-    jsonSchemaPatchConfig(material) {
-        return {
-            properties: {
-                IBRAV: 0,
-                RESTART_MODE: this.RESTART_MODE,
-                ATOMIC_SPECIES: this.ATOMIC_SPECIES(material),
-                ATOMIC_SPECIES_WITH_LABELS: this.ATOMIC_SPECIES_WITH_LABELS(material),
-                NAT: QEPWXContextProvider.NAT(material),
-                NTYP: QEPWXContextProvider.NTYP(material),
-                NTYP_WITH_LABELS: QEPWXContextProvider.NTYP_WITH_LABELS(material),
-                ATOMIC_POSITIONS: QEPWXContextProvider.atomicPositionsWithConstraints(material),
-                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS:
-                    QEPWXContextProvider.atomicPositions(material),
-                CELL_PARAMETERS: QEPWXContextProvider.CELL_PARAMETERS(material),
-            },
-        };
+    get jsonSchema() {
+        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     buildQEPWXContext(material) {
-        const schema = JSONSchemasInterface.getPatchedSchemaById(
-            this.jsonSchemaId,
-            this.jsonSchemaPatchConfig(material),
-        );
+        const IBRAV = 0; // use CELL_PARAMETERS to define Bravais lattice
 
-        return schema.properties;
+        return {
+            IBRAV,
+            RESTART_MODE: this.RESTART_MODE,
+            ATOMIC_SPECIES: this.ATOMIC_SPECIES(material),
+            ATOMIC_SPECIES_WITH_LABELS: this.ATOMIC_SPECIES_WITH_LABELS(material),
+            NAT: QEPWXContextProvider.NAT(material),
+            NTYP: QEPWXContextProvider.NTYP(material),
+            NTYP_WITH_LABELS: QEPWXContextProvider.NTYP_WITH_LABELS(material),
+            ATOMIC_POSITIONS: QEPWXContextProvider.atomicPositionsWithConstraints(material),
+            ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: QEPWXContextProvider.atomicPositions(material),
+            CELL_PARAMETERS: QEPWXContextProvider.CELL_PARAMETERS(material),
+        };
     }
 
     getDataPerMaterial() {
