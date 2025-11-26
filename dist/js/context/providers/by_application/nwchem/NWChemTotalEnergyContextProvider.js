@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _periodicTable = require("@exabyte-io/periodic-table.js");
-var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _lodash = _interopRequireDefault(require("lodash"));
 var _underscore = _interopRequireDefault(require("underscore"));
 var _underscore2 = _interopRequireDefault(require("underscore.string"));
@@ -27,9 +26,6 @@ class NWChemTotalEnergyContextProvider extends _ExecutableContextProvider.defaul
     this.initWorkflowContextMixin();
     this.initJobContextMixin();
     this.initMaterialContextMixin();
-  }
-  get jsonSchema() {
-    return _JSONSchemasInterface.default.getSchemaById(this.jsonSchemaId);
   }
   get atomicPositionsWithoutConstraints() {
     return this.material.Basis.atomicPositions;

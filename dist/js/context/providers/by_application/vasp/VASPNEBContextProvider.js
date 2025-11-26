@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _JobContextMixin = require("../../../mixins/JobContextMixin");
 var _MaterialContextMixin = require("../../../mixins/MaterialContextMixin");
 var _MaterialsContextMixin = require("../../../mixins/MaterialsContextMixin");
@@ -28,9 +27,6 @@ class VASPNEBContextProvider extends _ExecutableContextProvider.default {
     this.initMethodDataContextMixin();
     this.initWorkflowContextMixin();
     this.initJobContextMixin();
-  }
-  get jsonSchema() {
-    return _JSONSchemasInterface.default.getSchemaById(this.jsonSchemaId);
   }
   getData() {
     const sortedMaterials = this.sortMaterialsByIndexInSet(this.materials);

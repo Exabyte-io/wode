@@ -1,5 +1,4 @@
 import { PERIODIC_TABLE } from "@exabyte-io/periodic-table.js";
-import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import lodash from "lodash";
 import _ from "underscore";
 import s from "underscore.string";
@@ -22,10 +21,6 @@ export default class NWChemTotalEnergyContextProvider extends ExecutableContextP
         this.initWorkflowContextMixin();
         this.initJobContextMixin();
         this.initMaterialContextMixin();
-    }
-
-    get jsonSchema() {
-        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     get atomicPositionsWithoutConstraints() {

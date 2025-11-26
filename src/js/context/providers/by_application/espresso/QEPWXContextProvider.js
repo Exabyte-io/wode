@@ -1,5 +1,4 @@
 import { PERIODIC_TABLE } from "@exabyte-io/periodic-table.js";
-import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import path from "path";
 import s from "underscore.string";
 
@@ -58,10 +57,6 @@ export default class QEPWXContextProvider extends ExecutableContextProvider {
 
     static NTYP_WITH_LABELS(material) {
         return this.uniqueElementsWithLabels(material).length;
-    }
-
-    get jsonSchema() {
-        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     buildQEPWXContext(material) {

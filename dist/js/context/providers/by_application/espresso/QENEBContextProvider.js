@@ -4,7 +4,6 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _lodash = _interopRequireDefault(require("lodash"));
 var _JobContextMixin = require("../../../mixins/JobContextMixin");
 var _MaterialContextMixin = require("../../../mixins/MaterialContextMixin");
@@ -31,9 +30,6 @@ class QENEBContextProvider extends _ExecutableContextProvider.default {
     this.initWorkflowContextMixin();
     this.initMaterialContextMixin();
     this.initMaterialsSetContextMixin();
-  }
-  get jsonSchema() {
-    return _JSONSchemasInterface.default.getSchemaById(this.jsonSchemaId);
   }
   getData() {
     const sortedMaterials = this.sortMaterialsByIndexInSet(this.materials);

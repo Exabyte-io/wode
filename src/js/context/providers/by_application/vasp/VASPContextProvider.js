@@ -1,5 +1,3 @@
-import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-
 import { jobContextMixin } from "../../../mixins/JobContextMixin";
 import { materialContextMixin } from "../../../mixins/MaterialContextMixin";
 import { materialsContextMixin } from "../../../mixins/MaterialsContextMixin";
@@ -21,10 +19,6 @@ export default class VASPContextProvider extends ExecutableContextProvider {
         this.initMethodDataContextMixin();
         this.initWorkflowContextMixin();
         this.initMaterialContextMixin();
-    }
-
-    get jsonSchema() {
-        return JSONSchemasInterface.getSchemaById(this.jsonSchemaId);
     }
 
     // eslint-disable-next-line class-methods-use-this

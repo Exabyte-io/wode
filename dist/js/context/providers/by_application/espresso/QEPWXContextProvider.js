@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 var _periodicTable = require("@exabyte-io/periodic-table.js");
-var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _path = _interopRequireDefault(require("path"));
 var _underscore = _interopRequireDefault(require("underscore.string"));
 var _JobContextMixin = require("../../../mixins/JobContextMixin");
@@ -58,9 +57,6 @@ class QEPWXContextProvider extends _ExecutableContextProvider.default {
   }
   static NTYP_WITH_LABELS(material) {
     return this.uniqueElementsWithLabels(material).length;
-  }
-  get jsonSchema() {
-    return _JSONSchemasInterface.default.getSchemaById(this.jsonSchemaId);
   }
   buildQEPWXContext(material) {
     const IBRAV = 0; // use CELL_PARAMETERS to define Bravais lattice
