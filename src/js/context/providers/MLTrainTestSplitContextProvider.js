@@ -1,8 +1,11 @@
 import { ContextProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 
 import { applicationContextMixin } from "../mixins/ApplicationContextMixin";
 
 export class MLTrainTestSplitContextProvider extends ContextProvider {
+    jsonSchemaId = "context-providers-directory/ml-train-test-split-context-provider";
+
     constructor(config) {
         super(config);
         this.initApplicationContextMixin();
@@ -23,22 +26,17 @@ export class MLTrainTestSplitContextProvider extends ContextProvider {
         };
     }
 
-    get jsonSchema() {
+    get jsonSchemaPatchConfig() {
         return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description:
-                "Fraction held as the test set. For example, a value of 0.2 corresponds to an 80/20 train/test split.",
-            type: "object",
-            properties: {
-                fraction_held_as_test_set: {
-                    type: "number",
-                    default: this.defaultData.fraction_held_as_test_set,
-                    minimum: 0,
-                    maximum: 1,
-                },
-            },
+            fraction_held_as_test_set: { default: this.defaultData.fraction_held_as_test_set },
         };
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }
 

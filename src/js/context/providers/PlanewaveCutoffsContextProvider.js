@@ -1,4 +1,5 @@
 import { ContextProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 
 import { applicationContextMixin } from "../mixins/ApplicationContextMixin";
 
@@ -12,6 +13,8 @@ const cutoffConfig = {
 };
 
 export class PlanewaveCutoffsContextProvider extends ContextProvider {
+    jsonSchemaId = "context-providers-directory/planewave-cutoffs-context-provider";
+
     constructor(config) {
         super(config);
         this.initApplicationContextMixin();
@@ -32,6 +35,13 @@ export class PlanewaveCutoffsContextProvider extends ContextProvider {
         };
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            wavefunction: { default: this.defaultData.wavefunction },
+            density: { default: this.defaultData.density },
+        };
+    }
+
     get _cutoffConfigPerApplication() {
         return cutoffConfig[this.application.name];
     }
@@ -45,23 +55,10 @@ export class PlanewaveCutoffsContextProvider extends ContextProvider {
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description:
-                "Planewave cutoff parameters for electronic wavefunctions and density. Units are specific to simulation engine.",
-            type: "object",
-            properties: {
-                wavefunction: {
-                    type: "number",
-                    default: this.defaultECUTWFC,
-                },
-                density: {
-                    type: "number",
-                    default: this.defaultECUTRHO,
-                },
-            },
-        };
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }
 

@@ -1,10 +1,19 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 
 export class NEBFormDataProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/neb-data-provider";
+
     // eslint-disable-next-line class-methods-use-this
     get defaultData() {
         return {
             nImages: 1,
+        };
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            nImages: { default: this.defaultData.nImages },
         };
     }
 
@@ -16,17 +25,9 @@ export class NEBFormDataProvider extends JSONSchemaFormDataProvider {
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description: "Number of intermediate NEB images.",
-            type: "object",
-            properties: {
-                nImages: {
-                    type: "number",
-                    default: this.defaultData.nImages,
-                },
-            },
-        };
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }

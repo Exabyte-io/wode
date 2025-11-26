@@ -1,4 +1,5 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 
 const defaultMDConfig = {
     numberOfSteps: 100,
@@ -8,9 +9,20 @@ const defaultMDConfig = {
 };
 
 export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/ion-dynamics-context-provider";
+
     // eslint-disable-next-line class-methods-use-this
     get defaultData() {
         return defaultMDConfig;
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            numberOfSteps: { default: this.defaultData.numberOfSteps },
+            timeStep: { default: this.defaultData.timeStep },
+            electronMass: { default: this.defaultData.electronMass },
+            temperature: { default: this.defaultData.temperature },
+        };
     }
 
     // eslint-disable-next-line class-methods-use-this
@@ -23,34 +35,10 @@ export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
         };
     }
 
-    // eslint-disable-next-line class-methods-use-this
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            type: "object",
-            description: "Important parameters for molecular dynamics calculation",
-            properties: {
-                numberOfSteps: {
-                    type: "integer",
-                    title: "numberOfSteps",
-                    default: defaultMDConfig.numberOfSteps,
-                },
-                timeStep: {
-                    type: "number",
-                    title: "timeStep (Hartree a.u.)",
-                    default: defaultMDConfig.timeStep,
-                },
-                electronMass: {
-                    type: "number",
-                    title: "Effective electron mass",
-                    default: defaultMDConfig.electronMass,
-                },
-                temperature: {
-                    type: "number",
-                    title: "Ionic temperature (K)",
-                    default: defaultMDConfig.temperature,
-                },
-            },
-        };
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }

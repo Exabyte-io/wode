@@ -6,19 +6,21 @@ Object.defineProperty(exports, "__esModule", {
 exports.PointsPathFormDataProvider = exports.ExplicitPointsPathFormDataProvider = exports.ExplicitPointsPath2PIBAFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
 var _math = require("@mat3ra/code/dist/js/math");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _made = require("@mat3ra/made");
 var _underscore = _interopRequireDefault(require("underscore.string"));
 var _ApplicationContextMixin = require("../mixins/ApplicationContextMixin");
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-/* eslint-disable max-classes-per-file */
-/* eslint react/prop-types: 0 */
-
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); } /* eslint-disable max-classes-per-file */ /* eslint react/prop-types: 0 */
 const defaultPoint = "Г";
 const defaultSteps = 10;
 class PointsPathFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/points-path-data-provider");
     this.initMaterialContextMixin();
     this.initApplicationContextMixin();
     this.reciprocalLattice = new _made.Made.ReciprocalLattice(this.material.lattice);
@@ -33,30 +35,20 @@ class PointsPathFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   get symmetryPointsFromMaterial() {
     return this.reciprocalLattice.symmetryPoints;
   }
-  get jsonSchema() {
-    // no need to pass context to get symmetry points on client
+  get jsonSchemaPatchConfig() {
     const points = [].concat(this.symmetryPoints).map(x => x.point);
     return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: " ",
-      description: "path in reciprocal space",
-      type: "array",
-      items: {
-        type: "object",
-        properties: {
-          point: {
-            type: "string",
-            default: defaultPoint,
-            enum: points
-          },
-          steps: {
-            type: "integer",
-            default: defaultSteps
-          }
-        }
+      "items.properties.point": {
+        default: defaultPoint,
+        enum: points
       },
-      minItems: 1
+      "items.properties.steps": {
+        default: defaultSteps
+      }
     };
+  }
+  get jsonSchema() {
+    return _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
   }
 
   // eslint-disable-next-line class-methods-use-this

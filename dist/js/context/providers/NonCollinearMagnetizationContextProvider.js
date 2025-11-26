@@ -5,12 +5,17 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.NonCollinearMagnetizationContextProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _lodash = _interopRequireDefault(require("lodash"));
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 class NonCollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/non-collinear-magnetization-context-provider");
     this.initMaterialContextMixin();
     this.isStartingMagnetization = _lodash.default.get(this.data, "isStartingMagnetization", true);
     this.isConstrainedMagnetization = _lodash.default.get(this.data, "isConstrainedMagnetization", false);
@@ -121,132 +126,61 @@ class NonCollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataPr
       }
     };
   }
-  get jsonSchema() {
+  get jsonSchemaPatchConfig() {
     return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: "",
-      description: "Set initial parameters for non-collinear spin magnetic (SOC) calculation.",
-      type: "object",
-      properties: {
-        isStartingMagnetization: {
-          type: "boolean",
-          title: "Set starting magnetization",
-          default: true
-        },
-        startingMagnetization: {
-          type: "array",
-          minItems: this.uniqueElementsWithLabels.length,
-          maxItems: this.uniqueElementsWithLabels.length,
-          items: {
-            type: "object",
-            properties: {
-              atomicSpecies: {
-                type: "string",
-                title: "Atomic species"
-              },
-              value: {
-                type: "number",
-                title: "Starting magnetization",
-                default: 0.0,
-                minimum: -1.0,
-                maximum: 1.0
-              }
-            }
-          }
-        },
-        isExistingChargeDensity: {
-          type: "boolean",
-          title: "Start calculation from existing charge density",
-          default: false
-        },
-        lforcet: {
-          title: "Set lforcet to",
-          type: "boolean",
-          oneOf: [{
-            const: true,
-            title: "True"
-          }, {
-            const: false,
-            title: "False"
-          }]
-        },
-        isArbitrarySpinDirection: {
-          type: "boolean",
-          title: "Set spin directions",
-          default: false
-        },
-        spinAngles: {
-          type: "array",
-          minItems: this.uniqueElementsWithLabels.length,
-          maxItems: this.uniqueElementsWithLabels.length,
-          items: {
-            type: "object",
-            properties: {
-              atomicSpecies: {
-                type: "string",
-                title: "Atomic species"
-              },
-              angle1: {
-                type: "number",
-                title: "Angle1 (deg)",
-                default: 0.0
-              },
-              angle2: {
-                type: "number",
-                title: "Angle2 (deg)",
-                default: 0.0
-              }
-            }
-          }
-        },
-        isConstrainedMagnetization: {
-          type: "boolean",
-          title: "Set constrained magnetization",
-          default: false
-        },
-        constrainedMagnetization: {
-          type: "object",
-          properties: {
-            constrainType: {
-              type: "string",
-              title: "Constrain type",
-              enum: ["none", "total", "atomic", "total direction", "atomic direction"],
-              default: "atomic direction"
-            },
-            lambda: {
-              type: "number",
-              title: "lambda",
-              default: 0.0
-            }
-          }
-        },
-        isFixedMagnetization: {
-          type: "boolean",
-          title: "Set Fixed magnetization (only applicable to constrained magnetization of 'total' type)",
-          default: true
-        },
-        fixedMagnetization: {
-          type: "object",
-          properties: {
-            x: {
-              type: "number",
-              title: "X-component",
-              default: 0.0
-            },
-            y: {
-              type: "number",
-              title: "Y-component",
-              default: 0.0
-            },
-            z: {
-              type: "number",
-              title: "Z-component",
-              default: 0.0
-            }
-          }
-        }
+      isExistingChargeDensity: {
+        default: false
+      },
+      isStartingMagnetization: {
+        default: true
+      },
+      isArbitrarySpinAngle: {
+        default: false
+      },
+      isConstrainedMagnetization: {
+        default: false
+      },
+      isFixedMagnetization: {
+        default: true
+      },
+      startingMagnetization: {
+        minItems: this.uniqueElementsWithLabels.length,
+        maxItems: this.uniqueElementsWithLabels.length
+      },
+      "startingMagnetization.items.properties.value": {
+        default: 0.0,
+        minimum: -1.0,
+        maximum: 1.0
+      },
+      spinAngles: {
+        minItems: this.uniqueElementsWithLabels.length,
+        maxItems: this.uniqueElementsWithLabels.length
+      },
+      "spinAngles.items.properties.angle1": {
+        default: 0.0
+      },
+      "spinAngles.items.properties.angle2": {
+        default: 0.0
+      },
+      "constrainedMagnetization.properties.constrainType": {
+        default: "atomic direction"
+      },
+      "constrainedMagnetization.properties.lambda": {
+        default: 0.0
+      },
+      "fixedMagnetization.properties.x": {
+        default: 0.0
+      },
+      "fixedMagnetization.properties.y": {
+        default: 0.0
+      },
+      "fixedMagnetization.properties.z": {
+        default: 0.0
       }
     };
+  }
+  get jsonSchema() {
+    return _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
   }
 }
 exports.NonCollinearMagnetizationContextProvider = NonCollinearMagnetizationContextProvider;

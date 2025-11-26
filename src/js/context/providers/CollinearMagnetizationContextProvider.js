@@ -1,9 +1,12 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import lodash from "lodash";
 
 import { materialContextMixin } from "../mixins/MaterialContextMixin";
 
 export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/collinear-magnetization-context-provider";
+
     constructor(config) {
         super(config);
 
@@ -34,6 +37,27 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
             ],
             isTotalMagnetization: false,
             totalMagnetization: 0.0,
+        };
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            "properties.startingMagnetization": {
+                maxItems: this.uniqueElementsWithLabels.length,
+            },
+            "properties.startingMagnetization.items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstElement,
+            },
+            "properties.startingMagnetization.items.properties.value": {
+                default: 0.0,
+            },
+            "properties.isTotalMagnetization": {
+                default: false,
+            },
+            "properties.totalMagnetization": {
+                default: 0.0,
+            },
         };
     }
 
@@ -71,46 +95,10 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Set starting magnetization, can have values in the range [-1, +1].",
-            type: "object",
-            properties: {
-                startingMagnetization: {
-                    type: "array",
-                    maxItems: this.uniqueElementsWithLabels.length,
-                    items: {
-                        type: "object",
-                        properties: {
-                            atomicSpecies: {
-                                type: "string",
-                                title: "Atomic species",
-                                enum: this.uniqueElementsWithLabels,
-                                default: this.firstElement,
-                            },
-                            value: {
-                                type: "number",
-                                title: "Starting magnetization",
-                                default: 0.0,
-                                minimum: -1.0,
-                                maximum: 1.0,
-                            },
-                        },
-                    },
-                },
-                isTotalMagnetization: {
-                    type: "boolean",
-                    title: "Set total magnetization instead",
-                    default: false,
-                },
-                totalMagnetization: {
-                    type: "number",
-                    title: "Total magnetization",
-                    default: 0.0,
-                },
-            },
-        };
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }
 

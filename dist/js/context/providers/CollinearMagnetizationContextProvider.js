@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.CollinearMagnetizationContextProvider = void 0;
 var _ade = require("@mat3ra/ade");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _lodash = _interopRequireDefault(require("lodash"));
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
@@ -14,6 +15,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 class CollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/collinear-magnetization-context-provider");
     _defineProperty(this, "indexOfElement", element => {
       return this.uniqueElementsWithLabels.indexOf(element) + 1;
     });
@@ -46,6 +48,26 @@ class CollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvi
       totalMagnetization: 0.0
     };
   }
+  get jsonSchemaPatchConfig() {
+    return {
+      "properties.startingMagnetization": {
+        maxItems: this.uniqueElementsWithLabels.length
+      },
+      "properties.startingMagnetization.items.properties.atomicSpecies": {
+        enum: this.uniqueElementsWithLabels,
+        default: this.firstElement
+      },
+      "properties.startingMagnetization.items.properties.value": {
+        default: 0.0
+      },
+      "properties.isTotalMagnetization": {
+        default: false
+      },
+      "properties.totalMagnetization": {
+        default: 0.0
+      }
+    };
+  }
   get uiSchemaStyled() {
     return {
       startingMagnetization: {
@@ -67,46 +89,7 @@ class CollinearMagnetizationContextProvider extends _ade.JSONSchemaFormDataProvi
     };
   }
   get jsonSchema() {
-    return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      title: "",
-      description: "Set starting magnetization, can have values in the range [-1, +1].",
-      type: "object",
-      properties: {
-        startingMagnetization: {
-          type: "array",
-          maxItems: this.uniqueElementsWithLabels.length,
-          items: {
-            type: "object",
-            properties: {
-              atomicSpecies: {
-                type: "string",
-                title: "Atomic species",
-                enum: this.uniqueElementsWithLabels,
-                default: this.firstElement
-              },
-              value: {
-                type: "number",
-                title: "Starting magnetization",
-                default: 0.0,
-                minimum: -1.0,
-                maximum: 1.0
-              }
-            }
-          }
-        },
-        isTotalMagnetization: {
-          type: "boolean",
-          title: "Set total magnetization instead",
-          default: false
-        },
-        totalMagnetization: {
-          type: "number",
-          title: "Total magnetization",
-          default: 0.0
-        }
-      }
-    };
+    return _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
   }
 }
 exports.CollinearMagnetizationContextProvider = CollinearMagnetizationContextProvider;

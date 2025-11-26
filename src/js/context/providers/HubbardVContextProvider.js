@@ -1,3 +1,5 @@
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
+
 import { HubbardUContextProvider } from "./HubbardUContextProvider";
 
 const defaultHubbardConfig = {
@@ -11,6 +13,8 @@ const defaultHubbardConfig = {
 };
 
 export class HubbardVContextProvider extends HubbardUContextProvider {
+    jsonSchemaId = "context-providers-directory/hubbard-v-context-provider";
+
     get defaultData() {
         return [
             {
@@ -33,6 +37,37 @@ export class HubbardVContextProvider extends HubbardUContextProvider {
             : this.firstSpecies;
     }
 
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstSpecies,
+            },
+            "items.properties.siteIndex": {
+                default: defaultHubbardConfig.siteIndex,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.atomicSpecies2": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.secondSpecies,
+            },
+            "items.properties.siteIndex2": {
+                default:
+                    this.uniqueElementsWithLabels?.length > 1 ? 2 : defaultHubbardConfig.siteIndex2,
+            },
+            "items.properties.atomicOrbital2": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.hubbardVValue": {
+                default: defaultHubbardConfig.hubbardVValue,
+            },
+        };
+    }
+
     get uiSchemaStyled() {
         return {
             "ui:options": {
@@ -53,59 +88,9 @@ export class HubbardVContextProvider extends HubbardUContextProvider {
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard V parameters for DFT+U+V calculation.",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Species 1",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.firstSpecies,
-                    },
-                    siteIndex: {
-                        type: "integer",
-                        title: "Site no 1",
-                        default: defaultHubbardConfig.siteIndex,
-                    },
-                    atomicOrbital: {
-                        type: "string",
-                        title: "Orbital 1",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    atomicSpecies2: {
-                        type: "string",
-                        title: "Species 2",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.secondSpecies,
-                    },
-                    siteIndex2: {
-                        type: "integer",
-                        title: "Site no 2",
-                        default:
-                            this.uniqueElementsWithLabels?.length > 1
-                                ? 2
-                                : defaultHubbardConfig.siteIndex2,
-                    },
-                    atomicOrbital2: {
-                        type: "string",
-                        title: "Orbital 2",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    hubbardVValue: {
-                        type: "number",
-                        title: "V (eV)",
-                        default: defaultHubbardConfig.hubbardVValue,
-                    },
-                },
-            },
-            minItems: 1,
-        };
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }

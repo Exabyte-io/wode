@@ -1,8 +1,11 @@
 import { ContextProvider } from "@mat3ra/ade";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 
 import { applicationContextMixin } from "../mixins/ApplicationContextMixin";
 
 export class MLSettingsContextProvider extends ContextProvider {
+    jsonSchemaId = "context-providers-directory/ml-settings-context-provider";
+
     constructor(config) {
         super(config);
         this.initApplicationContextMixin();
@@ -24,24 +27,18 @@ export class MLSettingsContextProvider extends ContextProvider {
         };
     }
 
-    get jsonSchema() {
+    get jsonSchemaPatchConfig() {
         return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description: "Settings important to machine learning runs.",
-            type: "object",
-            properties: {
-                target_column_name: {
-                    type: "string",
-                    default: this.defaultData.target_column_name,
-                },
-                problem_category: {
-                    type: "string",
-                    default: this.defaultData.problem_category,
-                    enum: ["regression", "classification", "clustering"],
-                },
-            },
+            target_column_name: { default: this.defaultData.target_column_name },
+            problem_category: { default: this.defaultData.problem_category },
         };
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }
 

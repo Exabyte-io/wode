@@ -7,14 +7,19 @@ exports.PointsGridFormDataProvider = void 0;
 var _ade = require("@mat3ra/ade");
 var _constants = require("@mat3ra/code/dist/js/constants");
 var _math = require("@mat3ra/code/dist/js/math");
+var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _made = require("@mat3ra/made");
 var _lodash = _interopRequireDefault(require("lodash"));
 var _MaterialContextMixin = require("../mixins/MaterialContextMixin");
 var _settings = require("./settings");
 function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
+function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object.defineProperty(e, r, { value: t, enumerable: !0, configurable: !0, writable: !0 }) : e[r] = t, e; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 class PointsGridFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/points-grid-data-provider");
     this.initMaterialContextMixin();
     this._divisor = config.divisor || 1; // KPPRA will be divided by this number
     this.reciprocalLattice = new _made.Made.ReciprocalLattice(this.material.lattice);
@@ -87,50 +92,34 @@ class PointsGridFormDataProvider extends _ade.JSONSchemaFormDataProvider {
   get reciprocalVectorRatios() {
     return this.reciprocalLattice.reciprocalVectorRatios.map(r => Number(_math.math.numberToPrecision(r, 3)));
   }
-  get jsonSchema() {
-    const vector = {
-      type: "array",
-      items: {
-        type: "number"
-      },
-      minItems: 3,
-      maxItems: 3
-    };
+  get jsonSchemaPatchConfig() {
+    // Helper function to create vector schema with defaults
     const vector_ = (defaultValue, isStringType = false) => {
       const isArray = Array.isArray(defaultValue);
       return {
-        ...vector,
+        type: "array",
         items: {
           type: isStringType ? "string" : "number",
           ...(isArray ? {} : {
             default: defaultValue
           })
         },
+        minItems: 3,
+        maxItems: 3,
         ...(isArray ? {
           default: defaultValue
         } : {})
       };
     };
     return {
-      $schema: "http://json-schema.org/draft-07/schema#",
-      description: `3D grid with shifts. Default min value for ${this._metricDescription[this.gridMetricType]} is ${this._getDefaultGridMetricValue(this.gridMetricType)}.`,
-      type: "object",
-      properties: {
-        dimensions: vector_(this._defaultDimensions, this.isUsingJinjaVariables),
-        shifts: vector_(this.getDefaultShift()),
-        reciprocalVectorRatios: vector_(this.reciprocalVectorRatios),
-        gridMetricType: {
-          type: "string",
-          enum: ["KPPRA", "spacing"],
-          default: "KPPRA"
-        },
-        gridMetricValue: {
-          type: "number"
-        },
-        preferGridMetric: {
-          type: "boolean"
-        }
+      dimensions: vector_(this._defaultDimensions, this.isUsingJinjaVariables),
+      shifts: vector_(this.getDefaultShift()),
+      reciprocalVectorRatios: vector_(this.reciprocalVectorRatios),
+      gridMetricType: {
+        default: "KPPRA"
       },
+      description: `3D grid with shifts. Default min value for ${this._metricDescription[this.gridMetricType]} is ${this._getDefaultGridMetricValue(this.gridMetricType)}.`,
+      required: ["dimensions", "shifts"],
       dependencies: {
         gridMetricType: {
           oneOf: [{
@@ -169,9 +158,11 @@ class PointsGridFormDataProvider extends _ade.JSONSchemaFormDataProvider {
             }
           }]
         }
-      },
-      required: ["dimensions", "shifts"]
+      }
     };
+  }
+  get jsonSchema() {
+    return _JSONSchemasInterface.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
   }
   get uiSchema() {
     const _arraySubStyle = (emptyValue = 0) => {

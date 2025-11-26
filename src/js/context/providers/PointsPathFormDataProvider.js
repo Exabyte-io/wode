@@ -2,6 +2,7 @@
 /* eslint react/prop-types: 0 */
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
 import { math as codeJSMath } from "@mat3ra/code/dist/js/math";
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import { Made } from "@mat3ra/made";
 import s from "underscore.string";
 
@@ -12,6 +13,8 @@ const defaultPoint = "Г";
 const defaultSteps = 10;
 
 export class PointsPathFormDataProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId = "context-providers-directory/points-path-data-provider";
+
     constructor(config) {
         super(config);
         this.initMaterialContextMixin();
@@ -32,30 +35,25 @@ export class PointsPathFormDataProvider extends JSONSchemaFormDataProvider {
         return this.reciprocalLattice.symmetryPoints;
     }
 
-    get jsonSchema() {
-        // no need to pass context to get symmetry points on client
+    get jsonSchemaPatchConfig() {
         const points = [].concat(this.symmetryPoints).map((x) => x.point);
+
         return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description: "path in reciprocal space",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    point: {
-                        type: "string",
-                        default: defaultPoint,
-                        enum: points,
-                    },
-                    steps: {
-                        type: "integer",
-                        default: defaultSteps,
-                    },
-                },
+            "items.properties.point": {
+                default: defaultPoint,
+                enum: points,
             },
-            minItems: 1,
+            "items.properties.steps": {
+                default: defaultSteps,
+            },
         };
+    }
+
+    get jsonSchema() {
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 
     // eslint-disable-next-line class-methods-use-this
