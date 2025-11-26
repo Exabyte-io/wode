@@ -10,6 +10,8 @@ import ExecutableContextProvider from "../ExecutableContextProvider";
 import QEPWXContextProvider from "./QEPWXContextProvider";
 
 export default class QENEBContextProvider extends ExecutableContextProvider {
+    jsonSchemaId = "context-providers-directory/by-application/qe-neb-context-provider";
+
     _material = undefined;
 
     _materials = [];

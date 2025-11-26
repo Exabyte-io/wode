@@ -10,6 +10,8 @@ import { workflowContextMixin } from "../../../mixins/WorkflowContextMixin";
 import ExecutableContextProvider from "../ExecutableContextProvider";
 
 export default class QEPWXContextProvider extends ExecutableContextProvider {
+    jsonSchemaId = "context-providers-directory/by-application/qe-pwx-context-provider";
+
     _material = undefined;
 
     _materials = [];

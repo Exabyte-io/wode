@@ -20,6 +20,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 class NWChemTotalEnergyContextProvider extends _ExecutableContextProvider.default {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/by-application/nwchem-total-energy-context-provider");
     _defineProperty(this, "_material", undefined);
     this.initMethodDataContextMixin();
     this.initWorkflowContextMixin();

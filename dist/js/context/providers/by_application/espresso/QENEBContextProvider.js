@@ -20,6 +20,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 class QENEBContextProvider extends _ExecutableContextProvider.default {
   constructor(config) {
     super(config);
+    _defineProperty(this, "jsonSchemaId", "context-providers-directory/by-application/qe-neb-context-provider");
     _defineProperty(this, "_material", undefined);
     _defineProperty(this, "_materials", []);
     _defineProperty(this, "_materialsSet", undefined);

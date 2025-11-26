@@ -10,6 +10,9 @@ import { workflowContextMixin } from "../../../mixins/WorkflowContextMixin";
 import ExecutableContextProvider from "../ExecutableContextProvider";
 
 export default class NWChemTotalEnergyContextProvider extends ExecutableContextProvider {
+    jsonSchemaId =
+        "context-providers-directory/by-application/nwchem-total-energy-context-provider";
+
     _material = undefined;
 
     constructor(config) {

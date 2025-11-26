@@ -6,6 +6,8 @@ import { workflowContextMixin } from "../../../mixins/WorkflowContextMixin";
 import ExecutableContextProvider from "../ExecutableContextProvider";
 
 export default class VASPContextProvider extends ExecutableContextProvider {
+    jsonSchemaId = "context-providers-directory/by-application/vasp-context-provider";
+
     _material = undefined;
 
     _materials = [];
