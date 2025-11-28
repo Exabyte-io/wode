@@ -1,5 +1,6 @@
 export class PlanewaveCutoffsContextProvider extends ContextProvider {
     constructor(config: any);
+    jsonSchemaId: string;
     get uiSchema(): {
         wavefunction: {};
         density: {};
@@ -8,24 +9,17 @@ export class PlanewaveCutoffsContextProvider extends ContextProvider {
         wavefunction: any;
         density: any;
     };
+    get jsonSchemaPatchConfig(): {
+        wavefunction: {
+            default: any;
+        };
+        density: {
+            default: any;
+        };
+    };
     get _cutoffConfigPerApplication(): any;
     get defaultECUTWFC(): any;
     get defaultECUTRHO(): any;
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        properties: {
-            wavefunction: {
-                type: string;
-                default: any;
-            };
-            density: {
-                type: string;
-                default: any;
-            };
-        };
-    };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
 import { ContextProvider } from "@mat3ra/ade";

@@ -1,6 +1,7 @@
 export class PointsGridFormDataProvider extends JSONSchemaFormDataProvider {
     static _canTransform(data: any): any;
     constructor(config: any);
+    jsonSchemaId: string;
     _divisor: any;
     reciprocalLattice: import("@mat3ra/made").ReciprocalLattice;
     dimensions: number[];
@@ -27,53 +28,42 @@ export class PointsGridFormDataProvider extends JSONSchemaFormDataProvider {
     };
     get _defaultDataWithMaterial(): object;
     get reciprocalVectorRatios(): number[];
-    get jsonSchema(): {
-        $schema: string;
-        description: string;
-        type: string;
-        properties: {
-            dimensions: {
-                default?: any[] | undefined;
-                items: {
-                    default?: any;
-                    type: string;
-                };
-                type: string;
-                minItems: number;
-                maxItems: number;
-            };
-            shifts: {
-                default?: any[] | undefined;
-                items: {
-                    default?: any;
-                    type: string;
-                };
-                type: string;
-                minItems: number;
-                maxItems: number;
-            };
-            reciprocalVectorRatios: {
-                default?: any[] | undefined;
-                items: {
-                    default?: any;
-                    type: string;
-                };
-                type: string;
-                minItems: number;
-                maxItems: number;
-            };
-            gridMetricType: {
-                type: string;
-                enum: string[];
-                default: string;
-            };
-            gridMetricValue: {
+    get jsonSchemaPatchConfig(): {
+        dimensions: {
+            default?: any[] | undefined;
+            type: string;
+            items: {
+                default?: any;
                 type: string;
             };
-            preferGridMetric: {
-                type: string;
-            };
+            minItems: number;
+            maxItems: number;
         };
+        shifts: {
+            default?: any[] | undefined;
+            type: string;
+            items: {
+                default?: any;
+                type: string;
+            };
+            minItems: number;
+            maxItems: number;
+        };
+        reciprocalVectorRatios: {
+            default?: any[] | undefined;
+            type: string;
+            items: {
+                default?: any;
+                type: string;
+            };
+            minItems: number;
+            maxItems: number;
+        };
+        gridMetricType: {
+            default: string;
+        };
+        description: string;
+        required: string[];
         dependencies: {
             gridMetricType: {
                 oneOf: {
@@ -96,8 +86,8 @@ export class PointsGridFormDataProvider extends JSONSchemaFormDataProvider {
                 }[];
             };
         };
-        required: string[];
     };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
     get uiSchema(): {
         dimensions: {
             "ui:options": {

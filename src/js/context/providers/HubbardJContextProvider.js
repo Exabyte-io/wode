@@ -1,3 +1,5 @@
+import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
+
 import { HubbardUContextProvider } from "./HubbardUContextProvider";
 
 const defaultHubbardConfig = {
@@ -8,6 +10,8 @@ const defaultHubbardConfig = {
 };
 
 export class HubbardJContextProvider extends HubbardUContextProvider {
+    jsonSchemaId = "context-providers-directory/hubbard-j-context-provider";
+
     get defaultData() {
         return [
             {
@@ -15,6 +19,25 @@ export class HubbardJContextProvider extends HubbardUContextProvider {
                 atomicSpecies: this.firstElement,
             },
         ];
+    }
+
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.paramType": {
+                default: defaultHubbardConfig.paramType,
+            },
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstElement,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.value": {
+                default: defaultHubbardConfig.value,
+            },
+        };
     }
 
     get uiSchemaStyled() {
@@ -34,40 +57,9 @@ export class HubbardJContextProvider extends HubbardUContextProvider {
     }
 
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard parameters for DFT+U+J calculation.",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    paramType: {
-                        type: "string",
-                        title: "Species",
-                        enum: ["U", "J", "B", "E2", "E3"],
-                        default: defaultHubbardConfig.paramType,
-                    },
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Species",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.firstElement,
-                    },
-                    atomicOrbital: {
-                        type: "string",
-                        title: "Orbital",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    value: {
-                        type: "number",
-                        title: "Value (eV)",
-                        default: defaultHubbardConfig.value,
-                    },
-                },
-            },
-            minItems: 1,
-        };
+        return JSONSchemasInterface.getPatchedSchemaById(
+            this.jsonSchemaId,
+            this.jsonSchemaPatchConfig,
+        );
     }
 }

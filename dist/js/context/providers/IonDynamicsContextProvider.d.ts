@@ -1,9 +1,24 @@
 export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId: string;
     get defaultData(): {
         numberOfSteps: number;
         timeStep: number;
         electronMass: number;
         temperature: number;
+    };
+    get jsonSchemaPatchConfig(): {
+        numberOfSteps: {
+            default: number;
+        };
+        timeStep: {
+            default: number;
+        };
+        electronMass: {
+            default: number;
+        };
+        temperature: {
+            default: number;
+        };
     };
     get uiSchema(): {
         numberOfSteps: {};
@@ -11,32 +26,6 @@ export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
         electronMass: {};
         temperature: {};
     };
-    get jsonSchema(): {
-        $schema: string;
-        type: string;
-        description: string;
-        properties: {
-            numberOfSteps: {
-                type: string;
-                title: string;
-                default: number;
-            };
-            timeStep: {
-                type: string;
-                title: string;
-                default: number;
-            };
-            electronMass: {
-                type: string;
-                title: string;
-                default: number;
-            };
-            temperature: {
-                type: string;
-                title: string;
-                default: number;
-            };
-        };
-    };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";

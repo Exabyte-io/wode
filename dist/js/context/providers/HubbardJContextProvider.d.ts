@@ -5,6 +5,22 @@ export class HubbardJContextProvider extends HubbardUContextProvider {
         atomicOrbital: string;
         value: number;
     }[];
+    get jsonSchemaPatchConfig(): {
+        "items.properties.paramType": {
+            default: string;
+        };
+        "items.properties.atomicSpecies": {
+            enum: any[];
+            default: any;
+        };
+        "items.properties.atomicOrbital": {
+            enum: string[];
+            default: string;
+        };
+        "items.properties.value": {
+            default: number;
+        };
+    };
     get uiSchemaStyled(): {
         "ui:options": {
             addable: boolean;
@@ -17,41 +33,6 @@ export class HubbardJContextProvider extends HubbardUContextProvider {
             atomicOrbital: {};
             value: {};
         };
-    };
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        items: {
-            type: string;
-            properties: {
-                paramType: {
-                    type: string;
-                    title: string;
-                    enum: string[];
-                    default: string;
-                };
-                atomicSpecies: {
-                    type: string;
-                    title: string;
-                    enum: any[];
-                    default: any;
-                };
-                atomicOrbital: {
-                    type: string;
-                    title: string;
-                    enum: string[];
-                    default: string;
-                };
-                value: {
-                    type: string;
-                    title: string;
-                    default: number;
-                };
-            };
-        };
-        minItems: number;
     };
 }
 import { HubbardUContextProvider } from "./HubbardUContextProvider";

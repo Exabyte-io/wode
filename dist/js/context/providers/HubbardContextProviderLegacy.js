@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HubbardContextProviderLegacy = void 0;
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const HubbardUContextProvider_1 = require("./HubbardUContextProvider");
 const defaultHubbardConfig = {
     hubbardUValue: 1.0,
@@ -8,6 +12,7 @@ const defaultHubbardConfig = {
 class HubbardContextProviderLegacy extends HubbardUContextProvider_1.HubbardUContextProvider {
     constructor() {
         super(...arguments);
+        this.jsonSchemaId = "context-providers-directory/hubbard-legacy-context-provider";
         this.speciesIndexFromSpecies = (species) => {
             var _a;
             return ((_a = this.uniqueElementsWithLabels) === null || _a === void 0 ? void 0 : _a.length) > 0
@@ -31,6 +36,16 @@ class HubbardContextProviderLegacy extends HubbardUContextProvider_1.HubbardUCon
             },
         ];
     }
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+            },
+            "items.properties.hubbardUValue": {
+                default: defaultHubbardConfig.hubbardUValue,
+            },
+        };
+    }
     get uiSchemaStyled() {
         return {
             "ui:options": {
@@ -46,33 +61,7 @@ class HubbardContextProviderLegacy extends HubbardUContextProvider_1.HubbardUCon
         };
     }
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard parameters for DFT+U calculation.",
-            type: "array",
-            uniqueItems: true,
-            minItems: 1,
-            items: {
-                type: "object",
-                properties: {
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Atomic species",
-                        enum: this.uniqueElementsWithLabels,
-                    },
-                    atomicSpeciesIndex: {
-                        type: "integer",
-                        title: "Species index",
-                    },
-                    hubbardUValue: {
-                        type: "number",
-                        title: "Hubbard U (eV)",
-                        default: defaultHubbardConfig.hubbardUValue,
-                    },
-                },
-            },
-        };
+        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
     }
 }
 exports.HubbardContextProviderLegacy = HubbardContextProviderLegacy;

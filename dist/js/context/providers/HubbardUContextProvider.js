@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HubbardUContextProvider = void 0;
 const ade_1 = require("@mat3ra/ade");
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const MaterialContextMixin_1 = require("../mixins/MaterialContextMixin");
 const defaultHubbardConfig = {
     atomicSpecies: "",
@@ -12,6 +16,7 @@ class HubbardUContextProvider extends ade_1.JSONSchemaFormDataProvider {
     constructor(config) {
         var _a, _b, _c, _d, _e;
         super(config);
+        this.jsonSchemaId = "context-providers-directory/hubbard-u-context-provider";
         this.initMaterialContextMixin();
         this.uniqueElements = ((_b = (_a = this.material) === null || _a === void 0 ? void 0 : _a.Basis) === null || _b === void 0 ? void 0 : _b.uniqueElements) || [];
         this.orbitalList = [
@@ -47,6 +52,21 @@ class HubbardUContextProvider extends ade_1.JSONSchemaFormDataProvider {
             },
         ];
     }
+    get jsonSchemaPatchConfig() {
+        return {
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstElement,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.hubbardUValue": {
+                default: defaultHubbardConfig.hubbardUValue,
+            },
+        };
+    }
     get uiSchemaStyled() {
         return {
             "ui:options": {
@@ -62,34 +82,7 @@ class HubbardUContextProvider extends ade_1.JSONSchemaFormDataProvider {
         };
     }
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard U parameters for DFT+U or DFT+U+V calculation.",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Atomic species",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.firstElement,
-                    },
-                    atomicOrbital: {
-                        type: "string",
-                        title: "Atomic orbital",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    hubbardUValue: {
-                        type: "number",
-                        title: "Hubbard U (eV)",
-                        default: defaultHubbardConfig.hubbardUValue,
-                    },
-                },
-            },
-        };
+        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
     }
 }
 exports.HubbardUContextProvider = HubbardUContextProvider;

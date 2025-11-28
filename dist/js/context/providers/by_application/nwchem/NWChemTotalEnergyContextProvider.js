@@ -15,6 +15,7 @@ const ExecutableContextProvider_1 = __importDefault(require("../ExecutableContex
 class NWChemTotalEnergyContextProvider extends ExecutableContextProvider_1.default {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/by-application/nwchem-total-energy-context-provider";
         this._material = undefined;
         this.initMethodDataContextMixin();
         this.initWorkflowContextMixin();

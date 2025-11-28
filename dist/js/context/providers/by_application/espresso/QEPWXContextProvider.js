@@ -15,6 +15,7 @@ const ExecutableContextProvider_1 = __importDefault(require("../ExecutableContex
 class QEPWXContextProvider extends ExecutableContextProvider_1.default {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/by-application/qe-pwx-context-provider";
         this._material = undefined;
         this._materials = [];
         this.initMaterialsContextMixin();

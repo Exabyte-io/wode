@@ -1,6 +1,10 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HubbardVContextProvider = void 0;
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const HubbardUContextProvider_1 = require("./HubbardUContextProvider");
 const defaultHubbardConfig = {
     atomicSpecies: "",
@@ -12,6 +16,10 @@ const defaultHubbardConfig = {
     hubbardVValue: 1.0,
 };
 class HubbardVContextProvider extends HubbardUContextProvider_1.HubbardUContextProvider {
+    constructor() {
+        super(...arguments);
+        this.jsonSchemaId = "context-providers-directory/hubbard-v-context-provider";
+    }
     get defaultData() {
         var _a;
         return [
@@ -32,6 +40,36 @@ class HubbardVContextProvider extends HubbardUContextProvider_1.HubbardUContextP
             ? this.uniqueElementsWithLabels[1]
             : this.firstSpecies;
     }
+    get jsonSchemaPatchConfig() {
+        var _a;
+        return {
+            "items.properties.atomicSpecies": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.firstSpecies,
+            },
+            "items.properties.siteIndex": {
+                default: defaultHubbardConfig.siteIndex,
+            },
+            "items.properties.atomicOrbital": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.atomicSpecies2": {
+                enum: this.uniqueElementsWithLabels,
+                default: this.secondSpecies,
+            },
+            "items.properties.siteIndex2": {
+                default: ((_a = this.uniqueElementsWithLabels) === null || _a === void 0 ? void 0 : _a.length) > 1 ? 2 : defaultHubbardConfig.siteIndex2,
+            },
+            "items.properties.atomicOrbital2": {
+                enum: this.orbitalList,
+                default: defaultHubbardConfig.atomicOrbital,
+            },
+            "items.properties.hubbardVValue": {
+                default: defaultHubbardConfig.hubbardVValue,
+            },
+        };
+    }
     get uiSchemaStyled() {
         return {
             "ui:options": {
@@ -51,60 +89,7 @@ class HubbardVContextProvider extends HubbardUContextProvider_1.HubbardUContextP
         };
     }
     get jsonSchema() {
-        var _a;
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: "",
-            description: "Hubbard V parameters for DFT+U+V calculation.",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    atomicSpecies: {
-                        type: "string",
-                        title: "Species 1",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.firstSpecies,
-                    },
-                    siteIndex: {
-                        type: "integer",
-                        title: "Site no 1",
-                        default: defaultHubbardConfig.siteIndex,
-                    },
-                    atomicOrbital: {
-                        type: "string",
-                        title: "Orbital 1",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    atomicSpecies2: {
-                        type: "string",
-                        title: "Species 2",
-                        enum: this.uniqueElementsWithLabels,
-                        default: this.secondSpecies,
-                    },
-                    siteIndex2: {
-                        type: "integer",
-                        title: "Site no 2",
-                        default: ((_a = this.uniqueElementsWithLabels) === null || _a === void 0 ? void 0 : _a.length) > 1
-                            ? 2
-                            : defaultHubbardConfig.siteIndex2,
-                    },
-                    atomicOrbital2: {
-                        type: "string",
-                        title: "Orbital 2",
-                        enum: this.orbitalList,
-                        default: defaultHubbardConfig.atomicOrbital,
-                    },
-                    hubbardVValue: {
-                        type: "number",
-                        title: "V (eV)",
-                        default: defaultHubbardConfig.hubbardVValue,
-                    },
-                },
-            },
-            minItems: 1,
-        };
+        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
     }
 }
 exports.HubbardVContextProvider = HubbardVContextProvider;

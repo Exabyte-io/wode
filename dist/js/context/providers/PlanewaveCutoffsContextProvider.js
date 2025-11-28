@@ -1,7 +1,11 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.PlanewaveCutoffsContextProvider = void 0;
 const ade_1 = require("@mat3ra/ade");
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const ApplicationContextMixin_1 = require("../mixins/ApplicationContextMixin");
 const cutoffConfig = {
     vasp: {}, // assuming default cutoffs for VASP
@@ -14,6 +18,7 @@ const cutoffConfig = {
 class PlanewaveCutoffsContextProvider extends ade_1.ContextProvider {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/planewave-cutoffs-context-provider";
         this.initApplicationContextMixin();
     }
     // eslint-disable-next-line class-methods-use-this
@@ -29,6 +34,12 @@ class PlanewaveCutoffsContextProvider extends ade_1.ContextProvider {
             density: this.defaultECUTRHO,
         };
     }
+    get jsonSchemaPatchConfig() {
+        return {
+            wavefunction: { default: this.defaultData.wavefunction },
+            density: { default: this.defaultData.density },
+        };
+    }
     get _cutoffConfigPerApplication() {
         return cutoffConfig[this.application.name];
     }
@@ -39,22 +50,7 @@ class PlanewaveCutoffsContextProvider extends ade_1.ContextProvider {
         return this._cutoffConfigPerApplication.density || null;
     }
     get jsonSchema() {
-        return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description: "Planewave cutoff parameters for electronic wavefunctions and density. Units are specific to simulation engine.",
-            type: "object",
-            properties: {
-                wavefunction: {
-                    type: "number",
-                    default: this.defaultECUTWFC,
-                },
-                density: {
-                    type: "number",
-                    default: this.defaultECUTRHO,
-                },
-            },
-        };
+        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
     }
 }
 exports.PlanewaveCutoffsContextProvider = PlanewaveCutoffsContextProvider;

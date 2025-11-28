@@ -12,6 +12,7 @@ const ExecutableContextProvider_1 = __importDefault(require("../ExecutableContex
 class VASPContextProvider extends ExecutableContextProvider_1.default {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/by-application/vasp-context-provider";
         this._material = undefined;
         this._materials = [];
         this.initJobContextMixin();

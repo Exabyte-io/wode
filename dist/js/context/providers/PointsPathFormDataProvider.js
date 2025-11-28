@@ -8,6 +8,7 @@ exports.ExplicitPointsPath2PIBAFormDataProvider = exports.ExplicitPointsPathForm
 /* eslint react/prop-types: 0 */
 const ade_1 = require("@mat3ra/ade");
 const math_1 = require("@mat3ra/code/dist/js/math");
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const made_1 = require("@mat3ra/made");
 const underscore_string_1 = __importDefault(require("underscore.string"));
 const ApplicationContextMixin_1 = require("../mixins/ApplicationContextMixin");
@@ -17,6 +18,7 @@ const defaultSteps = 10;
 class PointsPathFormDataProvider extends ade_1.JSONSchemaFormDataProvider {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/points-path-data-provider";
         this.initMaterialContextMixin();
         this.initApplicationContextMixin();
         this.reciprocalLattice = new made_1.Made.ReciprocalLattice(this.material.lattice);
@@ -31,30 +33,20 @@ class PointsPathFormDataProvider extends ade_1.JSONSchemaFormDataProvider {
     get symmetryPointsFromMaterial() {
         return this.reciprocalLattice.symmetryPoints;
     }
-    get jsonSchema() {
-        // no need to pass context to get symmetry points on client
+    get jsonSchemaPatchConfig() {
         const points = [].concat(this.symmetryPoints).map((x) => x.point);
         return {
-            $schema: "http://json-schema.org/draft-07/schema#",
-            title: " ",
-            description: "path in reciprocal space",
-            type: "array",
-            items: {
-                type: "object",
-                properties: {
-                    point: {
-                        type: "string",
-                        default: defaultPoint,
-                        enum: points,
-                    },
-                    steps: {
-                        type: "integer",
-                        default: defaultSteps,
-                    },
-                },
+            "items.properties.point": {
+                default: defaultPoint,
+                enum: points,
             },
-            minItems: 1,
+            "items.properties.steps": {
+                default: defaultSteps,
+            },
         };
+    }
+    get jsonSchema() {
+        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
     }
     // eslint-disable-next-line class-methods-use-this
     get uiSchema() {

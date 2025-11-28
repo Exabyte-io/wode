@@ -1,5 +1,6 @@
 export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
     constructor(config: any);
+    jsonSchemaId: string;
     firstElement: any;
     isTotalMagnetization: boolean;
     get uniqueElementsWithLabels(): any[];
@@ -12,6 +13,24 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
         }[];
         isTotalMagnetization: boolean;
         totalMagnetization: number;
+    };
+    get jsonSchemaPatchConfig(): {
+        "properties.startingMagnetization": {
+            maxItems: number;
+        };
+        "properties.startingMagnetization.items.properties.atomicSpecies": {
+            enum: any[];
+            default: any;
+        };
+        "properties.startingMagnetization.items.properties.value": {
+            default: number;
+        };
+        "properties.isTotalMagnetization": {
+            default: boolean;
+        };
+        "properties.totalMagnetization": {
+            default: number;
+        };
     };
     transformData: (data: any) => any;
     get uiSchemaStyled(): {
@@ -32,45 +51,6 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
             "ui:readonly": boolean;
         };
     };
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        properties: {
-            startingMagnetization: {
-                type: string;
-                maxItems: number;
-                items: {
-                    type: string;
-                    properties: {
-                        atomicSpecies: {
-                            type: string;
-                            title: string;
-                            enum: any[];
-                            default: any;
-                        };
-                        value: {
-                            type: string;
-                            title: string;
-                            default: number;
-                            minimum: number;
-                            maximum: number;
-                        };
-                    };
-                };
-            };
-            isTotalMagnetization: {
-                type: string;
-                title: string;
-                default: boolean;
-            };
-            totalMagnetization: {
-                type: string;
-                title: string;
-                default: number;
-            };
-        };
-    };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";

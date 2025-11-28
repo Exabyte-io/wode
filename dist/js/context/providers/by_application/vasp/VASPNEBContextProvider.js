@@ -14,6 +14,7 @@ const VASPContextProvider_1 = __importDefault(require("./VASPContextProvider"));
 class VASPNEBContextProvider extends ExecutableContextProvider_1.default {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/by-application/vasp-neb-context-provider";
         this._materials = [];
         this.initMaterialContextMixin();
         this.initMaterialsContextMixin();

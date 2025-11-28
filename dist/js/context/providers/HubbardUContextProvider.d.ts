@@ -1,5 +1,6 @@
 export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
     constructor(config: any);
+    jsonSchemaId: string;
     uniqueElements: any;
     orbitalList: string[];
     uniqueElementsWithLabels: any[];
@@ -9,6 +10,19 @@ export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
         atomicOrbital: string;
         hubbardUValue: number;
     }[];
+    get jsonSchemaPatchConfig(): {
+        "items.properties.atomicSpecies": {
+            enum: any[];
+            default: any;
+        };
+        "items.properties.atomicOrbital": {
+            enum: string[];
+            default: string;
+        };
+        "items.properties.hubbardUValue": {
+            default: number;
+        };
+    };
     get uiSchemaStyled(): {
         "ui:options": {
             addable: boolean;
@@ -21,33 +35,6 @@ export class HubbardUContextProvider extends JSONSchemaFormDataProvider {
             hubbardUValue: {};
         };
     };
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        items: {
-            type: string;
-            properties: {
-                atomicSpecies: {
-                    type: string;
-                    title: string;
-                    enum: any[];
-                    default: any;
-                };
-                atomicOrbital: {
-                    type: string;
-                    title: string;
-                    enum: string[];
-                    default: string;
-                };
-                hubbardUValue: {
-                    type: string;
-                    title: string;
-                    default: number;
-                };
-            };
-        };
-    };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";

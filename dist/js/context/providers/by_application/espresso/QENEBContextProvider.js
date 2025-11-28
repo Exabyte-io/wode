@@ -15,6 +15,7 @@ const QEPWXContextProvider_1 = __importDefault(require("./QEPWXContextProvider")
 class QENEBContextProvider extends ExecutableContextProvider_1.default {
     constructor(config) {
         super(config);
+        this.jsonSchemaId = "context-providers-directory/by-application/qe-neb-context-provider";
         this._material = undefined;
         this._materials = [];
         this._materialsSet = undefined;

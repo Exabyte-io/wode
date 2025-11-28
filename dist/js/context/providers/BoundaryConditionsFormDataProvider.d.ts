@@ -1,11 +1,26 @@
 export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvider {
     constructor(config: any);
+    jsonSchemaId: string;
     get boundaryConditions(): any;
     get defaultData(): {
         type: any;
         offset: any;
         electricField: number;
         targetFermiEnergy: number;
+    };
+    get jsonSchemaPatchConfig(): {
+        type: {
+            default: any;
+        };
+        offset: {
+            default: any;
+        };
+        electricField: {
+            default: number;
+        };
+        targetFermiEnergy: {
+            default: number;
+        };
     };
     get uiSchema(): {
         type: {
@@ -19,31 +34,6 @@ export class BoundaryConditionsFormDataProvider extends JSONSchemaFormDataProvid
     };
     get humanName(): string;
     yieldDataForRendering(): any;
-    get jsonSchema(): {
-        $schema: string;
-        type: string;
-        properties: {
-            type: {
-                type: string;
-                title: string;
-                default: any;
-            };
-            offset: {
-                type: string;
-                title: string;
-                default: any;
-            };
-            electricField: {
-                type: string;
-                title: string;
-                default: number;
-            };
-            targetFermiEnergy: {
-                type: string;
-                title: string;
-                default: number;
-            };
-        };
-    };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";

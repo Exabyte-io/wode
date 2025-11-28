@@ -1,5 +1,6 @@
 export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
     constructor(config: any);
+    jsonSchemaId: string;
     isStartingMagnetization: boolean;
     isConstrainedMagnetization: boolean;
     isExistingChargeDensity: boolean;
@@ -93,127 +94,57 @@ export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormData
             "ui:readonly": boolean;
         };
     };
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        properties: {
-            isStartingMagnetization: {
-                type: string;
-                title: string;
-                default: boolean;
-            };
-            startingMagnetization: {
-                type: string;
-                minItems: number;
-                maxItems: number;
-                items: {
-                    type: string;
-                    properties: {
-                        atomicSpecies: {
-                            type: string;
-                            title: string;
-                        };
-                        value: {
-                            type: string;
-                            title: string;
-                            default: number;
-                            minimum: number;
-                            maximum: number;
-                        };
-                    };
-                };
-            };
-            isExistingChargeDensity: {
-                type: string;
-                title: string;
-                default: boolean;
-            };
-            lforcet: {
-                title: string;
-                type: string;
-                oneOf: {
-                    const: boolean;
-                    title: string;
-                }[];
-            };
-            isArbitrarySpinDirection: {
-                type: string;
-                title: string;
-                default: boolean;
-            };
-            spinAngles: {
-                type: string;
-                minItems: number;
-                maxItems: number;
-                items: {
-                    type: string;
-                    properties: {
-                        atomicSpecies: {
-                            type: string;
-                            title: string;
-                        };
-                        angle1: {
-                            type: string;
-                            title: string;
-                            default: number;
-                        };
-                        angle2: {
-                            type: string;
-                            title: string;
-                            default: number;
-                        };
-                    };
-                };
-            };
-            isConstrainedMagnetization: {
-                type: string;
-                title: string;
-                default: boolean;
-            };
-            constrainedMagnetization: {
-                type: string;
-                properties: {
-                    constrainType: {
-                        type: string;
-                        title: string;
-                        enum: string[];
-                        default: string;
-                    };
-                    lambda: {
-                        type: string;
-                        title: string;
-                        default: number;
-                    };
-                };
-            };
-            isFixedMagnetization: {
-                type: string;
-                title: string;
-                default: boolean;
-            };
-            fixedMagnetization: {
-                type: string;
-                properties: {
-                    x: {
-                        type: string;
-                        title: string;
-                        default: number;
-                    };
-                    y: {
-                        type: string;
-                        title: string;
-                        default: number;
-                    };
-                    z: {
-                        type: string;
-                        title: string;
-                        default: number;
-                    };
-                };
-            };
+    get jsonSchemaPatchConfig(): {
+        isExistingChargeDensity: {
+            default: boolean;
+        };
+        isStartingMagnetization: {
+            default: boolean;
+        };
+        isArbitrarySpinAngle: {
+            default: boolean;
+        };
+        isConstrainedMagnetization: {
+            default: boolean;
+        };
+        isFixedMagnetization: {
+            default: boolean;
+        };
+        startingMagnetization: {
+            minItems: number;
+            maxItems: number;
+        };
+        "startingMagnetization.items.properties.value": {
+            default: number;
+            minimum: number;
+            maximum: number;
+        };
+        spinAngles: {
+            minItems: number;
+            maxItems: number;
+        };
+        "spinAngles.items.properties.angle1": {
+            default: number;
+        };
+        "spinAngles.items.properties.angle2": {
+            default: number;
+        };
+        "constrainedMagnetization.properties.constrainType": {
+            default: string;
+        };
+        "constrainedMagnetization.properties.lambda": {
+            default: number;
+        };
+        "fixedMagnetization.properties.x": {
+            default: number;
+        };
+        "fixedMagnetization.properties.y": {
+            default: number;
+        };
+        "fixedMagnetization.properties.z": {
+            default: number;
         };
     };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";

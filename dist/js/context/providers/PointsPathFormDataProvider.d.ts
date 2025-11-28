@@ -1,30 +1,20 @@
 import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
 export declare class PointsPathFormDataProvider extends JSONSchemaFormDataProvider {
+    jsonSchemaId: string;
     constructor(config: any);
     get isEditedIsSetToFalseOnMaterialUpdate(): unknown;
     get defaultData(): any;
     get symmetryPointsFromMaterial(): any;
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        items: {
-            type: string;
-            properties: {
-                point: {
-                    type: string;
-                    default: string;
-                    enum: any[];
-                };
-                steps: {
-                    type: string;
-                    default: number;
-                };
-            };
+    get jsonSchemaPatchConfig(): {
+        "items.properties.point": {
+            default: string;
+            enum: any[];
         };
-        minItems: number;
+        "items.properties.steps": {
+            default: number;
+        };
     };
+    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
     get uiSchema(): {
         items: {};
     };

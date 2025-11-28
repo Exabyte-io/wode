@@ -8,6 +8,8 @@ import ExecutableContextProvider from "../ExecutableContextProvider";
 import VASPContextProvider from "./VASPContextProvider";
 
 export default class VASPNEBContextProvider extends ExecutableContextProvider {
+    jsonSchemaId = "context-providers-directory/by-application/vasp-neb-context-provider";
+
     _materials = [];
 
     constructor(config) {

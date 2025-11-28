@@ -10,6 +10,33 @@ export class HubbardVContextProvider extends HubbardUContextProvider {
     }[];
     get firstSpecies(): any;
     get secondSpecies(): any;
+    get jsonSchemaPatchConfig(): {
+        "items.properties.atomicSpecies": {
+            enum: any[];
+            default: any;
+        };
+        "items.properties.siteIndex": {
+            default: number;
+        };
+        "items.properties.atomicOrbital": {
+            enum: string[];
+            default: string;
+        };
+        "items.properties.atomicSpecies2": {
+            enum: any[];
+            default: any;
+        };
+        "items.properties.siteIndex2": {
+            default: number;
+        };
+        "items.properties.atomicOrbital2": {
+            enum: string[];
+            default: string;
+        };
+        "items.properties.hubbardVValue": {
+            default: number;
+        };
+    };
     get uiSchemaStyled(): {
         "ui:options": {
             addable: boolean;
@@ -25,57 +52,6 @@ export class HubbardVContextProvider extends HubbardUContextProvider {
             siteIndex2: {};
             hubbardVValue: {};
         };
-    };
-    get jsonSchema(): {
-        $schema: string;
-        title: string;
-        description: string;
-        type: string;
-        items: {
-            type: string;
-            properties: {
-                atomicSpecies: {
-                    type: string;
-                    title: string;
-                    enum: any[];
-                    default: any;
-                };
-                siteIndex: {
-                    type: string;
-                    title: string;
-                    default: number;
-                };
-                atomicOrbital: {
-                    type: string;
-                    title: string;
-                    enum: string[];
-                    default: string;
-                };
-                atomicSpecies2: {
-                    type: string;
-                    title: string;
-                    enum: any[];
-                    default: any;
-                };
-                siteIndex2: {
-                    type: string;
-                    title: string;
-                    default: number;
-                };
-                atomicOrbital2: {
-                    type: string;
-                    title: string;
-                    enum: string[];
-                    default: string;
-                };
-                hubbardVValue: {
-                    type: string;
-                    title: string;
-                    default: number;
-                };
-            };
-        };
-        minItems: number;
     };
 }
 import { HubbardUContextProvider } from "./HubbardUContextProvider";
