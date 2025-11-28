@@ -31,6 +31,12 @@ For usage within a JavaScript project:
 npm install @mat3ra/wode
 ```
 
+For usage within a Python project:
+
+```bash
+pip install mat3ra-wode
+```
+
 For development:
 
 ```bash
@@ -49,6 +55,8 @@ See [ESSE](https://github.com/Exabyte-io/esse) for additional context regarding 
 
 Useful commands for development:
 
+**JavaScript:**
+
 ```bash
 # run linter without persistence
 npm run lint
@@ -61,6 +69,18 @@ npm run transpile
 
 # run tests
 npm run test
+```
+
+**Python:**
+
+```bash
+# run tests
+pytest tests/py
+
+# run linter
+black src/py tests/py
+ruff check src/py tests/py
+isort src/py tests/py
 ```
 
 ### Using Linter

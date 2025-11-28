@@ -19,7 +19,11 @@ classifiers = [
     "Topic :: Software Development",
 ]
 dependencies = [
-    "numpy",
+    "mat3ra-esse>=2025.10.8",
+    "mat3ra-mode>=2025.11.6",
+    "mat3ra-ade>=2025.10.2",
+    "mat3ra-utils>=2025.9.20",
+    "pydantic>=2.0.0",
 ]
 
 [project.optional-dependencies]
