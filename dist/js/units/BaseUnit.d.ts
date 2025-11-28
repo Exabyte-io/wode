@@ -1,0 +1,40 @@
+import { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
+import { type ContextAndRenderFields } from "@mat3ra/code/dist/js/entity/mixins/ContextAndRenderFieldsMixin";
+import { type Defaultable } from "@mat3ra/code/dist/js/entity/mixins/DefaultableMixin";
+import { HashedEntity } from "@mat3ra/code/dist/js/entity/mixins/HashedEntityMixin";
+import { HasRepetition } from "@mat3ra/code/dist/js/entity/mixins/HasRepetitionMixin";
+import { type ContextProvider, ImportantSettingsProvider } from "@mat3ra/code/dist/js/entity/mixins/ImportantSettingsProviderMixin";
+import { type NamedEntity } from "@mat3ra/code/dist/js/entity/mixins/NamedEntityMixin";
+import { type RuntimeItems } from "@mat3ra/code/dist/js/entity/mixins/RuntimeItemsMixin";
+import { Taggable } from "@mat3ra/code/dist/js/entity/mixins/TaggableMixin";
+import type { NameResultSchema } from "@mat3ra/code/dist/js/utils/object";
+import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { StatusSchema, WorkflowBaseUnitSchema } from "@mat3ra/esse/dist/js/types";
+import { type BaseUnitSchemaMixin } from "../generated/BaseUnitSchemaMixin";
+import { type StatusSchemaMixin } from "../generated/StatusSchemaMixin";
+import { type RuntimeItemsUILogic } from "../RuntimeItemsUILogicMixin";
+type BaseEntity = typeof InMemoryEntity & Constructor<NamedEntity> & Constructor<Defaultable> & Constructor<HasRepetition> & Constructor<Taggable> & Constructor<HashedEntity> & Constructor<RuntimeItems> & Constructor<RuntimeItemsUILogic> & Constructor<BaseUnitSchemaMixin> & Constructor<StatusSchemaMixin> & Constructor<ImportantSettingsProvider> & Constructor<ContextAndRenderFields>;
+type Schema = WorkflowBaseUnitSchema;
+declare const BaseUnit_base: BaseEntity;
+export declare abstract class BaseUnit extends BaseUnit_base implements Schema {
+    static usePredefinedIds: boolean;
+    static generateFlowChartId(name: string): any;
+    constructor(config: Partial<Schema> & Pick<Schema, "name">);
+    abstract readonly contextProviders: ContextProvider[];
+    get defaultResults(): NameResultSchema[];
+    get defaultMonitors(): NameResultSchema[];
+    get defaultPreProcessors(): NameResultSchema[];
+    get defaultPostProcessors(): NameResultSchema[];
+    get allowedResults(): NameResultSchema[];
+    get allowedMonitors(): NameResultSchema[];
+    get allowedPostProcessors(): NameResultSchema[];
+    get lastStatusUpdate(): {
+        trackedAt: number;
+        status: string;
+        repetition?: number;
+    };
+    getHashObject(): object;
+    isInStatus(status: StatusSchema["status"]): boolean;
+    clone(extraContext: object): this;
+}
+export {};

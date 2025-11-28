@@ -23,7 +23,7 @@ import {
 } from "./units";
 import { builders } from "./units/builders";
 import { UnitFactory } from "./units/factory";
-import { defaultMapConfig } from "./units/map";
+import { defaultMapConfig } from "./units/MapUnit";
 import { createWorkflow, createWorkflowConfigs, createWorkflows, Workflow } from "./workflows";
 
 export {

@@ -1,49 +1,47 @@
 "use strict";
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
-var _BoundaryConditionsFormDataProvider = require("./providers/BoundaryConditionsFormDataProvider");
-var _QENEBContextProvider = _interopRequireDefault(require("./providers/by_application/espresso/QENEBContextProvider"));
-var _QEPWXContextProvider = _interopRequireDefault(require("./providers/by_application/espresso/QEPWXContextProvider"));
-var _NWChemTotalEnergyContextProvider = _interopRequireDefault(require("./providers/by_application/nwchem/NWChemTotalEnergyContextProvider"));
-var _VASPContextProvider = _interopRequireDefault(require("./providers/by_application/vasp/VASPContextProvider"));
-var _VASPNEBContextProvider = _interopRequireDefault(require("./providers/by_application/vasp/VASPNEBContextProvider"));
-var _CollinearMagnetizationContextProvider = require("./providers/CollinearMagnetizationContextProvider");
-var _HubbardContextProviderLegacy = require("./providers/HubbardContextProviderLegacy");
-var _HubbardJContextProvider = require("./providers/HubbardJContextProvider");
-var _HubbardUContextProvider = require("./providers/HubbardUContextProvider");
-var _HubbardVContextProvider = require("./providers/HubbardVContextProvider");
-var _IonDynamicsContextProvider = require("./providers/IonDynamicsContextProvider");
-var _MLSettingsContextProvider = require("./providers/MLSettingsContextProvider");
-var _MLTrainTestSplitContextProvider = require("./providers/MLTrainTestSplitContextProvider");
-var _NEBFormDataProvider = require("./providers/NEBFormDataProvider");
-var _NonCollinearMagnetizationContextProvider = require("./providers/NonCollinearMagnetizationContextProvider");
-var _PlanewaveCutoffsContextProvider = require("./providers/PlanewaveCutoffsContextProvider");
-var _PointsGridFormDataProvider = require("./providers/PointsGridFormDataProvider");
-var _PointsPathFormDataProvider = require("./providers/PointsPathFormDataProvider");
-function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
-var _default = exports.default = {
-  BoundaryConditionsFormDataProvider: _BoundaryConditionsFormDataProvider.BoundaryConditionsFormDataProvider,
-  MLSettingsContextProvider: _MLSettingsContextProvider.MLSettingsContextProvider,
-  MLTrainTestSplitContextProvider: _MLTrainTestSplitContextProvider.MLTrainTestSplitContextProvider,
-  NEBFormDataProvider: _NEBFormDataProvider.NEBFormDataProvider,
-  PlanewaveCutoffsContextProvider: _PlanewaveCutoffsContextProvider.PlanewaveCutoffsContextProvider,
-  PointsGridFormDataProvider: _PointsGridFormDataProvider.PointsGridFormDataProvider,
-  PointsPathFormDataProvider: _PointsPathFormDataProvider.PointsPathFormDataProvider,
-  ExplicitPointsPathFormDataProvider: _PointsPathFormDataProvider.ExplicitPointsPathFormDataProvider,
-  ExplicitPointsPath2PIBAFormDataProvider: _PointsPathFormDataProvider.ExplicitPointsPath2PIBAFormDataProvider,
-  HubbardJContextProvider: _HubbardJContextProvider.HubbardJContextProvider,
-  HubbardUContextProvider: _HubbardUContextProvider.HubbardUContextProvider,
-  HubbardVContextProvider: _HubbardVContextProvider.HubbardVContextProvider,
-  HubbardContextProviderLegacy: _HubbardContextProviderLegacy.HubbardContextProviderLegacy,
-  IonDynamicsContextProvider: _IonDynamicsContextProvider.IonDynamicsContextProvider,
-  CollinearMagnetizationContextProvider: _CollinearMagnetizationContextProvider.CollinearMagnetizationContextProvider,
-  NonCollinearMagnetizationContextProvider: _NonCollinearMagnetizationContextProvider.NonCollinearMagnetizationContextProvider,
-  VASPContextProvider: _VASPContextProvider.default,
-  VASPNEBContextProvider: _VASPNEBContextProvider.default,
-  QEPWXContextProvider: _QEPWXContextProvider.default,
-  QENEBContextProvider: _QENEBContextProvider.default,
-  NWChemTotalEnergyContextProvider: _NWChemTotalEnergyContextProvider.default
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const BoundaryConditionsFormDataProvider_1 = require("./providers/BoundaryConditionsFormDataProvider");
+const QENEBContextProvider_1 = __importDefault(require("./providers/by_application/espresso/QENEBContextProvider"));
+const QEPWXContextProvider_1 = __importDefault(require("./providers/by_application/espresso/QEPWXContextProvider"));
+const NWChemTotalEnergyContextProvider_1 = __importDefault(require("./providers/by_application/nwchem/NWChemTotalEnergyContextProvider"));
+const VASPContextProvider_1 = __importDefault(require("./providers/by_application/vasp/VASPContextProvider"));
+const VASPNEBContextProvider_1 = __importDefault(require("./providers/by_application/vasp/VASPNEBContextProvider"));
+const CollinearMagnetizationContextProvider_1 = require("./providers/CollinearMagnetizationContextProvider");
+const HubbardContextProviderLegacy_1 = require("./providers/HubbardContextProviderLegacy");
+const HubbardJContextProvider_1 = require("./providers/HubbardJContextProvider");
+const HubbardUContextProvider_1 = require("./providers/HubbardUContextProvider");
+const HubbardVContextProvider_1 = require("./providers/HubbardVContextProvider");
+const IonDynamicsContextProvider_1 = require("./providers/IonDynamicsContextProvider");
+const MLSettingsContextProvider_1 = require("./providers/MLSettingsContextProvider");
+const MLTrainTestSplitContextProvider_1 = require("./providers/MLTrainTestSplitContextProvider");
+const NEBFormDataProvider_1 = require("./providers/NEBFormDataProvider");
+const NonCollinearMagnetizationContextProvider_1 = require("./providers/NonCollinearMagnetizationContextProvider");
+const PlanewaveCutoffsContextProvider_1 = require("./providers/PlanewaveCutoffsContextProvider");
+const PointsGridFormDataProvider_1 = require("./providers/PointsGridFormDataProvider");
+const PointsPathFormDataProvider_1 = require("./providers/PointsPathFormDataProvider");
+exports.default = {
+    BoundaryConditionsFormDataProvider: BoundaryConditionsFormDataProvider_1.BoundaryConditionsFormDataProvider,
+    MLSettingsContextProvider: MLSettingsContextProvider_1.MLSettingsContextProvider,
+    MLTrainTestSplitContextProvider: MLTrainTestSplitContextProvider_1.MLTrainTestSplitContextProvider,
+    NEBFormDataProvider: NEBFormDataProvider_1.NEBFormDataProvider,
+    PlanewaveCutoffsContextProvider: PlanewaveCutoffsContextProvider_1.PlanewaveCutoffsContextProvider,
+    PointsGridFormDataProvider: PointsGridFormDataProvider_1.PointsGridFormDataProvider,
+    PointsPathFormDataProvider: PointsPathFormDataProvider_1.PointsPathFormDataProvider,
+    ExplicitPointsPathFormDataProvider: PointsPathFormDataProvider_1.ExplicitPointsPathFormDataProvider,
+    ExplicitPointsPath2PIBAFormDataProvider: PointsPathFormDataProvider_1.ExplicitPointsPath2PIBAFormDataProvider,
+    HubbardJContextProvider: HubbardJContextProvider_1.HubbardJContextProvider,
+    HubbardUContextProvider: HubbardUContextProvider_1.HubbardUContextProvider,
+    HubbardVContextProvider: HubbardVContextProvider_1.HubbardVContextProvider,
+    HubbardContextProviderLegacy: HubbardContextProviderLegacy_1.HubbardContextProviderLegacy,
+    IonDynamicsContextProvider: IonDynamicsContextProvider_1.IonDynamicsContextProvider,
+    CollinearMagnetizationContextProvider: CollinearMagnetizationContextProvider_1.CollinearMagnetizationContextProvider,
+    NonCollinearMagnetizationContextProvider: NonCollinearMagnetizationContextProvider_1.NonCollinearMagnetizationContextProvider,
+    VASPContextProvider: VASPContextProvider_1.default,
+    VASPNEBContextProvider: VASPNEBContextProvider_1.default,
+    QEPWXContextProvider: QEPWXContextProvider_1.default,
+    QENEBContextProvider: QENEBContextProvider_1.default,
+    NWChemTotalEnergyContextProvider: NWChemTotalEnergyContextProvider_1.default,
 };
