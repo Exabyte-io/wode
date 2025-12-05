@@ -1,5 +1,8 @@
+from typing import List
+
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
+from pydantic import Field
 
 
 class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
@@ -14,4 +17,8 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
         next: Flowchart ID of the next unit
         tags: List of tags for the unit
     """
-    pass
+    
+    preProcessors: List = Field(default_factory=list)
+    postProcessors: List = Field(default_factory=list)
+    monitors: List = Field(default_factory=list)
+    results: List = Field(default_factory=list)
