@@ -7,8 +7,16 @@ SUBWORKFLOW_APPLICATION = {"name": "espresso", "version": "6.3"}
 SUBWORKFLOW_MODEL = {"type": "dft", "subtype": "gga"}
 SUBWORKFLOW_PROPERTIES = ["total_energy", "pressure"]
 
-UNIT_EXECUTION_TYPE = "execution"
-UNIT_NAME_PW_SCF = "pw_scf"
+UNIT_CONFIG = {
+    "type": "execution",
+    "name": "pw_scf",
+    "flowchartId": "unit-flowchart-id",
+    "head": True,
+    "preProcessors": [],
+    "postProcessors": [],
+    "monitors": [],
+    "results": [],
+}
 
 
 def test_creation():
@@ -44,10 +52,10 @@ def test_properties():
 
 
 def test_with_units():
-    unit = Unit(type=UNIT_EXECUTION_TYPE, name=UNIT_NAME_PW_SCF)
+    unit = Unit(**UNIT_CONFIG)
     sw = Subworkflow(name=SUBWORKFLOW_NAME, units=[unit])
     assert len(sw.units) == 1
-    assert sw.units[0].name == UNIT_NAME_PW_SCF
+    assert sw.units[0].name == UNIT_CONFIG["name"]
 
 
 def test_to_dict():
@@ -55,4 +63,3 @@ def test_to_dict():
     data = sw.to_dict()
     assert data["name"] == SUBWORKFLOW_NAME
     assert data["application"] == SUBWORKFLOW_APPLICATION
-
