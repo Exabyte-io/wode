@@ -1,10 +1,11 @@
 from typing import Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.esse.models.workflow.unit import SubworkflowUnitSchema
 from pydantic import Field
 
 
-class Unit(InMemoryEntitySnakeCase):
+class Unit(InMemoryEntitySnakeCase, SubworkflowUnitSchema):
     """
     Unit class representing a unit of computational work in a workflow.
 
@@ -16,10 +17,4 @@ class Unit(InMemoryEntitySnakeCase):
         next: Flowchart ID of the next unit
         tags: List of tags for the unit
     """
-
-    type: str = ""
-    name: str = ""
-    flowchart_id: Optional[str] = None
-    head: bool = False
-    next: Optional[str] = None
-    tags: List[str] = Field(default_factory=list)
+    pass

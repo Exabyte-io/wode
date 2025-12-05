@@ -1,13 +1,14 @@
 from typing import List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.esse.models.workflow import WorkflowSchema
 from pydantic import Field
 
 from ..subworkflows import Subworkflow
 from ..units import Unit
 
 
-class Workflow(InMemoryEntitySnakeCase):
+class Workflow(InMemoryEntitySnakeCase, WorkflowSchema):
     """
     Workflow class representing a complete workflow configuration.
 
@@ -18,7 +19,5 @@ class Workflow(InMemoryEntitySnakeCase):
         properties: List of properties extracted by the workflow
     """
 
-    name: str = ""
-    subworkflows: List[Subworkflow] = Field(default_factory=list)
+    subworkflows: List[Subworkflow] = Field(default_factory=list) # still need to override with a class
     units: List[Unit] = Field(default_factory=list)
-    properties: List[str] = Field(default_factory=list)
