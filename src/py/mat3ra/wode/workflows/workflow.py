@@ -8,7 +8,7 @@ from ..subworkflows import Subworkflow
 from ..units import Unit
 
 
-class Workflow(InMemoryEntitySnakeCase, WorkflowSchema):
+class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     """
     Workflow class representing a complete workflow configuration.
 

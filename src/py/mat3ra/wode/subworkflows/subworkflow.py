@@ -1,13 +1,13 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
-from mat3ra.esse.models.workflow import Subworkflow as SubworkflowSchema
+from mat3ra.esse.models.workflow.subworkflow import Subworkflow as SubworkflowSchema
 from pydantic import Field
 
 from ..units import Unit
 
 
-class Subworkflow(InMemoryEntitySnakeCase, SubworkflowSchema):
+class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
     """
     Subworkflow class representing a logical collection of workflow units.
 

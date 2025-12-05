@@ -2,7 +2,7 @@ from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
 
 
-class Unit(InMemoryEntitySnakeCase, WorkflowBaseUnitSchema):
+class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     """
     Unit class representing a unit of computational work in a workflow.
 
