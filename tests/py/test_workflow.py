@@ -1,22 +1,20 @@
 import pytest
 
+from mat3ra.ade.application import Application
+from mat3ra.standata.applications import ApplicationStandata
 from mat3ra.wode import Workflow, Subworkflow, Unit
 
 WORKFLOW_NAME = "Band Structure"
 WORKFLOW_PROPERTIES = ["band_structure", "band_gap"]
 
 SUBWORKFLOW_NAME = "Total Energy"
-SUBWORKFLOW_APPLICATION = {"name": "espresso", "version": "6.3"}
+SUBWORKFLOW_APPLICATION = Application(**ApplicationStandata.get_by_name_first_match("espresso"))
 
 UNIT_CONFIG = {
-    "type": "subworkflow",
+    "type": "execution",
     "name": SUBWORKFLOW_NAME,
     "flowchartId": "subworkflow-unit-id",
     "head": True,
-    "preProcessors": [],
-    "postProcessors": [],
-    "monitors": [],
-    "results": [],
 }
 
 

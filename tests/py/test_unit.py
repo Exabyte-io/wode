@@ -10,10 +10,6 @@ UNIT_CONFIG_EXECUTION = {
     "name": "pw_scf",
     "flowchartId": UNIT_FLOWCHART_ID,
     "head": True,
-    "preProcessors": [],
-    "postProcessors": [],
-    "monitors": [{"name": "standard_output"}],
-    "results": [{"name": "total_energy"}],
 }
 
 UNIT_CONFIG_ASSIGNMENT = {
@@ -21,10 +17,6 @@ UNIT_CONFIG_ASSIGNMENT = {
     "name": "kgrid",
     "flowchartId": "kgrid-flowchart-id",
     "head": False,
-    "preProcessors": [],
-    "postProcessors": [],
-    "monitors": [],
-    "results": [],
 }
 
 

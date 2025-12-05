@@ -1,10 +1,15 @@
 import pytest
 
+from mat3ra.ade.application import Application
+from mat3ra.mode.model import Model
+from mat3ra.mode.method import Method
+from mat3ra.standata.applications import ApplicationStandata
 from mat3ra.wode import Subworkflow, Unit
 
 SUBWORKFLOW_NAME = "Total Energy"
-SUBWORKFLOW_APPLICATION = {"name": "espresso", "version": "6.3"}
-SUBWORKFLOW_MODEL = {"type": "dft", "subtype": "gga"}
+SUBWORKFLOW_APPLICATION = Application(**ApplicationStandata.get_by_name_first_match("espresso"))
+SUBWORKFLOW_METHOD = Method(type="pseudopotential", subtype="us")
+SUBWORKFLOW_MODEL = Model(type="dft", subtype="gga", method=SUBWORKFLOW_METHOD)
 SUBWORKFLOW_PROPERTIES = ["total_energy", "pressure"]
 
 UNIT_CONFIG = {
@@ -12,10 +17,6 @@ UNIT_CONFIG = {
     "name": "pw_scf",
     "flowchartId": "unit-flowchart-id",
     "head": True,
-    "preProcessors": [],
-    "postProcessors": [],
-    "monitors": [],
-    "results": [],
 }
 
 
@@ -24,15 +25,13 @@ def test_creation():
     assert sw.name == SUBWORKFLOW_NAME
 
 
-@pytest.mark.parametrize("app_name,app_version", [
-    ("espresso", "6.3"),
-    ("vasp", "5.4.4"),
-])
-def test_application(app_name, app_version):
-    application = {"name": app_name, "version": app_version}
-    sw = Subworkflow(application=application)
-    assert sw.application["name"] == app_name
-    assert sw.application["version"] == app_version
+@pytest.mark.parametrize("app_name", ["espresso", "vasp"])
+def test_application(app_name):
+    app_data = ApplicationStandata.get_by_name_first_match(app_name)
+    application = Application(**app_data)
+    sw = Subworkflow(name=SUBWORKFLOW_NAME, application=application)
+    assert sw.application.name == app_name
+    assert sw.application.version == app_data["version"]
 
 
 @pytest.mark.parametrize("model_type,model_subtype", [
@@ -40,14 +39,15 @@ def test_application(app_name, app_version):
     ("dft", "lda"),
 ])
 def test_model(model_type, model_subtype):
-    model = {"type": model_type, "subtype": model_subtype}
-    sw = Subworkflow(model=model)
-    assert sw.model["type"] == model_type
-    assert sw.model["subtype"] == model_subtype
+    method = Method(type="pseudopotential", subtype="us")
+    model = Model(type=model_type, subtype=model_subtype, method=method)
+    sw = Subworkflow(name=SUBWORKFLOW_NAME, model=model)
+    assert sw.model.type == model_type
+    assert sw.model.subtype == model_subtype
 
 
 def test_properties():
-    sw = Subworkflow(properties=SUBWORKFLOW_PROPERTIES)
+    sw = Subworkflow(name=SUBWORKFLOW_NAME, properties=SUBWORKFLOW_PROPERTIES)
     assert sw.properties == SUBWORKFLOW_PROPERTIES
 
 
@@ -62,4 +62,4 @@ def test_to_dict():
     sw = Subworkflow(name=SUBWORKFLOW_NAME, application=SUBWORKFLOW_APPLICATION)
     data = sw.to_dict()
     assert data["name"] == SUBWORKFLOW_NAME
-    assert data["application"] == SUBWORKFLOW_APPLICATION
+    assert data["application"]["name"] == SUBWORKFLOW_APPLICATION.name
