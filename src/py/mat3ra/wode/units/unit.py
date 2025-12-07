@@ -1,7 +1,7 @@
 from typing import List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
-from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
+from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema, RuntimeItemNameObjectSchema
 from pydantic import Field
 
 
@@ -17,8 +17,11 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
         next: Flowchart ID of the next unit
         tags: List of tags for the unit
     """
-    
-    preProcessors: List = Field(default_factory=list)
-    postProcessors: List = Field(default_factory=list)
-    monitors: List = Field(default_factory=list)
-    results: List = Field(default_factory=list)
+
+    preProcessors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
+    postProcessors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
+    monitors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
+    results: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
+
+    def generate_flowchart_id(self) -> str:
+      pass
