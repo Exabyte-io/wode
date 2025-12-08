@@ -26,34 +26,12 @@
 
 - `flowchartId` [field]
 - `name` [field] - inherited
-- `context` [field: Context] - Add Context field with default factory
+- `context` [field: Dict] - Context data dict
+- `add_context(new_context)` - Update context data
 
-## `src/py/mat3ra/wode/units/execution.py`
-
-### Class: `ExecutionUnit`
-
-- `type` - default "execution"
-- `application` - optional dict
-- `executable` - optional dict
-- `flavor` - optional dict
-- `input` - list of dicts
-
-## `src/py/mat3ra/wode/units/subworkflow_unit.py`
-
-### Class: `SubworkflowUnit`
-
-- `type` - default "subworkflow"
-
-## `src/py/mat3ra/wode/units/factory.py` (if exists, or create new)
+## `src/py/mat3ra/wode/units/factory.py`
 
 ### Class: `UnitFactory`
 
 - `create(config)` [staticmethod] - Factory to instantiate correct unit type based on config["type"]
-
-## `src/py/mat3ra/wode/context.py`
-
-### Class: `Context`
-
-- `data` - dict for storing context data
-- `add_context(new_context)` - Update context data
 
