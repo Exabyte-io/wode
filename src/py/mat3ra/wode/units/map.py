@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.map import MapUnitSchema
@@ -17,3 +17,5 @@ class MapUnit(MapUnitSchema, InMemoryEntitySnakeCase):
         }
     )
 
+    def set_workflow_id(self, id: str):
+        raise NotImplementedError
