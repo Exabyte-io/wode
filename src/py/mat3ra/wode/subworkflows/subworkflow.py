@@ -76,7 +76,3 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
     @property
     def method_data(self):
         raise NotImplementedError
-
-    @property
-    def has_convergence(self) -> bool:
-        raise NotImplementedError
