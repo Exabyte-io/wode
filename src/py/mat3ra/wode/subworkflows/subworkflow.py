@@ -27,14 +27,13 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
     application: Application = Field(
         default_factory=lambda: Application(name="", version="", build="", shortName="", summary="")
     )
-    model: Model = Field(
-        default_factory=lambda: Model(type="", subtype="", method=Method(type="", subtype=""))
-    )
+    model: Model = Field(default_factory=lambda: Model(type="", subtype="", method=Method(type="", subtype="")))
     units: List[Unit] = Field(default_factory=list)
 
     @classmethod
-    def from_arguments(cls, application, model, method, name: str, units: Optional[List] = None,
-                       config: Optional[dict] = None) -> "Subworkflow":
+    def from_arguments(
+        cls, application, model, method, name: str, units: Optional[List] = None, config: Optional[dict] = None
+    ) -> "Subworkflow":
         raise NotImplementedError
 
     # TODO: implement for MIN notebook

@@ -8,4 +8,3 @@ class UnitFactory:
     @staticmethod
     def create(config: Dict) -> Unit:
         raise NotImplementedError
-

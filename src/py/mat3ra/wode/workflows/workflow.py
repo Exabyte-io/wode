@@ -19,6 +19,7 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
         units: List of units linking the subworkflows
         properties: List of properties extracted by the workflow
     """
+
     field_id: str = Field(default_factory=generate_uuid, alias="_id")
     subworkflows: List[Subworkflow] = Field(default_factory=list)
     units: List[Unit] = Field(default_factory=list)
@@ -53,8 +54,9 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
         raise NotImplementedError
 
     # TODO: implement for MIN notebook
-    def set_unit(self, unit: Optional[Unit] = None, unit_flowchart_id: Optional[str] = None,
-                 new_unit: Optional[Unit] = None) -> bool:
+    def set_unit(
+        self, unit: Optional[Unit] = None, unit_flowchart_id: Optional[str] = None, new_unit: Optional[Unit] = None
+    ) -> bool:
         raise NotImplementedError
 
     @property

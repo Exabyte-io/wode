@@ -1,7 +1,7 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
-from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema, RuntimeItemNameObjectSchema
+from mat3ra.esse.models.workflow.unit.base import RuntimeItemNameObjectSchema, WorkflowBaseUnitSchema
 from pydantic import Field
 
 from ..utils import generate_uuid
