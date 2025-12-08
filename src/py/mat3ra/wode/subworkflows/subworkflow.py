@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from mat3ra.ade.application import Application
 from mat3ra.code.entity import InMemoryEntitySnakeCase
@@ -8,6 +8,7 @@ from mat3ra.mode.model import Model
 from pydantic import Field
 
 from ..units import Unit
+from ..utils import generate_uuid
 
 
 class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
@@ -21,7 +22,8 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
         units: List of units in the subworkflow
         properties: List of properties extracted by the subworkflow
     """
-    
+
+    field_id: str = Field(default_factory=generate_uuid, alias="_id")
     application: Application = Field(
         default_factory=lambda: Application(name="", version="", build="", short_name="", summary="")
     )
@@ -29,3 +31,13 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
         default_factory=lambda: Model(type="", subtype="", method=Method(type="", subtype=""))
     )
     units: List[Unit] = Field(default_factory=list)
+
+    @property
+    def id(self) -> str:
+        return self.field_id
+
+    def get_as_unit(self) -> Unit:
+        raise NotImplementedError
+
+    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[Unit]:
+        raise NotImplementedError

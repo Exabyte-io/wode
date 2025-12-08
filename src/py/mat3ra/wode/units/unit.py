@@ -1,8 +1,11 @@
-from typing import List
+from typing import List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema, RuntimeItemNameObjectSchema
 from pydantic import Field
+
+from ..context import Context
+from ..utils import generate_uuid
 
 
 class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
@@ -16,12 +19,12 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
         head: Whether this unit is the head of the workflow
         next: Flowchart ID of the next unit
         tags: List of tags for the unit
+        context: Context data for the unit
     """
 
+    flowchartId: str = Field(default_factory=generate_uuid)
     preProcessors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
     postProcessors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
     monitors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
     results: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
-
-    def generate_flowchart_id(self) -> str:
-      pass
+    context: Optional[Context] = Field(default_factory=Context)
