@@ -1,4 +1,4 @@
-from typing import Dict, List, Optional
+from typing import List, Optional
 
 from mat3ra.ade.application import Application
 from mat3ra.code.entity import InMemoryEntitySnakeCase
@@ -92,7 +92,6 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
             List of unique context providers that are marked as subworkflow providers
         """
         raise NotImplementedError
-
 
     @property
     def context_from_assignment_units(self) -> dict:

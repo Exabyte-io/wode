@@ -40,6 +40,20 @@ class UnitOperationsMixin:
     def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional["Unit"]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
 
+    def _clear_link_to_unit(self, flowchart_id: str) -> None:
+        """
+        Clear the 'next' link from any unit that points to the given flowchart_id.
+        
+        This is used to mend broken links when removing a unit.
+        
+        Args:
+            flowchart_id: The flowchart_id to clear links to
+        """
+        for unit in self.units:
+            if getattr(unit, 'next', None) == flowchart_id:
+                unit.next = None
+                break
+
     def add_unit(self, unit: "Unit", head: bool = False, index: int = -1) -> None:
         """
         Add a unit to the units list.
@@ -83,14 +97,7 @@ class UnitOperationsMixin:
         if not unit_to_remove:
             return
 
-        previous_unit = None
-        for unit in self.units:
-            if getattr(unit, 'next', None) == unit_to_remove.flowchartId:
-                previous_unit = unit
-                break
-
-        if previous_unit:
-            previous_unit.next = None
+        self._clear_link_to_unit(unit_to_remove.flowchartId)
 
         remaining_units = [unit for unit in self.units if unit.flowchartId != flowchart_id]
         units_with_head = set_units_head(remaining_units)
