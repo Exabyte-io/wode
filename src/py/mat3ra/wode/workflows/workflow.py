@@ -1,16 +1,17 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow import WorkflowSchema
 from mat3ra.standata.subworkflows import SubworkflowStandata
 from pydantic import Field
 
+from ..mixins import UnitOperationsMixin
 from ..subworkflows import Subworkflow
 from ..units import Unit
-from ..utils import find_by_instance_or_id, find_by_name_or_regex, generate_uuid
+from ..utils import generate_uuid
 
 
-class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
+class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
     """
     Workflow class representing a complete workflow configuration.
 
@@ -75,42 +76,17 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     def find_subworkflow_by_id(self, id: str) -> Optional[Subworkflow]:
         raise NotImplementedError
 
-    def set_units(self, units: List[Unit]):
-        raise NotImplementedError
-
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[Unit]:
-        return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
-
-    def set_unit(
-            self,
-            new_unit: Unit,
-            unit: Optional[Unit] = None,
-            unit_flowchart_id: Optional[str] = None,
-    ) -> bool:
-        target_unit = find_by_instance_or_id(
-            self.units,
-            instance=unit,
-            instance_id=unit_flowchart_id,
-            id_attribute="flowchartId"
-        )
-
-        try:
-            unit_index = self.units.index(target_unit)
-        except ValueError:
-            return False
-
-        self.units[unit_index] = new_unit
-        return True
-
     def set_context_to_unit(self, unit_name: Optional[str] = None, unit_name_regex: Optional[str] = None,
                             new_context: Optional[Dict[str, Any]] = None):
         target_unit = self.get_unit_by_name(name=unit_name, name_regex=unit_name_regex)
         target_unit.context = new_context
 
-    def add_unit(self, unit: Unit, head: bool = False, index: int = -1):
+    @property
+    def is_multimaterial(self) -> bool:
         raise NotImplementedError
 
-    def remove_unit(self, flowchart_id: str):
+    @property
+    def all_subworkflows(self) -> List[Subworkflow]:
         raise NotImplementedError
 
     def add_unit_type(self, unit_type: str, head: bool = False, index: int = -1):

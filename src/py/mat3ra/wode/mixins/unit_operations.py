@@ -1,0 +1,138 @@
+from typing import TYPE_CHECKING, List, Optional
+from ..utils import find_by_name_or_regex
+from ..utils import set_next_links, set_units_head
+
+if TYPE_CHECKING:
+    from ..units import Unit
+
+
+class UnitOperationsMixin:
+    """
+    Mixin class providing common unit operations.
+    
+    This mixin expects the class to have a `units: List[Unit]` attribute.
+    It provides common methods for managing units in both Workflow and Subworkflow classes.
+    """
+
+    units: List["Unit"]
+
+    def set_units(self, units: List["Unit"]) -> None:
+        self.units = units
+
+    def get_unit(self, flowchart_id: str) -> Optional["Unit"]:
+        for unit in self.units:
+            if unit.flowchartId == flowchart_id:
+                return unit
+        return None
+
+    def find_unit_by_id(self, id: str) -> Optional["Unit"]:
+        for unit in self.units:
+            if getattr(unit, 'id', None) == id:
+                return unit
+        return None
+
+    def find_unit_with_tag(self, tag: str) -> Optional["Unit"]:
+        for unit in self.units:
+            if hasattr(unit, 'tags') and tag in unit.tags:
+                return unit
+        return None
+
+    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional["Unit"]:
+        return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
+
+    def add_unit(self, unit: "Unit", head: bool = False, index: int = -1) -> None:
+        """
+        Add a unit to the units list.
+        
+        Args:
+            unit: Unit to add
+            head: If True, add at the beginning
+            index: If >= 0, insert at this index
+        """
+
+        if len(self.units) == 0:
+            unit.head = True
+            self.set_units([unit])
+        else:
+            if head:
+                self.units.insert(0, unit)
+            elif index >= 0:
+                self.units.insert(index, unit)
+            else:
+                self.units.append(unit)
+            self.set_units(set_next_links(set_units_head(self.units)))
+
+    def remove_unit(self, flowchart_id: str) -> None:
+        """
+        Remove a unit by its flowchartId.
+        
+        Args:
+            flowchart_id: The flowchartId of the unit to remove
+        """
+
+        if len(self.units) < 2:
+            return
+
+        unit_to_remove = None
+        for unit in self.units:
+            if unit.flowchartId == flowchart_id:
+                unit_to_remove = unit
+                break
+
+        if not unit_to_remove:
+            return
+
+        previous_unit = None
+        for unit in self.units:
+            if getattr(unit, 'next', None) == unit_to_remove.flowchartId:
+                previous_unit = unit
+                break
+
+        if previous_unit:
+            previous_unit.next = None
+
+        remaining_units = [unit for unit in self.units if unit.flowchartId != flowchart_id]
+        units_with_head = set_units_head(remaining_units)
+        self.units = set_next_links(units_with_head)
+
+    def replace_unit(self, index: int, unit: "Unit") -> None:
+        """
+        Replace a unit at a specific index.
+        
+        Args:
+            index: Index of the unit to replace
+            unit: New unit to place at that index
+        """
+
+        if 0 <= index < len(self.units):
+            self.units[index] = unit
+            self.set_units(set_next_links(set_units_head(self.units)))
+
+    def set_unit(
+            self,
+            new_unit: "Unit",
+            unit: Optional["Unit"] = None,
+            unit_flowchart_id: Optional[str] = None,
+    ) -> bool:
+        """
+        Replace a unit by finding it either by instance or flowchart_id.
+        
+        Args:
+            new_unit: The new unit to set
+            unit: The existing unit instance to replace
+            unit_flowchart_id: The flowchart_id of the unit to replace
+            
+        Returns:
+            True if successful, False otherwise
+        """
+        target_unit = unit if unit is not None else self.get_unit(unit_flowchart_id) if unit_flowchart_id else None
+
+        if target_unit is None:
+            return False
+
+        try:
+            unit_index = self.units.index(target_unit)
+            self.replace_unit(unit_index, new_unit)
+            return True
+        except ValueError:
+            return False
