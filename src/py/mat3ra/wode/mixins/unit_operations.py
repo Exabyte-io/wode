@@ -62,6 +62,7 @@ class UnitOperationsMixin:
                 self.units.append(unit)
             self.set_units(set_next_links(set_units_head(self.units)))
 
+    # TODO: Consider removing setNextLinks and setUnitsHead calls when flowchart designer implemented.
     def remove_unit(self, flowchart_id: str) -> None:
         """
         Remove a unit by its flowchartId.

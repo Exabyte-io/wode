@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Dict, List, Optional
 
 from mat3ra.ade.application import Application
 from mat3ra.code.entity import InMemoryEntitySnakeCase
@@ -82,3 +82,34 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
         if hasattr(self.model, 'method') and hasattr(self.model.method, 'data'):
             return self.model.method.data
         return None
+
+    @property
+    def context_providers(self) -> list:
+        """
+        Get unique subworkflow context providers from all units.
+        
+        Returns:
+            List of unique context providers that are marked as subworkflow providers
+        """
+        raise NotImplementedError
+
+
+    @property
+    def context_from_assignment_units(self) -> dict:
+        """
+        Extract context from assignment units.
+        
+        Returns:
+            Dictionary mapping operand names to their values from assignment units
+        """
+        raise NotImplementedError
+
+    def render(self, context: Optional[dict] = None) -> None:
+        """
+        Render the subworkflow and all its units with the given context.
+        
+        Args:
+            context: Context dictionary to pass to units, combined with application,
+                    model, methodData, and subworkflow context
+        """
+        raise NotImplementedError
