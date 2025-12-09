@@ -7,11 +7,13 @@ from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
 from pydantic import Field
 
+from ..enums import UnitType
+from ..mixins import UnitOperationsMixin
 from ..units import Unit
 from ..utils import generate_uuid
 
 
-class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
+class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCase):
     """
     Subworkflow class representing a logical collection of workflow units.
 
@@ -30,11 +32,30 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
     model: Model = Field(default_factory=lambda: Model(type="", subtype="", method=Method(type="", subtype="")))
     units: List[Unit] = Field(default_factory=list)
 
+    @property
+    def id(self) -> str:
+        return self.field_id
+
+    # TODO: model, method, unit are classes or dicts?
     @classmethod
     def from_arguments(
-        cls, application, model, method, name: str, units: Optional[List] = None, config: Optional[dict] = None
+            cls, application, model, method, name: str, units: Optional[List] = None, config: Optional[dict] = None
     ) -> "Subworkflow":
-        raise NotImplementedError
+        if units is None:
+            units = []
+        if config is None:
+            config = {}
+
+        model_dict = model.model_dump() if hasattr(model, 'model_dump') else model
+        method_dict = method.model_dump() if hasattr(method, 'model_dump') else method
+
+        return cls(
+            name=name,
+            application=application,
+            model={**model_dict, "method": method_dict},
+            units=units,
+            **config
+        )
 
     @property
     def properties(self) -> List[str]:
@@ -50,30 +71,14 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
 
     # TODO: implement for MIN notebook
     def get_as_unit(self) -> Unit:
-        raise NotImplementedError
+        return Unit(
+            type=UnitType.SUBWORKFLOW,
+            _id=self.id,
+            name=self.name
+        )
 
-    def set_units(self, units: List[Unit]):
-        raise NotImplementedError
-
-    def add_unit(self, unit: Unit, index: int = -1):
-        raise NotImplementedError
-
-    def remove_unit(self, flowchart_id: str):
-        raise NotImplementedError
-
-    def get_unit(self, flowchart_id: str) -> Optional[Unit]:
-        raise NotImplementedError
-
-    def replace_unit(self, index: int, unit: Unit):
-        raise NotImplementedError
-
-    def find_unit_by_id(self, id: str) -> Optional[Unit]:
-        raise NotImplementedError
-
-    def find_unit_with_tag(self, tag: str) -> Optional[Unit]:
-        raise NotImplementedError
-
-    # TODO: implement for MIN notebook
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[Unit]:
-        raise NotImplementedError
-
+    @property
+    def method_data(self):
+        if hasattr(self.model, 'method') and hasattr(self.model.method, 'data'):
+            return self.model.method.data
+        return None

@@ -1,4 +1,5 @@
 from .enums import UnitType
+from .mixins import UnitOperationsMixin
 from .subworkflows import Subworkflow
 from .units import (
     AssertionUnit,
@@ -13,7 +14,7 @@ from .units import (
     Unit,
     UnitFactory,
 )
-from .utils import generate_uuid
+from .utils import find_by_name_or_regex, generate_uuid, set_next_links, set_units_head
 from .workflows import Workflow
 
 __all__ = [
@@ -31,6 +32,9 @@ __all__ = [
     "Workflow",
     "UnitType",
     "UnitFactory",
-    "Workflow",
+    "UnitOperationsMixin",
+    "find_by_name_or_regex",
     "generate_uuid",
+    "set_next_links",
+    "set_units_head",
 ]
