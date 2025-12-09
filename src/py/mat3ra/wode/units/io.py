@@ -1,12 +1,11 @@
 from typing import List
 
-from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.io import DataIOUnitSchema
 
+from .unit import Unit
 
-class IOUnit(DataIOUnitSchema, InMemoryEntitySnakeCase):
-    subtype: str = "input"
 
+class IOUnit(DataIOUnitSchema, Unit):
     def set_materials(self, materials: List):
         raise NotImplementedError
 

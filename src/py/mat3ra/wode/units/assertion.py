@@ -1,8 +1,7 @@
-from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.assertion import AssertionUnitSchema
 
+from .unit import Unit
 
-class AssertionUnit(AssertionUnitSchema, InMemoryEntitySnakeCase):
-    statement: str = "true"
-    errorMessage: str = "assertion failed"
 
+class AssertionUnit(AssertionUnitSchema, Unit):
+    pass

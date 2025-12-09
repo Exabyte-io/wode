@@ -1,7 +1,7 @@
-from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.execution import ExecutionUnitSchemaBase
 
+from .unit import Unit
 
-class ExecutionUnit(ExecutionUnitSchemaBase, InMemoryEntitySnakeCase):
+
+class ExecutionUnit(ExecutionUnitSchemaBase, Unit):
     pass
-

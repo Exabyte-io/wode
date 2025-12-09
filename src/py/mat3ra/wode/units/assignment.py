@@ -1,12 +1,10 @@
-from typing import Any, List
+from typing import List
 
-from mat3ra.code.entity import InMemoryEntitySnakeCase
-from mat3ra.esse.models.workflow.unit.assignment import AssignmentUnitSchema
+from mat3ra.esse.models.workflow.unit.assignment import AssignmentUnitSchema, WorkflowUnitInputSchema
 from pydantic import Field
 
+from .unit import Unit
 
-class AssignmentUnit(AssignmentUnitSchema, InMemoryEntitySnakeCase):
-    operand: str = "X"
-    value: str = "1"
-    input: List[Any] = Field(default_factory=list)
 
+class AssignmentUnit(AssignmentUnitSchema, Unit):
+    input: List[WorkflowUnitInputSchema] = Field(default_factory=list)

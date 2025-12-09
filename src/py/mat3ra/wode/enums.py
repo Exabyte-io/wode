@@ -1,5 +1,6 @@
 from enum import Enum
 
+
 # TODO: should come from ESSE
 class UnitType(str, Enum):
     CONVERGENCE = "convergence"
@@ -21,4 +22,3 @@ class UnitStatus(str, Enum):
     FINISHED = "finished"
     ERROR = "error"
     WARNING = "warning"
-
