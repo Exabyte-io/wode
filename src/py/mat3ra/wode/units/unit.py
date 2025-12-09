@@ -35,6 +35,9 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     def add_context(self, new_context: Dict[str, Any]):
         raise NotImplementedError
 
+    def set_context(self, new_context: Dict[str, Any]):
+        raise NotImplementedError
+
     def get_context(self, key: str, default: Any = None) -> Any:
         raise NotImplementedError
 
