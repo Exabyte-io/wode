@@ -79,6 +79,10 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     ) -> bool:
         raise NotImplementedError
 
+    def set_context_to_unit(self, unit_name: Optional[str] = None, unit_name_regex: Optional[str] = None,
+                            new_context: Optional[Dict[str, Any]] = None):
+        raise NotImplementedError
+
     def add_unit(self, unit: Unit, head: bool = False, index: int = -1):
         raise NotImplementedError
 
