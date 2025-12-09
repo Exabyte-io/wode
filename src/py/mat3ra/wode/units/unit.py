@@ -30,20 +30,19 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     context: Dict[str, Any] = Field(default_factory=dict)
 
     def is_in_status(self, status: str) -> bool:
-        raise NotImplementedError
+        return self.status == status
 
-    # TODO: implement for MIN notebook
     def add_context(self, new_context: Dict[str, Any]):
-        raise NotImplementedError
+        self.context.update(new_context)
 
     def set_context(self, new_context: Dict[str, Any]):
-        raise NotImplementedError
+        self.context = new_context
 
     def get_context(self, key: str, default: Any = None) -> Any:
-        raise NotImplementedError
+        return self.context.get(key, default)
 
     def remove_context(self, key: str):
-        raise NotImplementedError
+        self.context.pop(key, None)
 
     def clear_context(self):
-        raise NotImplementedError
+        self.context = {}
