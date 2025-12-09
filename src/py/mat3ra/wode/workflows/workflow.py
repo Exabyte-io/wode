@@ -118,44 +118,32 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
 
     @property
     def relaxation_subworkflow(self) -> Optional[Subworkflow]:
-        application_name = self.application.name
+        application_name = self.application.name if self.application else None
         subworkflow_standata = SubworkflowStandata()
         relaxation_data = subworkflow_standata.get_relaxation_subworkflow_by_application(application_name)
+        return Subworkflow(**relaxation_data) if relaxation_data else None
 
-        if not relaxation_data:
-            return None
+    def _find_relaxation_subworkflow(self) -> Optional[Subworkflow]:
+        target_name = self.relaxation_subworkflow.name
 
-        return Subworkflow(**relaxation_data)
-
-    def is_relaxation_subworkflow(self, subworkflow: Subworkflow) -> bool:
-        relaxation = self.relaxation_subworkflow
-        if not relaxation:
-            return False
-
-        return subworkflow.name == relaxation.name
+        return next(
+            (swf for swf in self.subworkflows if swf.name == target_name),
+            None,
+        )
 
     @property
     def has_relaxation(self) -> bool:
-        for subworkflow in self.subworkflows:
-            if self.is_relaxation_subworkflow(subworkflow):
-                return True
-        return False
+        return self._find_relaxation_subworkflow() is not None
 
-    def toggle_relaxation(self):
+    def add_relaxation(self) -> None:
         if self.has_relaxation:
-            relaxation_subworkflow = None
-            for subworkflow in self.subworkflows:
-                if self.is_relaxation_subworkflow(subworkflow):
-                    relaxation_subworkflow = subworkflow
-                    break
+            return
 
-            if relaxation_subworkflow:
-                self.remove_subworkflow_by_id(relaxation_subworkflow.id)
-        else:
-            relaxation = self.relaxation_subworkflow
-            if relaxation:
-                self.add_subworkflow(relaxation, head=True)
+        relaxation_definition = self.relaxation_subworkflow
+        if relaxation_definition is not None:
+            self.add_subworkflow(relaxation_definition, head=True)
 
-    def add_relaxation(self):
-        if not self.has_relaxation:
-            self.toggle_relaxation()
+    def remove_relaxation(self) -> None:
+        existing = self._find_relaxation_subworkflow()
+        if existing is not None:
+            self.remove_subworkflow_by_id(existing.id)
