@@ -6,5 +6,5 @@ from pydantic import Field
 from .unit import Unit
 
 
-class AssignmentUnit(AssignmentUnitSchema, Unit):
+class AssignmentUnit(Unit, AssignmentUnitSchema):
     input: List[WorkflowUnitInputSchema] = Field(default_factory=list)
