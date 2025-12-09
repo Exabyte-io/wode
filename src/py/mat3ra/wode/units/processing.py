@@ -1,4 +1,4 @@
-from typing import Any, Dict
+from typing import Any
 
 from mat3ra.esse.models.workflow.unit.processing import ProcessingUnitSchema
 from pydantic import Field
