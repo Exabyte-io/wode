@@ -9,7 +9,7 @@ from .unit import Unit
 class ProcessingUnit(Unit, ProcessingUnitSchema):
     operation: str = Field(default="")
     operationType: str = Field(default="")
-    input_data: list = Field(default_factory=list)
+    inputData: list = Field(default_factory=list)
     def set_operation(self, op: Any):
         raise NotImplementedError
 

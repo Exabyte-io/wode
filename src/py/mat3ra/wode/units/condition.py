@@ -9,4 +9,4 @@ class ConditionUnit(Unit, ConditionUnitSchema):
     then: str = Field(default="")
     else_: str = Field(default="", alias="else")
     input: list = Field(default_factory=list)
-    max_occurrences: int = Field(default=1)
+    maxOccurrences: int = Field(default=1)
