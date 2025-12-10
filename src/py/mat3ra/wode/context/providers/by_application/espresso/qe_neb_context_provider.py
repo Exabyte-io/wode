@@ -3,7 +3,6 @@
 from typing import Any, Dict, List
 
 from ..executable_context_provider import ExecutableContextProvider
-from .qe_pwx_context_provider import QEPWXContextProvider
 from mat3ra.esse.models.context_providers_directory.by_application.qe_neb_context_provider import (
     QENEBContextProviderSchema,
 )
