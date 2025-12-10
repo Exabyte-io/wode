@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from mat3ra.esse.models.context_providers_directory.points_grid_data_provider import PointsGridDataProviderSchema
+from mat3ra.esse.models.context_providers_directory.enum import ContextProviderNameEnum
 from mat3ra.ade.context.context_provider import ContextProvider
 from mat3ra.esse.models.context_providers_directory.points_grid_data_provider import GridMetricType
 from pydantic import Field
@@ -12,7 +13,8 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
     
     Handles grid dimensions and shifts for reciprocal space sampling.
     """
-
+    # TODO: Verify the correctness of the name
+    name: ContextProviderNameEnum = ContextProviderNameEnum.KGridFormDataManager
     divisor: int = Field(default=1)
     dimensions: List[int] = Field(default_factory=lambda: [1, 1, 1])
     shifts: List[float] = Field(default_factory=lambda: [0.0, 0.0, 0.0])
