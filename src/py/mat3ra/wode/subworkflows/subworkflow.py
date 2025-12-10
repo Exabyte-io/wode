@@ -36,23 +36,21 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
     def id(self) -> str:
         return self.field_id
 
-    # TODO: model, method, unit are classes or dicts?
     @classmethod
     def from_arguments(
-            cls, application, model, method, name: str, units: Optional[List] = None, config: Optional[dict] = None
+            cls, application: Application, model: Model, method: Method, name: str, units: Optional[List] = None,
+            config: Optional[dict] = None
     ) -> "Subworkflow":
         if units is None:
             units = []
         if config is None:
             config = {}
 
-        model_dict = model.model_dump() if hasattr(model, 'model_dump') else model
-        method_dict = method.model_dump() if hasattr(method, 'model_dump') else method
-
+        model.method = method
         return cls(
             name=name,
             application=application,
-            model={**model_dict, "method": method_dict},
+            model=model,
             units=units,
             **config
         )
@@ -79,9 +77,7 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
 
     @property
     def method_data(self):
-        if hasattr(self.model, 'method') and hasattr(self.model.method, 'data'):
-            return self.model.method.data
-        return None
+        return self.model.method.data
 
     @property
     def context_providers(self) -> list:
