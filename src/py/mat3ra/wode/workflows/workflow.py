@@ -65,10 +65,15 @@ class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
 
     # TODO: implement for MIN notebook
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
-        raise NotImplementedError
+        if head:
+            self.subworkflows.insert(0, subworkflow)
+        elif index >= 0:
+            self.subworkflows.insert(index, subworkflow)
+        else:
+            self.subworkflows.append(subworkflow)
 
     def remove_subworkflow_by_id(self, id: str):
-        raise NotImplementedError
+        self.subworkflows = [sw for sw in self.subworkflows if sw.id != id]
 
     def replace_subworkflow_at_index(self, index: int, new_subworkflow: Subworkflow):
         raise NotImplementedError
@@ -96,7 +101,7 @@ class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
     def relaxation_subworkflow(self) -> Optional[Subworkflow]:
         application_name = self.application.name if self.application else None
         subworkflow_standata = SubworkflowStandata()
-        relaxation_data = subworkflow_standata.get_relaxation_subworkflow_by_application(application_name)
+        relaxation_data = subworkflow_standata.get_relaxation_by_application(application_name)
         return Subworkflow(**relaxation_data) if relaxation_data else None
 
     def _find_relaxation_subworkflow(self) -> Optional[Subworkflow]:

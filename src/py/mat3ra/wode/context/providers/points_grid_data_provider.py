@@ -5,7 +5,7 @@ from mat3ra.ade.context.context_provider import ContextProvider
 from mat3ra.esse.models.context_providers_directory.points_grid_data_provider import GridMetricType
 from pydantic import Field
 
-
+# TODO: GlobalSetting for default KPPRA value
 class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
     """
     Context provider for k-point/q-point grid configuration.

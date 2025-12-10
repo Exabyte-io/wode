@@ -1,15 +1,17 @@
 import pytest
-from mat3ra.ade.application import Application
-from mat3ra.mode.method import Method
-from mat3ra.mode.model import Model
-from mat3ra.standata.applications import ApplicationStandata
+from mat3ra.standata.workflows import WorkflowStandata
 from mat3ra.wode import Subworkflow, Unit, Workflow
 
 WORKFLOW_NAME = "Band Structure"
 SUBWORKFLOW_NAME = "Total Energy"
-SUBWORKFLOW_APPLICATION = Application(**ApplicationStandata.get_by_name_first_match("espresso"))
-SUBWORKFLOW_METHOD = Method(type="pseudopotential", subtype="us")
-SUBWORKFLOW_MODEL = Model(type="dft", subtype="gga", method=SUBWORKFLOW_METHOD)
+DEFAULT_WF_NAME = "total_energy"
+
+WORKFLOW_STANDATA = WorkflowStandata()
+
+APPLICATION_ESPRESSO = "espresso"
+APPLICATION_VASP = "vasp"
+APPLICATION_PYTHON = "python"
+RELAXATION_NAME = "Variable-cell Relaxation"
 
 UNIT_CONFIG = {
     "type": "execution",
@@ -62,3 +64,72 @@ def test_to_dict():
     data = wf.to_dict()
     assert data["name"] == WORKFLOW_NAME
     assert "_id" in data
+
+
+@pytest.mark.parametrize(
+    "application,has_relaxation",
+    [
+        (APPLICATION_ESPRESSO, True),
+        (APPLICATION_VASP, True),
+        (APPLICATION_PYTHON, False),
+    ],
+)
+def test_get_relaxation_subworkflow(application, has_relaxation):
+    workflows = WORKFLOW_STANDATA.get_by_categories(application, DEFAULT_WF_NAME)
+    if not workflows:
+        pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {application}")
+    
+    workflow_config = workflows[0]
+    wf = Workflow(**workflow_config)
+    
+    result = wf.relaxation_subworkflow
+    if has_relaxation:
+        assert result is not None
+        assert result.name == RELAXATION_NAME
+        assert hasattr(result, 'name')
+    else:
+        assert result is None
+
+
+@pytest.mark.parametrize(
+    "application",
+    [APPLICATION_ESPRESSO, APPLICATION_VASP],
+)
+def test_add_relaxation(application):
+    workflows = WORKFLOW_STANDATA.get_by_categories(application, DEFAULT_WF_NAME)
+    if not workflows:
+        pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {application}")
+    
+    workflow_config = workflows[0]
+    wf = Workflow(**workflow_config)
+    
+    initial_subworkflow_count = len(wf.subworkflows)
+    assert not wf.has_relaxation
+    
+    wf.add_relaxation()
+    
+    assert wf.has_relaxation
+    assert len(wf.subworkflows) == initial_subworkflow_count + 1
+    assert wf.subworkflows[0].name == wf.relaxation_subworkflow.name
+
+
+@pytest.mark.parametrize(
+    "application",
+    [APPLICATION_ESPRESSO, APPLICATION_VASP],
+)
+def test_remove_relaxation(application):
+    workflows = WORKFLOW_STANDATA.get_by_categories(application, DEFAULT_WF_NAME)
+    if not workflows:
+        pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {application}")
+    
+    workflow_config = workflows[0]
+    wf = Workflow(**workflow_config)
+    
+    wf.add_relaxation()
+    assert wf.has_relaxation
+    initial_subworkflow_count = len(wf.subworkflows)
+    
+    wf.remove_relaxation()
+    
+    assert not wf.has_relaxation
+    assert len(wf.subworkflows) == initial_subworkflow_count - 1
