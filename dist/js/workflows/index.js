@@ -42,7 +42,7 @@ _JSONSchemasInterface.default.setSchemas(_schemas.default);
 function createWorkflows({
   appName = null,
   workflowCls = _workflow.Workflow,
-  workflowSubworkflowMapByApplication = _standata.workflowSubforkflowMapByApplication,
+  workflowSubworkflowMapByApplication = _standata.workflowSubworkflowMapByApplication,
   ...swArgs
 }) {
   let apps = appName !== null ? [appName] : _ade.allApplications;
@@ -51,7 +51,7 @@ function createWorkflows({
   if (appName === null) {
     if (apps && apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
       // eslint-disable-next-line no-console
-      console.warn(`Warning: allApplications and allApplicationsFromWorkflowData do not match: 
+      console.warn(`Warning: allApplications and allApplicationsFromWorkflowData do not match:
                 ${apps.sort().join(",")} !== ${allApplicationsFromWorkflowData.sort().join(",")}`);
       console.warn("Using allApplicationsFromWorkflowData");
     }

@@ -1,5 +1,5 @@
 import { ApplicationRegistry } from "@mat3ra/ade";
-import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
+import { workflowSubworkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
 import { createSubworkflowByName, Subworkflow } from "../../src/js/subworkflows";
@@ -27,7 +27,7 @@ describe("subworkflows", () => {
         const subworkflow = createSubworkflowByName({
             appName: "espresso",
             swfName: "total_energy",
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowSubworkflowMapByApplication,
         });
         const newContext = { testKey: "testValue" };
         subworkflow.updateContext(newContext);
