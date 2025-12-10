@@ -1,4 +1,4 @@
-import { WorkflowStandata, workflowSubforkflowMapByApplication } from "@mat3ra/standata";
+import { WorkflowStandata, workflowSubworkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
 import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from "../../src/js";
@@ -105,14 +105,14 @@ describe("workflows", () => {
         Workflow.usePredefinedIds = true;
         const workflow1 = createWorkflow({
             appName: "espresso",
-            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowData: workflowSubworkflowMapByApplication.workflows.espresso.total_energy,
+            workflowSubworkflowMapByApplication,
             workflowCls: Workflow,
         });
         const workflow2 = createWorkflow({
             appName: "vasp",
-            workflowData: workflowSubforkflowMapByApplication.workflows.vasp.total_energy,
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowData: workflowSubworkflowMapByApplication.workflows.vasp.total_energy,
+            workflowSubworkflowMapByApplication,
             workflowCls: Workflow,
         });
         expect(workflow1._id).to.not.equal(workflow2._id);
@@ -124,8 +124,8 @@ describe("workflow property", () => {
         // Nudged Elastic Band is multi-material
         const mmWorkflow = createWorkflow({
             appName: "espresso",
-            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.neb,
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowData: workflowSubworkflowMapByApplication.workflows.espresso.neb,
+            workflowSubworkflowMapByApplication,
         });
         // eslint-disable-next-line no-unused-expressions
         expect(mmWorkflow.isMultiMaterial).to.be.true;
@@ -134,8 +134,8 @@ describe("workflow property", () => {
     it("properties are not empty", () => {
         const workflow = createWorkflow({
             appName: "espresso",
-            workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
-            workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+            workflowData: workflowSubworkflowMapByApplication.workflows.espresso.total_energy,
+            workflowSubworkflowMapByApplication,
         });
 
         // eslint-disable-next-line no-unused-expressions
@@ -189,8 +189,8 @@ describe("Workflow UUIDs", () => {
         const createTestWorkflow = () =>
             createWorkflow({
                 appName: "espresso",
-                workflowData: workflowSubforkflowMapByApplication.workflows.espresso.total_energy,
-                workflowSubworkflowMapByApplication: workflowSubforkflowMapByApplication,
+                workflowData: workflowSubworkflowMapByApplication.workflows.espresso.total_energy,
+                workflowSubworkflowMapByApplication,
                 workflowCls: Workflow,
             });
 

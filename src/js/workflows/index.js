@@ -1,7 +1,7 @@
 import { allApplications } from "@mat3ra/ade";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
 import schemas from "@mat3ra/esse/dist/js/schemas.json";
-import { workflowSubforkflowMapByApplication } from "@mat3ra/standata";
+import { workflowSubworkflowMapByApplication } from "@mat3ra/standata";
 
 // Import Template here to apply context provider patch
 // eslint-disable-next-line no-unused-vars
@@ -23,7 +23,7 @@ JSONSchemasInterface.setSchemas(schemas);
 function createWorkflows({
     appName = null,
     workflowCls = Workflow,
-    workflowSubworkflowMapByApplication = workflowSubforkflowMapByApplication,
+    workflowSubworkflowMapByApplication = workflowSubworkflowMapByApplication,
     ...swArgs
 }) {
     let apps = appName !== null ? [appName] : allApplications;
