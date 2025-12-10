@@ -1,6 +1,5 @@
 from typing import TYPE_CHECKING, List, Optional
-from ..utils import find_by_name_or_regex
-from ..utils import set_next_links, set_units_head
+from ..utils import add_to_list, find_by_name_or_regex, set_next_links, set_units_head
 
 if TYPE_CHECKING:
     from ..units import Unit
@@ -63,17 +62,11 @@ class UnitOperationsMixin:
             head: If True, add at the beginning
             index: If >= 0, insert at this index
         """
-
         if len(self.units) == 0:
             unit.head = True
             self.set_units([unit])
         else:
-            if head:
-                self.units.insert(0, unit)
-            elif index >= 0:
-                self.units.insert(index, unit)
-            else:
-                self.units.append(unit)
+            add_to_list(self.units, unit, head, index)
             self.set_units(set_next_links(set_units_head(self.units)))
 
     # TODO: Consider removing setNextLinks and setUnitsHead calls when flowchart designer implemented.

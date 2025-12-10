@@ -8,7 +8,7 @@ from pydantic import Field
 from ..mixins import UnitOperationsMixin
 from ..subworkflows import Subworkflow
 from ..units import Unit
-from ..utils import generate_uuid
+from ..utils import add_to_list, generate_uuid
 
 
 class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
@@ -65,12 +65,7 @@ class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
 
     # TODO: implement for MIN notebook
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
-        if head:
-            self.subworkflows.insert(0, subworkflow)
-        elif index >= 0:
-            self.subworkflows.insert(index, subworkflow)
-        else:
-            self.subworkflows.append(subworkflow)
+        add_to_list(self.subworkflows, subworkflow, head, index)
 
     def remove_subworkflow_by_id(self, id: str):
         self.subworkflows = [sw for sw in self.subworkflows if sw.id != id]
