@@ -33,6 +33,26 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     def from_subworkflows(cls, name: str, *subworkflows: Subworkflow) -> "Workflow":
         raise NotImplementedError
 
+    @property
+    def is_multimaterial(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    def properties(self) -> List[str]:
+        raise NotImplementedError
+
+    @property
+    def all_subworkflows(self) -> List[Subworkflow]:
+        raise NotImplementedError
+
+    @property
+    def relaxation_subworkflow(self) -> Optional[Subworkflow]:
+        raise NotImplementedError
+
+    @property
+    def has_relaxation(self) -> bool:
+        raise NotImplementedError
+
     # TODO: implement for MIN notebook
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
         raise NotImplementedError
@@ -55,20 +75,8 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
 
     # TODO: implement for MIN notebook
     def set_unit(
-        self, unit: Optional[Unit] = None, unit_flowchart_id: Optional[str] = None, new_unit: Optional[Unit] = None
+            self, unit: Optional[Unit] = None, unit_flowchart_id: Optional[str] = None, new_unit: Optional[Unit] = None
     ) -> bool:
-        raise NotImplementedError
-
-    @property
-    def is_multimaterial(self) -> bool:
-        raise NotImplementedError
-
-    @property
-    def properties(self) -> List[str]:
-        raise NotImplementedError
-
-    @property
-    def all_subworkflows(self) -> List[Subworkflow]:
         raise NotImplementedError
 
     def add_unit(self, unit: Unit, head: bool = False, index: int = -1):
@@ -78,14 +86,6 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
         raise NotImplementedError
 
     def add_unit_type(self, unit_type: str, head: bool = False, index: int = -1):
-        raise NotImplementedError
-
-    @property
-    def relaxation_subworkflow(self) -> Optional[Subworkflow]:
-        raise NotImplementedError
-
-    @property
-    def has_relaxation(self) -> bool:
         raise NotImplementedError
 
     def toggle_relaxation(self):
