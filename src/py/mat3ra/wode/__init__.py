@@ -1,4 +1,4 @@
-from .enums import UnitStatus, UnitType
+from .enums import UnitType
 from .subworkflows import Subworkflow
 from .units import (
     AssertionUnit,
@@ -30,7 +30,6 @@ __all__ = [
     "Subworkflow",
     "Workflow",
     "UnitType",
-    "UnitStatus",
     "UnitFactory",
     "Workflow",
     "generate_uuid",
