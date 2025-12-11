@@ -36,6 +36,18 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
     ) -> "Subworkflow":
         raise NotImplementedError
 
+    @property
+    def properties(self) -> List[str]:
+        raise NotImplementedError
+
+    @property
+    def is_multimaterial(self) -> bool:
+        raise NotImplementedError
+
+    @property
+    def method_data(self):
+        raise NotImplementedError
+
     # TODO: implement for MIN notebook
     def get_as_unit(self) -> Unit:
         raise NotImplementedError
@@ -65,14 +77,3 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
     def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[Unit]:
         raise NotImplementedError
 
-    @property
-    def properties(self) -> List[str]:
-        raise NotImplementedError
-
-    @property
-    def is_multimaterial(self) -> bool:
-        raise NotImplementedError
-
-    @property
-    def method_data(self):
-        raise NotImplementedError
