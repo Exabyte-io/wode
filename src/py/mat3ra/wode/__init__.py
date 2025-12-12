@@ -1,5 +1,5 @@
 from .enums import UnitType
-from .mixins import UnitOperationsMixin
+from .mixins import FlowchartUnitsManager
 from .subworkflows import Subworkflow
 from .units import (
     AssertionUnit,
@@ -32,7 +32,7 @@ __all__ = [
     "Workflow",
     "UnitType",
     "UnitFactory",
-    "UnitOperationsMixin",
+    "FlowchartUnitsManager",
     "find_by_name_or_regex",
     "generate_uuid",
     "set_next_links",

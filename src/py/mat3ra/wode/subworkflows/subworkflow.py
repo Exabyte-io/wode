@@ -8,12 +8,12 @@ from mat3ra.mode.model import Model
 from pydantic import Field
 
 from ..enums import UnitType
-from ..mixins import UnitOperationsMixin
+from ..mixins import FlowchartUnitsManager
 from ..units import Unit
 from ..utils import generate_uuid
 
 
-class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCase):
+class Subworkflow(FlowchartUnitsManager, SubworkflowSchema, InMemoryEntitySnakeCase):
     """
     Subworkflow class representing a logical collection of workflow units.
 

@@ -5,13 +5,13 @@ from mat3ra.esse.models.workflow import WorkflowSchema
 from mat3ra.standata.subworkflows import SubworkflowStandata
 from pydantic import Field
 
-from ..mixins import UnitOperationsMixin
+from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
 from ..utils import add_to_list, generate_uuid
 
 
-class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
+class Workflow(FlowchartUnitsManager, WorkflowSchema, InMemoryEntitySnakeCase):
     """
     Workflow class representing a complete workflow configuration.
 

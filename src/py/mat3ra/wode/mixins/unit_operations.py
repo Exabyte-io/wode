@@ -5,7 +5,7 @@ if TYPE_CHECKING:
     from ..units import Unit
 
 
-class UnitOperationsMixin:
+class FlowchartUnitsManager:
     """
     Mixin class providing common unit operations.
     

@@ -1,4 +1,4 @@
-from .unit_operations import UnitOperationsMixin
+from .unit_operations import FlowchartUnitsManager
 
-__all__ = ["UnitOperationsMixin"]
+__all__ = ["FlowchartUnitsManager"]
 
