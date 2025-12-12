@@ -1,54 +1,45 @@
-from typing import TYPE_CHECKING, Generic, List, Optional, TypeVar
+from typing import TYPE_CHECKING, List, Optional
 from ..utils import add_to_list, find_by_name_or_regex
 
 if TYPE_CHECKING:
-    from ..units import FlowchartUnit
-
-FlowchartUnitType = TypeVar("FlowchartUnitType", bound="FlowchartUnit")
+    from ..units import Unit
 
 
-class FlowchartUnitsManager(Generic[FlowchartUnitType]):
+class FlowchartUnitsManager:
     """
     Mixin class providing common unit operations for flowchart units.
     
-    This mixin expects the class to have a `units: List[FlowchartUnit]` attribute.
+    This mixin expects the class to have a `units: List[Unit]` attribute.
     It provides common methods for managing units in both Workflow and Subworkflow classes.
-    
-    FlowchartUnit is a protocol that requires:
-    - flowchartId: str
-    - head: Optional[bool]
-    - next: Optional[str]
-    - name: str
     """
 
-    units: List[FlowchartUnitType]
+    units: List["Unit"]
 
-    def set_units(self, units: List[FlowchartUnitType]) -> None:
+    def set_units(self, units: List["Unit"]) -> None:
         self.units = units
 
-    def get_unit(self, flowchart_id: str) -> Optional[FlowchartUnitType]:
+    def get_unit(self, flowchart_id: str) -> Optional["Unit"]:
         for unit in self.units:
             if unit.flowchartId == flowchart_id:
                 return unit
         return None
 
-    def find_unit_by_id(self, id: str) -> Optional[FlowchartUnitType]:
+    def find_unit_by_id(self, id: str) -> Optional["Unit"]:
         for unit in self.units:
             if getattr(unit, 'id', None) == id:
                 return unit
         return None
 
-    def find_unit_with_tag(self, tag: str) -> Optional[FlowchartUnitType]:
+    def find_unit_with_tag(self, tag: str) -> Optional["Unit"]:
         for unit in self.units:
             if hasattr(unit, 'tags') and tag in unit.tags:
                 return unit
         return None
 
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[
-        FlowchartUnitType]:
+    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional["Unit"]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
 
-    def set_units_head(self, units: List[FlowchartUnitType]) -> List[FlowchartUnitType]:
+    def set_units_head(self, units: List["Unit"]) -> List["Unit"]:
         """
         Set the head flag on the first unit and unset it on all others.
         
@@ -64,7 +55,7 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
                 unit.head = False
         return units
 
-    def set_next_links(self, units: List[FlowchartUnitType]) -> List[FlowchartUnitType]:
+    def set_next_links(self, units: List["Unit"]) -> List["Unit"]:
         """
         Re-establishes the linked next => flowchartId logic in an array of units.
         
@@ -102,7 +93,7 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
                 unit.next = None
                 break
 
-    def add_unit(self, unit: FlowchartUnitType, head: bool = False, index: int = -1) -> None:
+    def add_unit(self, unit: "Unit", head: bool = False, index: int = -1) -> None:
         """
         Add a unit to the units list.
         
@@ -145,7 +136,7 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
         units_with_head = self.set_units_head(remaining_units)
         self.units = self.set_next_links(units_with_head)
 
-    def replace_unit(self, index: int, unit: FlowchartUnitType) -> None:
+    def replace_unit(self, index: int, unit: "Unit") -> None:
         """
         Replace a unit at a specific index.
         
@@ -160,8 +151,8 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
 
     def set_unit(
             self,
-            new_unit: FlowchartUnitType,
-            unit: Optional[FlowchartUnitType] = None,
+            new_unit: "Unit",
+            unit: Optional["Unit"] = None,
             unit_flowchart_id: Optional[str] = None,
     ) -> bool:
         """
