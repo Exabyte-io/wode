@@ -182,16 +182,25 @@ class FlowchartUnitsManager:
     ) -> bool:
         """
         Replace a unit by finding it either by instance or flowchart_id.
+        Unit can replace itself if it was modified outside the class.
         
         Args:
             new_unit: The new unit to set
-            unit: The existing unit instance to replace
-            unit_flowchart_id: The flowchart_id of the unit to replace
+            unit: The existing unit instance to replace (optional)
+            unit_flowchart_id: The flowchart_id of the unit to replace (optional)
+            
+        If neither unit nor unit_flowchart_id is provided, the function will use
+        new_unit.flowchartId to find the existing unit to replace.
             
         Returns:
             True if successful, False otherwise
         """
-        target_unit = unit if unit is not None else self.get_unit(unit_flowchart_id) if unit_flowchart_id else None
+        if unit is not None:
+            target_unit = unit
+        elif unit_flowchart_id is not None:
+            target_unit = self.get_unit(unit_flowchart_id)
+        else:
+            target_unit = self.get_unit(new_unit.flowchartId)
 
         if target_unit is None:
             return False
