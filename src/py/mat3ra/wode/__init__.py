@@ -1,4 +1,3 @@
-from .enums import UnitType
 from .mixins import FlowchartUnitsManager
 from .subworkflows import Subworkflow
 from .units import (
@@ -30,7 +29,6 @@ __all__ = [
     "SubworkflowUnit",
     "Subworkflow",
     "Workflow",
-    "UnitType",
     "UnitFactory",
     "FlowchartUnitsManager",
     "find_by_name_or_regex",

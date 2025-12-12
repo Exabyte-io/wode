@@ -3,11 +3,11 @@ from typing import List, Optional
 from mat3ra.ade.application import Application
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.subworkflow import Subworkflow as SubworkflowSchema
+from mat3ra.esse.models.workflow.unit.subworkflow import Type as UnitType
 from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
 from pydantic import Field
 
-from ..enums import UnitType
 from ..mixins import FlowchartUnitsManager
 from ..units import Unit
 from ..utils import generate_uuid
@@ -90,7 +90,7 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
     # TODO: implement for MIN notebook
     def get_as_unit(self) -> Unit:
         return Unit(
-            type=UnitType.SUBWORKFLOW,
+            type=UnitType.subworkflow,
             _id=self.id,
             name=self.name
         )
