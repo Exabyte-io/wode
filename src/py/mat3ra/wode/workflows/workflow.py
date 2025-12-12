@@ -48,20 +48,23 @@ class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
         raise NotImplementedError
 
     @property
-    def properties(self) -> List[str]:
-        raise NotImplementedError
-
-    @property
     def all_subworkflows(self) -> List[Subworkflow]:
         raise NotImplementedError
 
     @property
-    def relaxation_subworkflow(self) -> Optional[Subworkflow]:
+    def properties(self) -> List[str]:
         raise NotImplementedError
 
     @property
+    def relaxation_subworkflow(self) -> Optional[Subworkflow]:
+        application_name = self.application.name if self.application else None
+        subworkflow_standata = SubworkflowStandata()
+        relaxation_data = subworkflow_standata.get_relaxation_by_application(application_name)
+        return Subworkflow(**relaxation_data) if relaxation_data else None
+
+    @property
     def has_relaxation(self) -> bool:
-        raise NotImplementedError
+        return self._find_relaxation_subworkflow() is not None
 
     # TODO: implement for MIN notebook
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
@@ -81,23 +84,8 @@ class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
         target_unit = self.get_unit_by_name(name=unit_name, name_regex=unit_name_regex)
         target_unit.context = new_context
 
-    @property
-    def is_multimaterial(self) -> bool:
-        raise NotImplementedError
-
-    @property
-    def all_subworkflows(self) -> List[Subworkflow]:
-        raise NotImplementedError
-
     def add_unit_type(self, unit_type: str, head: bool = False, index: int = -1):
         raise NotImplementedError
-
-    @property
-    def relaxation_subworkflow(self) -> Optional[Subworkflow]:
-        application_name = self.application.name if self.application else None
-        subworkflow_standata = SubworkflowStandata()
-        relaxation_data = subworkflow_standata.get_relaxation_by_application(application_name)
-        return Subworkflow(**relaxation_data) if relaxation_data else None
 
     def _find_relaxation_subworkflow(self) -> Optional[Subworkflow]:
         target_name = self.relaxation_subworkflow.name
@@ -106,10 +94,6 @@ class Workflow(UnitOperationsMixin, WorkflowSchema, InMemoryEntitySnakeCase):
             (swf for swf in self.subworkflows if swf.name == target_name),
             None,
         )
-
-    @property
-    def has_relaxation(self) -> bool:
-        return self._find_relaxation_subworkflow() is not None
 
     def add_relaxation(self) -> None:
         if self.has_relaxation:

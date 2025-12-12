@@ -32,10 +32,6 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
     model: Model = Field(default_factory=lambda: Model(type="", subtype="", method=Method(type="", subtype="")))
     units: List[Unit] = Field(default_factory=list)
 
-    @property
-    def id(self) -> str:
-        return self.field_id
-
     @classmethod
     def from_arguments(
             cls, application: Application, model: Model, method: Method, name: str, units: Optional[List] = None,
@@ -56,24 +52,16 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
         )
 
     @property
+    def id(self) -> str:
+        return self.field_id
+
+    @property
     def properties(self) -> List[str]:
         raise NotImplementedError
 
     @property
     def is_multimaterial(self) -> bool:
         raise NotImplementedError
-
-    @property
-    def method_data(self):
-        raise NotImplementedError
-
-    # TODO: implement for MIN notebook
-    def get_as_unit(self) -> Unit:
-        return Unit(
-            type=UnitType.SUBWORKFLOW,
-            _id=self.id,
-            name=self.name
-        )
 
     @property
     def method_data(self):
@@ -98,6 +86,14 @@ class Subworkflow(UnitOperationsMixin, SubworkflowSchema, InMemoryEntitySnakeCas
             Dictionary mapping operand names to their values from assignment units
         """
         raise NotImplementedError
+
+    # TODO: implement for MIN notebook
+    def get_as_unit(self) -> Unit:
+        return Unit(
+            type=UnitType.SUBWORKFLOW,
+            _id=self.id,
+            name=self.name
+        )
 
     def render(self, context: Optional[dict] = None) -> None:
         """
