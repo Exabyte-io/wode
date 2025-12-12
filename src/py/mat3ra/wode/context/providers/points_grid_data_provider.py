@@ -21,23 +21,18 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
     shifts: List[float] = Field(default_factory=lambda: [0.0, 0.0, 0.0])
     grid_metric_type: str = Field(default=GridMetricType.KPPRA)
 
-    @property
-    def default_shift(self) -> float:
-        raise NotImplementedError
-
-    @property
-    def default_dimensions(self) -> List[int]:
-        raise NotImplementedError
-
-    @property
-    def default_shifts(self) -> List[float]:
-        raise NotImplementedError
-
-    def get_default_grid_metric_value(self, metric: str) -> float:
-        raise NotImplementedError
-
+    # TODO: handle presence of material
     @property
     def default_data(self) -> Dict[str, Any]:
+        return {
+            "dimensions": self.dimensions,
+            "shifts": self.shifts,
+            "gridMetricType": self.grid_metric_type,
+            "divisor": self.divisor,
+        }
+
+    # TODO: add a test to verify context and templates are the same as from JS implementation
+    def get_default_grid_metric_value(self, metric: str) -> float:
         raise NotImplementedError
 
     def calculate_dimensions(
@@ -60,4 +55,4 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
         raise NotImplementedError
 
     def get_data(self) -> Dict[str, Any]:
-        return super()._get_effective_data()
+        return self.data or self.default_data

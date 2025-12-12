@@ -136,3 +136,46 @@ def test_remove_relaxation(application):
 
     assert not wf.has_relaxation
     assert len(wf.subworkflows) == initial_subworkflow_count - 1
+
+
+@pytest.mark.parametrize(
+    "method",
+    [
+        "only_new_unit",
+        "with_unit_instance",
+        "with_flowchart_id",
+    ],
+)
+def test_set_unit(method):
+    workflows = WORKFLOW_STANDATA.get_by_categories(APPLICATION_ESPRESSO, DEFAULT_WF_NAME)
+    if not workflows:
+        pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {APPLICATION_ESPRESSO}")
+
+    workflow_config = workflows[0]
+    wf = Workflow(**workflow_config)
+
+    wf.add_relaxation()
+    
+    unit_to_modify = wf.get_unit_by_name(name_regex="relax")
+    assert unit_to_modify is not None
+    
+    original_context = dict(unit_to_modify.context)
+    new_context = {"test_key": "test_value", "another_key": 42}
+    unit_to_modify.add_context(new_context)
+    
+    if method == "only_new_unit":
+        success = wf.set_unit(unit_to_modify)
+    elif method == "with_unit_instance":
+        original_unit = wf.get_unit_by_name(name_regex="relax")
+        success = wf.set_unit(unit_to_modify, unit=original_unit)
+    elif method == "with_flowchart_id":
+        flowchart_id = unit_to_modify.flowchartId
+        success = wf.set_unit(unit_to_modify, unit_flowchart_id=flowchart_id)
+    
+    assert success is True
+    
+    updated_unit = wf.get_unit_by_name(name_regex="relax")
+    assert "test_key" in updated_unit.context
+    assert "another_key" in updated_unit.context
+    assert updated_unit.context["test_key"] == "test_value"
+    assert updated_unit.context["another_key"] == 42
