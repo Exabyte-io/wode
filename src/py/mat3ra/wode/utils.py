@@ -1,5 +1,4 @@
-import uuid
-
+from mat3ra.utils.uuid import get_uuid
 
 def generate_uuid() -> str:
-    return str(uuid.uuid4())
+    return get_uuid()

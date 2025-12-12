@@ -14,11 +14,3 @@ class UnitType(str, Enum):
     PROCESSING = "processing"
     IO = "io"
     ASSERTION = "assertion"
-
-
-class UnitStatus(str, Enum):
-    IDLE = "idle"
-    ACTIVE = "active"
-    FINISHED = "finished"
-    ERROR = "error"
-    WARNING = "warning"

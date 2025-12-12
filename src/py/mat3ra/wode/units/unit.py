@@ -1,7 +1,7 @@
 from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
-from mat3ra.esse.models.workflow.unit.base import RuntimeItemNameObjectSchema, WorkflowBaseUnitSchema
+from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
 from pydantic import Field
 
 from ..utils import generate_uuid
@@ -22,10 +22,11 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     """
 
     flowchartId: str = Field(default_factory=generate_uuid)
-    preProcessors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
-    postProcessors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
-    monitors: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
-    results: List[RuntimeItemNameObjectSchema] = Field(default_factory=list)
+    # TODO: use RuntimeItemNameObjectSchema when available
+    preProcessors: List[Any] = Field(default_factory=list)
+    postProcessors: List[Any] = Field(default_factory=list)
+    monitors: List[Any] = Field(default_factory=list)
+    results: List[Any] = Field(default_factory=list)
     context: Dict[str, Any] = Field(default_factory=dict)
 
     def is_in_status(self, status: str) -> bool:
