@@ -38,7 +38,11 @@ class FlowchartUnitsManager:
                 return unit
         return None
 
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional["Unit"]:
+    def get_unit_by_name(
+            self,
+            name: Optional[str] = None,
+            name_regex: Optional[str] = None,
+    ) -> Optional["Unit"]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
 
     @staticmethod

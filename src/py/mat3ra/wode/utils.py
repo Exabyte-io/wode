@@ -8,8 +8,11 @@ def generate_uuid() -> str:
     return get_uuid()
 
 
-def find_by_name_or_regex(items: List[Any], name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[
-    Any]:
+def find_by_name_or_regex(
+        items: List[Any],
+        name: Optional[str] = None,
+        name_regex: Optional[str] = None,
+) -> Optional[Any]:
     """
     Find an item in a list by exact name match or regex pattern.
 
@@ -22,11 +25,12 @@ def find_by_name_or_regex(items: List[Any], name: Optional[str] = None, name_reg
         First matching item or None
     """
     if name:
+        name_lower = name.lower()
         for item in items:
-            if item.name == name:
+            if item.name.lower() == name_lower:
                 return item
     elif name_regex:
-        pattern = re.compile(name_regex)
+        pattern = re.compile(name_regex, re.IGNORECASE)
         for item in items:
             if pattern.search(item.name):
                 return item

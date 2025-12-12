@@ -67,7 +67,7 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
         self._add_to_list(self.subworkflows, subworkflow, head, index)
         unit = subworkflow.get_as_unit()
-        self._add_to_list(self.units, unit, head, index)
+        self.add_unit(unit, head, index)
 
     def remove_subworkflow_by_id(self, id: str):
         self.subworkflows = [sw for sw in self.subworkflows if sw.id != id]
