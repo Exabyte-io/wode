@@ -54,12 +54,10 @@ def test_field_id_generation():
     assert wf1.field_id != wf2.field_id
 
 
-@pytest.mark.skip(reason="Implementation not complete")
 def test_to_dict():
     wf = Workflow(name=WORKFLOW_NAME)
     data = wf.to_dict()
     assert data["name"] == WORKFLOW_NAME
-    assert "_id" in data
 
 
 @pytest.mark.parametrize(

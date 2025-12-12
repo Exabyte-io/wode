@@ -51,9 +51,7 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     def all_subworkflows(self) -> List[Subworkflow]:
         raise NotImplementedError
 
-    @property
-    def properties(self) -> List[str]:
-        raise NotImplementedError
+    # TODO: add computed_properties — "properties" will conflict with Pydantic fields
 
     @property
     def relaxation_subworkflow(self) -> Optional[Subworkflow]:
