@@ -1,8 +1,10 @@
-from typing import TYPE_CHECKING, List, Optional
-from ..utils import add_to_list, find_by_name_or_regex
+from typing import TYPE_CHECKING, List, Optional, TypeVar
+from ..utils import find_by_name_or_regex
 
 if TYPE_CHECKING:
     from ..units import Unit
+
+T = TypeVar("T")
 
 
 class FlowchartUnitsManager:
@@ -38,6 +40,25 @@ class FlowchartUnitsManager:
 
     def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional["Unit"]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
+
+    @staticmethod
+    def _add_to_list(items: List[T], item: T, head: bool = False, index: int = -1) -> None:
+        """
+        Add an item to a list at a specified position.
+
+        Args:
+            items: The list to add to
+            item: The item to add
+            head: If True, insert at the beginning (index 0)
+            index: If >= 0, insert at this specific index
+                   If < 0, append to the end
+        """
+        if head:
+            items.insert(0, item)
+        elif index >= 0:
+            items.insert(index, item)
+        else:
+            items.append(item)
 
     def set_units_head(self, units: List["Unit"]) -> List["Unit"]:
         """
@@ -106,7 +127,7 @@ class FlowchartUnitsManager:
             unit.head = True
             self.set_units([unit])
         else:
-            add_to_list(self.units, unit, head, index)
+            self._add_to_list(self.units, unit, head, index)
             self.set_units(self.set_next_links(self.set_units_head(self.units)))
 
     # TODO: Consider removing setNextLinks and setUnitsHead calls when flowchart designer implemented.

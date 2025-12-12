@@ -59,6 +59,15 @@ def test_to_dict():
     data = wf.to_dict()
     assert data["name"] == WORKFLOW_NAME
 
+def test_add_subworkflow():
+    wf = Workflow(name=WORKFLOW_NAME)
+    sw = Subworkflow(name=SUBWORKFLOW_NAME)
+    wf.add_subworkflow(sw)
+    assert len(wf.subworkflows) == 1
+    assert wf.subworkflows[0].name == SUBWORKFLOW_NAME
+    assert len(wf.units) == 1
+    assert wf.units[0].name == SUBWORKFLOW_NAME
+    assert wf.units[0].type == "subworkflow"
 
 @pytest.mark.parametrize(
     "application,has_relaxation",

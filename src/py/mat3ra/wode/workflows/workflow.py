@@ -8,7 +8,7 @@ from pydantic import Field
 from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
-from ..utils import add_to_list, generate_uuid
+from ..utils import generate_uuid
 
 
 class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -64,9 +64,10 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     def has_relaxation(self) -> bool:
         return self._find_relaxation_subworkflow() is not None
 
-    # TODO: implement for MIN notebook
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
-        add_to_list(self.subworkflows, subworkflow, head, index)
+        self._add_to_list(self.subworkflows, subworkflow, head, index)
+        unit = subworkflow.get_as_unit()
+        self._add_to_list(self.units, unit, head, index)
 
     def remove_subworkflow_by_id(self, id: str):
         self.subworkflows = [sw for sw in self.subworkflows if sw.id != id]

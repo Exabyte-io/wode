@@ -58,5 +58,5 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
     def transform_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         raise NotImplementedError
 
-    def get_data(self, dimensions: Optional[List[int]] = None) -> Dict[str, Any]:
-        raise NotImplementedError
+    def get_data(self) -> Dict[str, Any]:
+        return super()._get_effective_data()

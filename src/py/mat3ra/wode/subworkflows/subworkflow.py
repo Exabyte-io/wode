@@ -87,7 +87,6 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
         """
         raise NotImplementedError
 
-    # TODO: implement for MIN notebook
     def get_as_unit(self) -> Unit:
         return Unit(
             type=UnitType.subworkflow.value,
