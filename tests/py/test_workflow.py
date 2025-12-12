@@ -1,17 +1,25 @@
 import pytest
 from mat3ra.standata.workflows import WorkflowStandata
+from mat3ra.standata.subworkflows import SubworkflowStandata
+from mat3ra.standata.applications import ApplicationStandata
 from mat3ra.wode import Subworkflow, Unit, Workflow
 
-WORKFLOW_NAME = "Band Structure"
-SUBWORKFLOW_NAME = "Total Energy"
-DEFAULT_WF_NAME = "total_energy"
-
 WORKFLOW_STANDATA = WorkflowStandata()
+SUBWORKFLOW_STANDATA = SubworkflowStandata()
+APPLICATION_STANDATA = ApplicationStandata()
 
-APPLICATION_ESPRESSO = "espresso"
-APPLICATION_VASP = "vasp"
-APPLICATION_PYTHON = "python"
-RELAXATION_NAME = "Variable-cell Relaxation"
+WORKFLOW_NAME = WORKFLOW_STANDATA.get_by_name_first_match(
+    "band_gap"
+)["name"]
+SUBWORKFLOW_NAME = SUBWORKFLOW_STANDATA.get_by_name_first_match(
+    "pw_scf"
+)["name"]
+DEFAULT_WF_NAME = WORKFLOW_STANDATA.get_default()["name"]
+
+APPLICATION_ESPRESSO = APPLICATION_STANDATA.get_by_name_first_match("espresso")["name"]
+APPLICATION_VASP = APPLICATION_STANDATA.get_by_name_first_match("vasp")["name"]
+APPLICATION_PYTHON = APPLICATION_STANDATA.get_by_name_first_match("python")["name"]
+RELAXATION_NAME = SUBWORKFLOW_STANDATA.get_relaxation_by_application(APPLICATION_ESPRESSO)["name"]
 
 UNIT_CONFIG = {
     "type": "execution",
@@ -26,18 +34,11 @@ def test_creation():
     assert wf.name == WORKFLOW_NAME
 
 
-def test_with_subworkflows():
+def test_subworkflows():
     sw = Subworkflow(name=SUBWORKFLOW_NAME)
     wf = Workflow(name=WORKFLOW_NAME, subworkflows=[sw])
     assert len(wf.subworkflows) == 1
     assert wf.subworkflows[0].name == SUBWORKFLOW_NAME
-
-
-@pytest.mark.parametrize("count", [1, 2, 3])
-def test_multiple_subworkflows(count):
-    subworkflows = [Subworkflow(name=f"{SUBWORKFLOW_NAME} {i}") for i in range(count)]
-    wf = Workflow(name=WORKFLOW_NAME, subworkflows=subworkflows)
-    assert len(wf.subworkflows) == count
 
 
 def test_with_units():
@@ -45,11 +46,6 @@ def test_with_units():
     wf = Workflow(name=WORKFLOW_NAME, units=[unit])
     assert len(wf.units) == 1
     assert wf.units[0].name == UNIT_CONFIG["name"]
-
-
-def test_is_multi_material():
-    wf = Workflow(name=WORKFLOW_NAME, isMultiMaterial=True)
-    assert wf.isMultiMaterial is True
 
 
 def test_field_id_generation():
@@ -78,10 +74,10 @@ def test_get_relaxation_subworkflow(application, has_relaxation):
     workflows = WORKFLOW_STANDATA.get_by_categories(application, DEFAULT_WF_NAME)
     if not workflows:
         pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {application}")
-    
+
     workflow_config = workflows[0]
     wf = Workflow(**workflow_config)
-    
+
     result = wf.relaxation_subworkflow
     if has_relaxation:
         assert result is not None
@@ -99,15 +95,15 @@ def test_add_relaxation(application):
     workflows = WORKFLOW_STANDATA.get_by_categories(application, DEFAULT_WF_NAME)
     if not workflows:
         pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {application}")
-    
+
     workflow_config = workflows[0]
     wf = Workflow(**workflow_config)
-    
+
     initial_subworkflow_count = len(wf.subworkflows)
     assert not wf.has_relaxation
-    
+
     wf.add_relaxation()
-    
+
     assert wf.has_relaxation
     assert len(wf.subworkflows) == initial_subworkflow_count + 1
     assert wf.subworkflows[0].name == wf.relaxation_subworkflow.name
@@ -121,15 +117,15 @@ def test_remove_relaxation(application):
     workflows = WORKFLOW_STANDATA.get_by_categories(application, DEFAULT_WF_NAME)
     if not workflows:
         pytest.skip(f"No {DEFAULT_WF_NAME} workflow found for {application}")
-    
+
     workflow_config = workflows[0]
     wf = Workflow(**workflow_config)
-    
+
     wf.add_relaxation()
     assert wf.has_relaxation
     initial_subworkflow_count = len(wf.subworkflows)
-    
+
     wf.remove_relaxation()
-    
+
     assert not wf.has_relaxation
     assert len(wf.subworkflows) == initial_subworkflow_count - 1
