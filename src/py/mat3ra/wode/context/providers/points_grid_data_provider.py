@@ -53,6 +53,3 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
 
     def transform_data(self, data: Dict[str, Any]) -> Dict[str, Any]:
         raise NotImplementedError
-
-    def get_data(self) -> Dict[str, Any]:
-        return self.data or self.default_data
