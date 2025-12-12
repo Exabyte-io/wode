@@ -1,8 +1,7 @@
-from typing import TYPE_CHECKING, List, Optional, TypeVar
-from ..utils import find_by_name_or_regex
+from typing import List, Optional, TypeVar
 
-if TYPE_CHECKING:
-    from ..units import Unit
+from ..units import Unit
+from ..utils import find_by_name_or_regex
 
 T = TypeVar("T")
 
@@ -15,24 +14,24 @@ class FlowchartUnitsManager:
     It provides common methods for managing units in both Workflow and Subworkflow classes.
     """
 
-    units: List["Unit"]
+    units: List[Unit]
 
-    def set_units(self, units: List["Unit"]) -> None:
+    def set_units(self, units: List[Unit]) -> None:
         self.units = units
 
-    def get_unit(self, flowchart_id: str) -> Optional["Unit"]:
+    def get_unit(self, flowchart_id: str) -> Optional[Unit]:
         for unit in self.units:
             if unit.flowchartId == flowchart_id:
                 return unit
         return None
 
-    def find_unit_by_id(self, id: str) -> Optional["Unit"]:
+    def find_unit_by_id(self, id: str) -> Optional[Unit]:
         for unit in self.units:
             if getattr(unit, 'id', None) == id:
                 return unit
         return None
 
-    def find_unit_with_tag(self, tag: str) -> Optional["Unit"]:
+    def find_unit_with_tag(self, tag: str) -> Optional[Unit]:
         for unit in self.units:
             if hasattr(unit, 'tags') and tag in unit.tags:
                 return unit
@@ -42,7 +41,7 @@ class FlowchartUnitsManager:
             self,
             name: Optional[str] = None,
             name_regex: Optional[str] = None,
-    ) -> Optional["Unit"]:
+    ) -> Optional[Unit]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
 
     @staticmethod
@@ -64,7 +63,7 @@ class FlowchartUnitsManager:
         else:
             items.append(item)
 
-    def set_units_head(self, units: List["Unit"]) -> List["Unit"]:
+    def set_units_head(self, units: List[Unit]) -> List[Unit]:
         """
         Set the head flag on the first unit and unset it on all others.
         
@@ -80,7 +79,7 @@ class FlowchartUnitsManager:
                 unit.head = False
         return units
 
-    def set_next_links(self, units: List["Unit"]) -> List["Unit"]:
+    def set_next_links(self, units: List[Unit]) -> List[Unit]:
         """
         Re-establishes the linked next => flowchartId logic in an array of units.
         
@@ -118,7 +117,7 @@ class FlowchartUnitsManager:
                 unit.next = None
                 break
 
-    def add_unit(self, unit: "Unit", head: bool = False, index: int = -1) -> None:
+    def add_unit(self, unit: Unit, head: bool = False, index: int = -1) -> None:
         """
         Add a unit to the units list.
         
@@ -161,7 +160,7 @@ class FlowchartUnitsManager:
         units_with_head = self.set_units_head(remaining_units)
         self.units = self.set_next_links(units_with_head)
 
-    def replace_unit(self, index: int, unit: "Unit") -> None:
+    def replace_unit(self, index: int, unit: Unit) -> None:
         """
         Replace a unit at a specific index.
         
@@ -176,8 +175,8 @@ class FlowchartUnitsManager:
 
     def set_unit(
             self,
-            new_unit: "Unit",
-            unit: Optional["Unit"] = None,
+            new_unit: Unit,
+            unit: Optional[Unit] = None,
             unit_flowchart_id: Optional[str] = None,
     ) -> bool:
         """
