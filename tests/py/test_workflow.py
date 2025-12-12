@@ -1,7 +1,8 @@
 import pytest
-from mat3ra.standata.workflows import WorkflowStandata
-from mat3ra.standata.subworkflows import SubworkflowStandata
 from mat3ra.standata.applications import ApplicationStandata
+from mat3ra.standata.subworkflows import SubworkflowStandata
+from mat3ra.standata.workflows import WorkflowStandata
+
 from mat3ra.wode import Subworkflow, Unit, Workflow
 
 WORKFLOW_STANDATA = WorkflowStandata()
@@ -59,6 +60,7 @@ def test_to_dict():
     data = wf.to_dict()
     assert data["name"] == WORKFLOW_NAME
 
+
 def test_add_subworkflow():
     wf = Workflow(name=WORKFLOW_NAME)
     sw = Subworkflow(name=SUBWORKFLOW_NAME)
@@ -68,6 +70,7 @@ def test_add_subworkflow():
     assert len(wf.units) == 1
     assert wf.units[0].name == SUBWORKFLOW_NAME
     assert wf.units[0].type == "subworkflow"
+
 
 @pytest.mark.parametrize(
     "application,has_relaxation",
@@ -155,14 +158,13 @@ def test_set_unit(method):
     wf = Workflow(**workflow_config)
 
     wf.add_relaxation()
-    
+
     unit_to_modify = wf.get_unit_by_name(name_regex="relax")
     assert unit_to_modify is not None
-    
-    original_context = dict(unit_to_modify.context)
+
     new_context = {"test_key": "test_value", "another_key": 42}
     unit_to_modify.add_context(new_context)
-    
+
     if method == "only_new_unit":
         success = wf.set_unit(unit_to_modify)
     elif method == "with_unit_instance":
@@ -171,9 +173,9 @@ def test_set_unit(method):
     elif method == "with_flowchart_id":
         flowchart_id = unit_to_modify.flowchartId
         success = wf.set_unit(unit_to_modify, unit_flowchart_id=flowchart_id)
-    
+
     assert success is True
-    
+
     updated_unit = wf.get_unit_by_name(name_regex="relax")
     assert "test_key" in updated_unit.context
     assert "another_key" in updated_unit.context

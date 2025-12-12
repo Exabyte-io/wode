@@ -81,7 +81,6 @@ def test_add_context_to_relaxation_unit():
     assert unit_to_modify_relax is not None
     assert "relax" in unit_to_modify_relax.name.lower()
 
-    initial_context = dict(unit_to_modify_relax.context)
     unit_to_modify_relax.add_context(NEW_CONTEXT_RELAX)
 
     assert "kgrid" in unit_to_modify_relax.context
