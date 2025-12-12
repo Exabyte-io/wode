@@ -13,7 +13,7 @@ from .units import (
     Unit,
     UnitFactory,
 )
-from .utils import find_by_name_or_regex, generate_uuid, set_next_links, set_units_head
+from .utils import find_by_name_or_regex, generate_uuid
 from .workflows import Workflow
 
 __all__ = [
@@ -33,6 +33,4 @@ __all__ = [
     "FlowchartUnitsManager",
     "find_by_name_or_regex",
     "generate_uuid",
-    "set_next_links",
-    "set_units_head",
 ]

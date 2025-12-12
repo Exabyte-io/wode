@@ -90,7 +90,7 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
     # TODO: implement for MIN notebook
     def get_as_unit(self) -> Unit:
         return Unit(
-            type=UnitType.subworkflow,
+            type=UnitType.subworkflow.value,
             _id=self.id,
             name=self.name
         )

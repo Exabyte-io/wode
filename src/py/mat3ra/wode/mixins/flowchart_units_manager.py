@@ -1,5 +1,5 @@
 from typing import TYPE_CHECKING, Generic, List, Optional, TypeVar
-from ..utils import add_to_list, find_by_name_or_regex, set_next_links, set_units_head
+from ..utils import add_to_list, find_by_name_or_regex
 
 if TYPE_CHECKING:
     from ..units import FlowchartUnit
@@ -48,6 +48,46 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
         FlowchartUnitType]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
 
+    def set_units_head(self, units: List[FlowchartUnitType]) -> List[FlowchartUnitType]:
+        """
+        Set the head flag on the first unit and unset it on all others.
+        
+        Args:
+            units: List of units to process
+            
+        Returns:
+            The modified units list
+        """
+        if len(units) > 0:
+            units[0].head = True
+            for unit in units[1:]:
+                unit.head = False
+        return units
+
+    def set_next_links(self, units: List[FlowchartUnitType]) -> List[FlowchartUnitType]:
+        """
+        Re-establishes the linked next => flowchartId logic in an array of units.
+        
+        Args:
+            units: List of units to process
+            
+        Returns:
+            The modified units list
+        """
+        flowchart_ids = [unit.flowchartId for unit in units]
+
+        for i in range(len(units) - 1):
+            unit_next = getattr(units[i], 'next', None)
+
+            if unit_next is None:
+                units[i].next = units[i + 1].flowchartId
+                if i > 0:
+                    units[i - 1].next = units[i].flowchartId
+            elif unit_next not in flowchart_ids:
+                units[i].next = units[i + 1].flowchartId
+
+        return units
+
     def _clear_link_to_unit(self, flowchart_id: str) -> None:
         """
         Clear the 'next' link from any unit that points to the given flowchart_id.
@@ -76,7 +116,7 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
             self.set_units([unit])
         else:
             add_to_list(self.units, unit, head, index)
-            self.set_units(set_next_links(set_units_head(self.units)))
+            self.set_units(self.set_next_links(self.set_units_head(self.units)))
 
     # TODO: Consider removing setNextLinks and setUnitsHead calls when flowchart designer implemented.
     def remove_unit(self, flowchart_id: str) -> None:
@@ -102,8 +142,8 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
         self._clear_link_to_unit(unit_to_remove.flowchartId)
 
         remaining_units = [unit for unit in self.units if unit.flowchartId != flowchart_id]
-        units_with_head = set_units_head(remaining_units)
-        self.units = set_next_links(units_with_head)
+        units_with_head = self.set_units_head(remaining_units)
+        self.units = self.set_next_links(units_with_head)
 
     def replace_unit(self, index: int, unit: FlowchartUnitType) -> None:
         """
@@ -116,7 +156,7 @@ class FlowchartUnitsManager(Generic[FlowchartUnitType]):
 
         if 0 <= index < len(self.units):
             self.units[index] = unit
-            self.set_units(set_next_links(set_units_head(self.units)))
+            self.set_units(self.set_next_links(self.set_units_head(self.units)))
 
     def set_unit(
             self,
