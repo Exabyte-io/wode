@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Dict, Any
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow import WorkflowSchema
@@ -77,6 +77,10 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     def set_unit(
             self, unit: Optional[Unit] = None, unit_flowchart_id: Optional[str] = None, new_unit: Optional[Unit] = None
     ) -> bool:
+        raise NotImplementedError
+
+    def set_context_to_unit(self, unit_name: Optional[str] = None, unit_name_regex: Optional[str] = None,
+                            new_context: Optional[Dict[str, Any]] = None):
         raise NotImplementedError
 
     def add_unit(self, unit: Unit, head: bool = False, index: int = -1):
