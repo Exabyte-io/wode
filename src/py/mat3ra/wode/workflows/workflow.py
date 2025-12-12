@@ -4,9 +4,9 @@ from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow import WorkflowSchema
 from pydantic import Field
 
-from .. import generate_uuid
 from ..subworkflows import Subworkflow
 from ..units import Unit
+from ..utils import generate_uuid
 
 
 class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):

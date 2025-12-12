@@ -1,5 +1,4 @@
 import pytest
-
 from mat3ra.wode import Unit
 
 UNIT_FLOWCHART_ID = "abc-123-def"

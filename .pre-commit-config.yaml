@@ -3,17 +3,17 @@ repos:
     rev: 2023.6.28
     hooks:
       - id: ruff
-        exclude: ^tests/fixtures*
+        exclude: ^tests/fixtures*|^dist*
       - id: black
-        exclude: ^tests/fixtures*
+        exclude: ^tests/fixtures*|^dist*
       - id: isort
-        exclude: ^tests/fixtures*
+        exclude: ^tests/fixtures*|^dist*
       - id: mypy
-        exclude: ^tests/fixtures*
+        exclude: ^tests/fixtures*|^dist*
       - id: check-yaml
-        exclude: ^tests/fixtures*
+        exclude: ^tests/fixtures*|^dist*
       - id: end-of-file-fixer
-        exclude: ^tests/fixtures*
+        exclude: ^tests/fixtures*|^dist*
       - id: trailing-whitespace
         exclude: ^tests/fixtures*|^dist*
   - repo: local
