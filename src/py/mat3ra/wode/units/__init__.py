@@ -3,6 +3,7 @@ from .assignment import AssignmentUnit
 from .condition import ConditionUnit
 from .execution import ExecutionUnit
 from .factory import UnitFactory
+from .flowchart_unit import FlowchartUnit
 from .io import IOUnit
 from .map import MapUnit
 from .processing import ProcessingUnit
@@ -22,4 +23,5 @@ __all__ = [
     "ReduceUnit",
     "SubworkflowUnit",
     "UnitFactory",
+    "FlowchartUnit",
 ]

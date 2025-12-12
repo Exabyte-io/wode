@@ -1,42 +1,51 @@
-from typing import TYPE_CHECKING, List, Optional
+from typing import TYPE_CHECKING, Generic, List, Optional, TypeVar
 from ..utils import add_to_list, find_by_name_or_regex, set_next_links, set_units_head
 
 if TYPE_CHECKING:
-    from ..units import Unit
+    from ..units import FlowchartUnit
+
+FlowchartUnitType = TypeVar("FlowchartUnitType", bound="FlowchartUnit")
 
 
-class FlowchartUnitsManager:
+class FlowchartUnitsManager(Generic[FlowchartUnitType]):
     """
-    Mixin class providing common unit operations.
+    Mixin class providing common unit operations for flowchart units.
     
-    This mixin expects the class to have a `units: List[Unit]` attribute.
+    This mixin expects the class to have a `units: List[FlowchartUnit]` attribute.
     It provides common methods for managing units in both Workflow and Subworkflow classes.
+    
+    FlowchartUnit is a protocol that requires:
+    - flowchartId: str
+    - head: Optional[bool]
+    - next: Optional[str]
+    - name: str
     """
 
-    units: List["Unit"]
+    units: List[FlowchartUnitType]
 
-    def set_units(self, units: List["Unit"]) -> None:
+    def set_units(self, units: List[FlowchartUnitType]) -> None:
         self.units = units
 
-    def get_unit(self, flowchart_id: str) -> Optional["Unit"]:
+    def get_unit(self, flowchart_id: str) -> Optional[FlowchartUnitType]:
         for unit in self.units:
             if unit.flowchartId == flowchart_id:
                 return unit
         return None
 
-    def find_unit_by_id(self, id: str) -> Optional["Unit"]:
+    def find_unit_by_id(self, id: str) -> Optional[FlowchartUnitType]:
         for unit in self.units:
             if getattr(unit, 'id', None) == id:
                 return unit
         return None
 
-    def find_unit_with_tag(self, tag: str) -> Optional["Unit"]:
+    def find_unit_with_tag(self, tag: str) -> Optional[FlowchartUnitType]:
         for unit in self.units:
             if hasattr(unit, 'tags') and tag in unit.tags:
                 return unit
         return None
 
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional["Unit"]:
+    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[
+        FlowchartUnitType]:
         return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
 
     def _clear_link_to_unit(self, flowchart_id: str) -> None:
@@ -53,7 +62,7 @@ class FlowchartUnitsManager:
                 unit.next = None
                 break
 
-    def add_unit(self, unit: "Unit", head: bool = False, index: int = -1) -> None:
+    def add_unit(self, unit: FlowchartUnitType, head: bool = False, index: int = -1) -> None:
         """
         Add a unit to the units list.
         
@@ -96,7 +105,7 @@ class FlowchartUnitsManager:
         units_with_head = set_units_head(remaining_units)
         self.units = set_next_links(units_with_head)
 
-    def replace_unit(self, index: int, unit: "Unit") -> None:
+    def replace_unit(self, index: int, unit: FlowchartUnitType) -> None:
         """
         Replace a unit at a specific index.
         
@@ -111,8 +120,8 @@ class FlowchartUnitsManager:
 
     def set_unit(
             self,
-            new_unit: "Unit",
-            unit: Optional["Unit"] = None,
+            new_unit: FlowchartUnitType,
+            unit: Optional[FlowchartUnitType] = None,
             unit_flowchart_id: Optional[str] = None,
     ) -> bool:
         """

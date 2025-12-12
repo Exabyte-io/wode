@@ -11,7 +11,7 @@ from ..units import Unit
 from ..utils import add_to_list, generate_uuid
 
 
-class Workflow(FlowchartUnitsManager, WorkflowSchema, InMemoryEntitySnakeCase):
+class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager[Unit]):
     """
     Workflow class representing a complete workflow configuration.
 

@@ -13,7 +13,7 @@ from ..units import Unit
 from ..utils import generate_uuid
 
 
-class Subworkflow(FlowchartUnitsManager, SubworkflowSchema, InMemoryEntitySnakeCase):
+class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager[Unit]):
     """
     Subworkflow class representing a logical collection of workflow units.
 
