@@ -7,11 +7,12 @@ from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
 from pydantic import Field
 
+from ..mixins import FlowchartUnitsManager
 from ..units import Unit
 from ..utils import generate_uuid
 
 
-class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
+class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     """
     Subworkflow class representing a logical collection of workflow units.
 
@@ -32,9 +33,26 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
 
     @classmethod
     def from_arguments(
-        cls, application, model, method, name: str, units: Optional[List] = None, config: Optional[dict] = None
+            cls, application: Application, model: Model, method: Method, name: str, units: Optional[List] = None,
+            config: Optional[dict] = None
     ) -> "Subworkflow":
-        raise NotImplementedError
+        if units is None:
+            units = []
+        if config is None:
+            config = {}
+
+        model.method = method
+        return cls(
+            name=name,
+            application=application,
+            model=model,
+            units=units,
+            **config
+        )
+
+    @property
+    def id(self) -> str:
+        return self.field_id
 
     @property
     def properties(self) -> List[str]:
@@ -46,34 +64,41 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase):
 
     @property
     def method_data(self):
+        return self.model.method.data
+
+    @property
+    def context_providers(self) -> list:
+        """
+        Get unique subworkflow context providers from all units.
+        
+        Returns:
+            List of unique context providers that are marked as subworkflow providers
+        """
         raise NotImplementedError
 
-    # TODO: implement for MIN notebook
+    @property
+    def context_from_assignment_units(self) -> dict:
+        """
+        Extract context from assignment units.
+        
+        Returns:
+            Dictionary mapping operand names to their values from assignment units
+        """
+        raise NotImplementedError
+
     def get_as_unit(self) -> Unit:
-        raise NotImplementedError
+        return Unit(
+            type="subworkflow",
+            _id=self.id,
+            name=self.name
+        )
 
-    def set_units(self, units: List[Unit]):
+    def render(self, context: Optional[dict] = None) -> None:
+        """
+        Render the subworkflow and all its units with the given context.
+        
+        Args:
+            context: Context dictionary to pass to units, combined with application,
+                    model, methodData, and subworkflow context
+        """
         raise NotImplementedError
-
-    def add_unit(self, unit: Unit, index: int = -1):
-        raise NotImplementedError
-
-    def remove_unit(self, flowchart_id: str):
-        raise NotImplementedError
-
-    def get_unit(self, flowchart_id: str) -> Optional[Unit]:
-        raise NotImplementedError
-
-    def replace_unit(self, index: int, unit: Unit):
-        raise NotImplementedError
-
-    def find_unit_by_id(self, id: str) -> Optional[Unit]:
-        raise NotImplementedError
-
-    def find_unit_with_tag(self, tag: str) -> Optional[Unit]:
-        raise NotImplementedError
-
-    # TODO: implement for MIN notebook
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[Unit]:
-        raise NotImplementedError
-

@@ -3,7 +3,7 @@ from .assignment import AssignmentUnit
 from .condition import ConditionUnit
 from .execution import ExecutionUnit
 from .factory import UnitFactory
-from .io import IOUnit
+from .io.base import IOUnit
 from .map import MapUnit
 from .processing import ProcessingUnit
 from .reduce import ReduceUnit

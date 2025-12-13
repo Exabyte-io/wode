@@ -1,15 +1,17 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow import WorkflowSchema
+from mat3ra.standata.subworkflows import SubworkflowStandata
 from pydantic import Field
 
+from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
 from ..utils import generate_uuid
 
 
-class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
+class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     """
     Workflow class representing a complete workflow configuration.
 
@@ -25,6 +27,14 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     units: List[Unit] = Field(default_factory=list)
     isMultiMaterial: bool = Field(default=False)
 
+    @property
+    def application(self):
+        if not self.subworkflows or len(self.subworkflows) == 0:
+            return None
+
+        first_subworkflow = self.subworkflows[0]
+        return first_subworkflow.application if first_subworkflow.application else None
+
     @classmethod
     def from_subworkflow(cls, subworkflow: Subworkflow) -> "Workflow":
         raise NotImplementedError
@@ -38,27 +48,29 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
         raise NotImplementedError
 
     @property
-    def properties(self) -> List[str]:
-        raise NotImplementedError
-
-    @property
     def all_subworkflows(self) -> List[Subworkflow]:
         raise NotImplementedError
 
+    # TODO: add computed_properties — "properties" will conflict with Pydantic fields
+
     @property
     def relaxation_subworkflow(self) -> Optional[Subworkflow]:
-        raise NotImplementedError
+        application_name = self.application.name if self.application else None
+        subworkflow_standata = SubworkflowStandata()
+        relaxation_data = subworkflow_standata.get_relaxation_by_application(application_name)
+        return Subworkflow(**relaxation_data) if relaxation_data else None
 
     @property
     def has_relaxation(self) -> bool:
-        raise NotImplementedError
+        return self._find_relaxation_subworkflow() is not None
 
-    # TODO: implement for MIN notebook
     def add_subworkflow(self, subworkflow: Subworkflow, head: bool = False, index: int = -1):
-        raise NotImplementedError
+        self._add_to_list(self.subworkflows, subworkflow, head, index)
+        unit = subworkflow.get_as_unit()
+        self.add_unit(unit, head, index)
 
     def remove_subworkflow_by_id(self, id: str):
-        raise NotImplementedError
+        self.subworkflows = [sw for sw in self.subworkflows if sw.id != id]
 
     def replace_subworkflow_at_index(self, index: int, new_subworkflow: Subworkflow):
         raise NotImplementedError
@@ -66,32 +78,31 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase):
     def find_subworkflow_by_id(self, id: str) -> Optional[Subworkflow]:
         raise NotImplementedError
 
-    def set_units(self, units: List[Unit]):
-        raise NotImplementedError
-
-    # TODO: implement for MIN notebook
-    def get_unit_by_name(self, name: Optional[str] = None, name_regex: Optional[str] = None) -> Optional[Unit]:
-        raise NotImplementedError
-
-    # TODO: implement for MIN notebook
-    def set_unit(
-            self, unit: Optional[Unit] = None, unit_flowchart_id: Optional[str] = None, new_unit: Optional[Unit] = None
-    ) -> bool:
-        raise NotImplementedError
-
-    def add_unit(self, unit: Unit, head: bool = False, index: int = -1):
-        raise NotImplementedError
-
-    def remove_unit(self, flowchart_id: str):
-        raise NotImplementedError
+    def set_context_to_unit(self, unit_name: Optional[str] = None, unit_name_regex: Optional[str] = None,
+                            new_context: Optional[Dict[str, Any]] = None):
+        target_unit = self.get_unit_by_name(name=unit_name, name_regex=unit_name_regex)
+        target_unit.context = new_context
 
     def add_unit_type(self, unit_type: str, head: bool = False, index: int = -1):
         raise NotImplementedError
 
-    def toggle_relaxation(self):
-        raise NotImplementedError
+    def _find_relaxation_subworkflow(self) -> Optional[Subworkflow]:
+        target_name = self.relaxation_subworkflow.name
 
-    # TODO: implement for MIN notebook
-    def add_relaxation(self):
-        # self.toggle_relaxation()
-        raise NotImplementedError
+        return next(
+            (swf for swf in self.subworkflows if swf.name == target_name),
+            None,
+        )
+
+    def add_relaxation(self) -> None:
+        if self.has_relaxation:
+            return
+
+        relaxation_definition = self.relaxation_subworkflow
+        if relaxation_definition is not None:
+            self.add_subworkflow(relaxation_definition, head=True)
+
+    def remove_relaxation(self) -> None:
+        existing = self._find_relaxation_subworkflow()
+        if existing is not None:
+            self.remove_subworkflow_by_id(existing.id)
