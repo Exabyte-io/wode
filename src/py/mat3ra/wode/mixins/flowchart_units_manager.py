@@ -33,7 +33,7 @@ class FlowchartUnitsManager:
 
     def find_unit_with_tag(self, tag: str) -> Optional[Unit]:
         for unit in self.units:
-            if hasattr(unit, 'tags') and tag in unit.tags:
+            if hasattr(unit, 'tags') and unit.tags is not None and tag in unit.tags:
                 return unit
         return None
 
