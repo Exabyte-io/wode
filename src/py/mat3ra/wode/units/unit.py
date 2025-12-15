@@ -2,9 +2,9 @@ from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
+from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
-from ..utils import generate_uuid
 
 
 class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
@@ -21,7 +21,7 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
         context: Context data dictionary for the unit
     """
 
-    flowchartId: str = Field(default_factory=generate_uuid)
+    flowchartId: str = Field(default_factory=get_uuid)
     # TODO: use RuntimeItemNameObjectSchema when available
     preProcessors: List[Any] = Field(default_factory=list)
     postProcessors: List[Any] = Field(default_factory=list)

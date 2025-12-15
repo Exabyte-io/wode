@@ -9,8 +9,7 @@ from pydantic import Field
 
 from ..mixins import FlowchartUnitsManager
 from ..units import Unit
-from ..utils import generate_uuid
-
+from mat3ra.utils.uuid import get_uuid
 
 class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     """
@@ -24,7 +23,7 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
         properties: List of properties extracted by the subworkflow
     """
 
-    field_id: str = Field(default_factory=generate_uuid, alias="_id")
+    field_id: str = Field(default_factory=get_uuid, alias="_id")
     application: Application = Field(
         default_factory=lambda: Application(name="", version="", build="", shortName="", summary="")
     )

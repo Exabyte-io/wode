@@ -8,7 +8,7 @@ from pydantic import Field
 from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
-from ..utils import generate_uuid
+from mat3ra.utils.uuid import get_uuid
 
 
 class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -22,7 +22,7 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
         properties: List of properties extracted by the workflow
     """
 
-    field_id: str = Field(default_factory=generate_uuid, alias="_id")
+    field_id: str = Field(default_factory=get_uuid, alias="_id")
     subworkflows: List[Subworkflow] = Field(default_factory=list)
     units: List[Unit] = Field(default_factory=list)
     isMultiMaterial: bool = Field(default=False)

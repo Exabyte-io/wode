@@ -5,7 +5,7 @@ from .units import (
     SubworkflowUnit,
     Unit,
 )
-from .utils import find_by_name_or_regex, generate_uuid
+from .utils import find_by_name_or_regex
 from .workflows import Workflow
 
 __all__ = [
@@ -16,5 +16,4 @@ __all__ = [
     "Workflow",
     "FlowchartUnitsManager",
     "find_by_name_or_regex",
-    "generate_uuid",
 ]
