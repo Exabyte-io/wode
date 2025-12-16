@@ -1,7 +1,8 @@
 from typing import List, Optional, TypeVar
 
+from mat3ra.utils import find_by_key_or_regex
+
 from ..units import Unit
-from ..utils import find_by_name_or_regex
 
 T = TypeVar("T")
 
@@ -42,7 +43,7 @@ class FlowchartUnitsManager:
             name: Optional[str] = None,
             name_regex: Optional[str] = None,
     ) -> Optional[Unit]:
-        return find_by_name_or_regex(self.units, name=name, name_regex=name_regex)
+        return find_by_key_or_regex(self.units, key="name", value=name, value_regex=name_regex)
 
     @staticmethod
     def _add_to_list(items: List[T], item: T, head: bool = False, index: int = -1) -> None:
