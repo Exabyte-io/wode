@@ -70,9 +70,9 @@ def test_get_unit(workflow, unit_1, unit_2):
 
 def test_find_unit_by_id(workflow, unit_1, unit_2):
     workflow.set_units([unit_1, unit_2])
-    found_unit = workflow.find_unit_by_id(unit_1.field_id)
+    found_unit = workflow.find_unit_by_id(unit_1.id)
     assert found_unit is not None
-    assert found_unit.field_id == unit_1.field_id
+    assert found_unit.id == unit_1.id
 
 
 def test_find_unit_with_tag(workflow, unit_3):

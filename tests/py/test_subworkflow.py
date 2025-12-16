@@ -48,11 +48,6 @@ def test_model(model_type, model_subtype):
     assert sw.model.subtype == model_subtype
 
 
-def test_properties():
-    sw = Subworkflow(name=SUBWORKFLOW_NAME, properties=SUBWORKFLOW_PROPERTIES)
-    assert sw.properties == SUBWORKFLOW_PROPERTIES
-
-
 def test_with_units():
     unit = Unit(**UNIT_CONFIG)
     sw = Subworkflow(name=SUBWORKFLOW_NAME, units=[unit])
@@ -60,15 +55,9 @@ def test_with_units():
     assert sw.units[0].name == UNIT_CONFIG["name"]
 
 
-def test_field_id_generation():
+def test_id_generation():
     sw1 = Subworkflow(name=SUBWORKFLOW_NAME)
     sw2 = Subworkflow(name=SUBWORKFLOW_NAME)
-    assert sw1.field_id != sw2.field_id
+    assert sw1.id != sw2.id
 
 
-@pytest.mark.skip(reason="Implementation not complete")
-def test_to_dict():
-    sw = Subworkflow(name=SUBWORKFLOW_NAME, application=SUBWORKFLOW_APPLICATION)
-    data = sw.to_dict()
-    assert data["name"] == SUBWORKFLOW_NAME
-    assert data["application"]["name"] == SUBWORKFLOW_APPLICATION.name

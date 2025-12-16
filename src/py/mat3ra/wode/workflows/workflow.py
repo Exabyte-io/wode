@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Optional
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow import WorkflowSchema
 from mat3ra.standata.subworkflows import SubworkflowStandata
+from mypyc.codegen.emitclass import setter_name
 from pydantic import Field
 
 from ..mixins import FlowchartUnitsManager
@@ -22,7 +23,7 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
         properties: List of properties extracted by the workflow
     """
 
-    field_id: str = Field(default_factory=get_uuid, alias="_id")
+    id: str = Field(default_factory=get_uuid, alias="_id")
     subworkflows: List[Subworkflow] = Field(default_factory=list)
     units: List[Unit] = Field(default_factory=list)
     isMultiMaterial: bool = Field(default=False)

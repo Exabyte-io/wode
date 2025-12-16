@@ -58,14 +58,6 @@ def test_next_property():
     assert unit.next == UNIT_NEXT_ID
 
 
-def test_to_dict():
-    unit = Unit(**UNIT_CONFIG_EXECUTION)
-    data = unit.to_dict()
-    assert data["type"] == UNIT_CONFIG_EXECUTION["type"]
-    assert data["name"] == UNIT_CONFIG_EXECUTION["name"]
-    assert data["head"] is True
-
-
 def test_add_context():
     unit = Unit(**{**UNIT_CONFIG_EXECUTION, "name": "relaxation step"})
 

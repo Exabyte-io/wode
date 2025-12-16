@@ -11,6 +11,7 @@ from ..mixins import FlowchartUnitsManager
 from ..units import Unit
 from mat3ra.utils.uuid import get_uuid
 
+
 class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     """
     Subworkflow class representing a logical collection of workflow units.
@@ -23,7 +24,7 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
         properties: List of properties extracted by the subworkflow
     """
 
-    field_id: str = Field(default_factory=get_uuid, alias="_id")
+    id: str = Field(default_factory=get_uuid, alias="_id")
     application: Application = Field(
         default_factory=lambda: Application(name="", version="", build="", shortName="", summary="")
     )
@@ -50,17 +51,12 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
         )
 
     @property
-    def id(self) -> str:
-        return self.field_id
-
-    @property
     def method_data(self):
         return self.model.method.data
-
 
     def get_as_unit(self) -> Unit:
         return Unit(
             type="subworkflow",
-            _id=self.id,
+            id=self.id,
             name=self.name
         )

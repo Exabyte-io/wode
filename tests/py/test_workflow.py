@@ -49,10 +49,10 @@ def test_with_units():
     assert wf.units[0].name == UNIT_CONFIG["name"]
 
 
-def test_field_id_generation():
+def test_id_generation():
     wf1 = Workflow(name=WORKFLOW_NAME)
     wf2 = Workflow(name=WORKFLOW_NAME)
-    assert wf1.field_id != wf2.field_id
+    assert wf1.id != wf2.id
 
 
 def test_to_dict():
