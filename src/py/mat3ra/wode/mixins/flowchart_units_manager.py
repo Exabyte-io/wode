@@ -10,7 +10,7 @@ T = TypeVar("T")
 class FlowchartUnitsManager:
     """
     Mixin class providing common unit operations for flowchart units.
-    
+
     This mixin expects the class to have a `units: List[Unit]` attribute.
     It provides common methods for managing units in both Workflow and Subworkflow classes.
     """
@@ -28,20 +28,20 @@ class FlowchartUnitsManager:
 
     def find_unit_by_id(self, id: str) -> Optional[Unit]:
         for unit in self.units:
-            if getattr(unit, 'id', None) == id:
+            if getattr(unit, "id", None) == id:
                 return unit
         return None
 
     def find_unit_with_tag(self, tag: str) -> Optional[Unit]:
         for unit in self.units:
-            if hasattr(unit, 'tags') and unit.tags is not None and tag in unit.tags:
+            if hasattr(unit, "tags") and unit.tags is not None and tag in unit.tags:
                 return unit
         return None
 
     def get_unit_by_name(
-            self,
-            name: Optional[str] = None,
-            name_regex: Optional[str] = None,
+        self,
+        name: Optional[str] = None,
+        name_regex: Optional[str] = None,
     ) -> Optional[Unit]:
         return find_by_key_or_regex(self.units, key="name", value=name, value_regex=name_regex)
 
@@ -67,10 +67,10 @@ class FlowchartUnitsManager:
     def set_units_head(self, units: List[Unit]) -> List[Unit]:
         """
         Set the head flag on the first unit and unset it on all others.
-        
+
         Args:
             units: List of units to process
-            
+
         Returns:
             The modified units list
         """
@@ -83,17 +83,17 @@ class FlowchartUnitsManager:
     def set_next_links(self, units: List[Unit]) -> List[Unit]:
         """
         Re-establishes the linked next => flowchartId logic in an array of units.
-        
+
         Args:
             units: List of units to process
-            
+
         Returns:
             The modified units list
         """
         flowchart_ids = [unit.flowchartId for unit in units]
 
         for i in range(len(units) - 1):
-            unit_next = getattr(units[i], 'next', None)
+            unit_next = getattr(units[i], "next", None)
 
             if unit_next is None:
                 units[i].next = units[i + 1].flowchartId
@@ -107,21 +107,21 @@ class FlowchartUnitsManager:
     def _clear_link_to_unit(self, flowchart_id: str) -> None:
         """
         Clear the 'next' link from any unit that points to the given flowchart_id.
-        
+
         This is used to mend broken links when removing a unit.
-        
+
         Args:
             flowchart_id: The flowchart_id to clear links to
         """
         for unit in self.units:
-            if getattr(unit, 'next', None) == flowchart_id:
+            if getattr(unit, "next", None) == flowchart_id:
                 unit.next = None
                 break
 
     def add_unit(self, unit: Unit, head: bool = False, index: int = -1) -> None:
         """
         Add a unit to the units list.
-        
+
         Args:
             unit: Unit to add
             head: If True, add at the beginning
@@ -137,7 +137,7 @@ class FlowchartUnitsManager:
     def remove_unit(self, flowchart_id: str) -> None:
         """
         Remove a unit by its flowchartId.
-        
+
         Args:
             flowchart_id: The flowchartId of the unit to remove
         """
@@ -163,7 +163,7 @@ class FlowchartUnitsManager:
     def replace_unit(self, index: int, unit: Unit) -> None:
         """
         Replace a unit at a specific index.
-        
+
         Args:
             index: Index of the unit to replace
             unit: New unit to place at that index
@@ -174,23 +174,23 @@ class FlowchartUnitsManager:
             self.set_units(self.set_next_links(self.set_units_head(self.units)))
 
     def set_unit(
-            self,
-            new_unit: Unit,
-            unit: Optional[Unit] = None,
-            unit_flowchart_id: Optional[str] = None,
+        self,
+        new_unit: Unit,
+        unit: Optional[Unit] = None,
+        unit_flowchart_id: Optional[str] = None,
     ) -> bool:
         """
         Replace a unit by finding it either by instance or flowchart_id.
         Unit can replace itself if it was modified outside the class.
-        
+
         Args:
             new_unit: The new unit to set
             unit: The existing unit instance to replace (optional)
             unit_flowchart_id: The flowchart_id of the unit to replace (optional)
-            
+
         If neither unit nor unit_flowchart_id is provided, the function will use
         new_unit.flowchartId to find the existing unit to replace.
-            
+
         Returns:
             True if successful, False otherwise
         """

@@ -6,7 +6,6 @@ from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
 
-
 class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     """
     Unit class representing a unit of computational work in a workflow.

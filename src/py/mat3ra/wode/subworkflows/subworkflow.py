@@ -5,11 +5,11 @@ from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.subworkflow import Subworkflow as SubworkflowSchema
 from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
+from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
 from ..mixins import FlowchartUnitsManager
 from ..units import Unit
-from mat3ra.utils.uuid import get_uuid
 
 
 class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -33,8 +33,13 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
 
     @classmethod
     def from_arguments(
-            cls, application: Application, model: Model, method: Method, name: str, units: Optional[List] = None,
-            config: Optional[dict] = None
+        cls,
+        application: Application,
+        model: Model,
+        method: Method,
+        name: str,
+        units: Optional[List] = None,
+        config: Optional[dict] = None,
     ) -> "Subworkflow":
         if units is None:
             units = []
@@ -42,21 +47,11 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
             config = {}
 
         model.method = method
-        return cls(
-            name=name,
-            application=application,
-            model=model,
-            units=units,
-            **config
-        )
+        return cls(name=name, application=application, model=model, units=units, **config)
 
     @property
     def method_data(self):
         return self.model.method.data
 
     def get_as_unit(self) -> Unit:
-        return Unit(
-            type="subworkflow",
-            id=self.id,
-            name=self.name
-        )
+        return Unit(type="subworkflow", id=self.id, name=self.name)

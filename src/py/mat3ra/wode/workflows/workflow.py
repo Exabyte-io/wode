@@ -3,13 +3,12 @@ from typing import Any, Dict, List, Optional
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow import WorkflowSchema
 from mat3ra.standata.subworkflows import SubworkflowStandata
-from mypyc.codegen.emitclass import setter_name
+from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
 from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
-from mat3ra.utils.uuid import get_uuid
 
 
 class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -58,8 +57,12 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     def find_subworkflow_by_id(self, id: str) -> Optional[Subworkflow]:
         return next((sw for sw in self.subworkflows if sw.id == id), None)
 
-    def set_context_to_unit(self, unit_name: Optional[str] = None, unit_name_regex: Optional[str] = None,
-                            new_context: Optional[Dict[str, Any]] = None):
+    def set_context_to_unit(
+        self,
+        unit_name: Optional[str] = None,
+        unit_name_regex: Optional[str] = None,
+        new_context: Optional[Dict[str, Any]] = None,
+    ):
         target_unit = self.get_unit_by_name(name=unit_name, name_regex=unit_name_regex)
         target_unit.context = new_context
 

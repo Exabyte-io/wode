@@ -59,5 +59,3 @@ def test_id_generation():
     sw1 = Subworkflow(name=SUBWORKFLOW_NAME)
     sw2 = Subworkflow(name=SUBWORKFLOW_NAME)
     assert sw1.id != sw2.id
-
-

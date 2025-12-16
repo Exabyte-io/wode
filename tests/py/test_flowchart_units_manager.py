@@ -1,5 +1,4 @@
 import pytest
-
 from mat3ra.wode.units import Unit
 from mat3ra.wode.workflows import Workflow
 
@@ -82,11 +81,14 @@ def test_find_unit_with_tag(workflow, unit_3):
     assert UNIT_TAG in found_unit.tags
 
 
-@pytest.mark.parametrize("search_name,expected_name", [
-    (UNIT_1_NAME, UNIT_1_NAME),
-    (UNIT_1_NAME.upper(), UNIT_1_NAME),  # Case insensitive
-    (UNIT_2_NAME, UNIT_2_NAME),
-])
+@pytest.mark.parametrize(
+    "search_name,expected_name",
+    [
+        (UNIT_1_NAME, UNIT_1_NAME),
+        (UNIT_1_NAME.upper(), UNIT_1_NAME),  # Case insensitive
+        (UNIT_2_NAME, UNIT_2_NAME),
+    ],
+)
 def test_get_unit_by_name(workflow, unit_1, unit_2, search_name, expected_name):
     workflow.set_units([unit_1, unit_2])
     found_unit = workflow.get_unit_by_name(name=search_name)
@@ -137,10 +139,13 @@ def test_add_unit(workflow, unit_1, unit_2):
     assert workflow.units[0].next == FLOWCHART_ID_2
 
 
-@pytest.mark.parametrize("head,expected_order", [
-    (True, [FLOWCHART_ID_3, FLOWCHART_ID_1, FLOWCHART_ID_2]),
-    (False, [FLOWCHART_ID_1, FLOWCHART_ID_2, FLOWCHART_ID_3]),
-])
+@pytest.mark.parametrize(
+    "head,expected_order",
+    [
+        (True, [FLOWCHART_ID_3, FLOWCHART_ID_1, FLOWCHART_ID_2]),
+        (False, [FLOWCHART_ID_1, FLOWCHART_ID_2, FLOWCHART_ID_3]),
+    ],
+)
 def test_add_unit_head_parameter(workflow, unit_1, unit_2, unit_3, head, expected_order):
     workflow.add_unit(unit_1)
     workflow.add_unit(unit_2)
@@ -168,11 +173,14 @@ def test_replace_unit(workflow, unit_1, unit_2):
     assert workflow.units[0].flowchartId == FLOWCHART_ID_2
 
 
-@pytest.mark.parametrize("provide_unit,provide_id,should_succeed", [
-    (True, False, True),  # Provide unit instance
-    (False, True, True),  # Provide flowchart_id
-    (False, False, True),  # Provide neither (use new_unit.flowchartId)
-])
+@pytest.mark.parametrize(
+    "provide_unit,provide_id,should_succeed",
+    [
+        (True, False, True),  # Provide unit instance
+        (False, True, True),  # Provide flowchart_id
+        (False, False, True),  # Provide neither (use new_unit.flowchartId)
+    ],
+)
 def test_set_unit(workflow, unit_1, unit_2, provide_unit, provide_id, should_succeed):
     workflow.set_units([unit_1])
 

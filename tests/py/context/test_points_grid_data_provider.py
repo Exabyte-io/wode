@@ -26,11 +26,9 @@ DATA_CUSTOM = {
         ),
     ],
 )
-def test_points_grid_data_provider_initialization(
-    init_params, expected_dimensions, expected_shifts, expected_divisor
-):
+def test_points_grid_data_provider_initialization(init_params, expected_dimensions, expected_shifts, expected_divisor):
     kgrid_context_provider_relax = PointsGridDataProvider(**init_params)
-    
+
     assert kgrid_context_provider_relax.dimensions == expected_dimensions
     assert kgrid_context_provider_relax.shifts == expected_shifts
     assert kgrid_context_provider_relax.divisor == expected_divisor
@@ -67,10 +65,10 @@ def test_points_grid_data_provider_get_data(init_params, expected_dimensions, ex
     "init_params,expected_dimensions,expected_shifts,expected_divisor",
     [
         (
-                {"dimensions": DIMENSIONS_CUSTOM},
-                DIMENSIONS_CUSTOM,
-                SHIFTS_DEFAULT,
-                DIVISOR_DEFAULT,
+            {"dimensions": DIMENSIONS_CUSTOM},
+            DIMENSIONS_CUSTOM,
+            SHIFTS_DEFAULT,
+            DIVISOR_DEFAULT,
         ),
     ],
 )

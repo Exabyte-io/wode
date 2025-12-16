@@ -1,7 +1,6 @@
 import pytest
 from mat3ra.standata.applications import ApplicationStandata
 from mat3ra.standata.workflows import WorkflowStandata
-
 from mat3ra.wode import Unit
 
 WORKFLOW_STANDATA = WorkflowStandata()
@@ -13,10 +12,7 @@ APPLICATION_ESPRESSO = APPLICATION_STANDATA.get_by_name_first_match("espresso")[
 UNIT_FLOWCHART_ID = "abc-123-def"
 UNIT_NEXT_ID = "next-456"
 
-NEW_CONTEXT_RELAX = {
-    "kgrid": {"density": 0.5},
-    "convergence": {"threshold": 1e-6}
-}
+NEW_CONTEXT_RELAX = {"kgrid": {"density": 0.5}, "convergence": {"threshold": 1e-6}}
 
 UNIT_CONFIG_EXECUTION = {
     "type": "execution",

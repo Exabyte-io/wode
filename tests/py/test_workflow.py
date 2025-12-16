@@ -2,19 +2,14 @@ import pytest
 from mat3ra.standata.applications import ApplicationStandata
 from mat3ra.standata.subworkflows import SubworkflowStandata
 from mat3ra.standata.workflows import WorkflowStandata
-
 from mat3ra.wode import Subworkflow, Unit, Workflow
 
 WORKFLOW_STANDATA = WorkflowStandata()
 SUBWORKFLOW_STANDATA = SubworkflowStandata()
 APPLICATION_STANDATA = ApplicationStandata()
 
-WORKFLOW_NAME = WORKFLOW_STANDATA.get_by_name_first_match(
-    "band_gap"
-)["name"]
-SUBWORKFLOW_NAME = SUBWORKFLOW_STANDATA.get_by_name_first_match(
-    "pw_scf"
-)["name"]
+WORKFLOW_NAME = WORKFLOW_STANDATA.get_by_name_first_match("band_gap")["name"]
+SUBWORKFLOW_NAME = SUBWORKFLOW_STANDATA.get_by_name_first_match("pw_scf")["name"]
 DEFAULT_WF_NAME = WORKFLOW_STANDATA.get_default()["name"]
 
 APPLICATION_ESPRESSO = APPLICATION_STANDATA.get_by_name_first_match("espresso")["name"]
@@ -92,7 +87,7 @@ def test_get_relaxation_subworkflow(application, has_relaxation):
     if has_relaxation:
         assert result is not None
         assert result.name == RELAXATION_NAME
-        assert hasattr(result, 'name')
+        assert hasattr(result, "name")
     else:
         assert result is None
 
