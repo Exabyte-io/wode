@@ -26,6 +26,8 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     subworkflows: List[Subworkflow] = Field(default_factory=list)
     units: List[Unit] = Field(default_factory=list)
     isMultiMaterial: bool = Field(default=False)
+    isUsingDataset: bool = Field(default=False)
+    isDefault: bool = Field(default=False)
 
     @property
     def application(self):
