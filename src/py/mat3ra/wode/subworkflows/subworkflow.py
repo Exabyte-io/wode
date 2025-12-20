@@ -54,4 +54,4 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
         return self.model.method.data
 
     def get_as_unit(self) -> Unit:
-        return Unit(type="subworkflow", id=self.id, name=self.name)
+        return Unit(type="subworkflow", _id=self.id, name=self.name)
