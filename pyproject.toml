@@ -24,6 +24,7 @@ dependencies = [
     "mat3ra-esse",
     "mat3ra-mode",
     "mat3ra-ade",
+    "mat3ra-code @ git+https://github.com/Exabyte-io/code.git@9839ef681fbf7762f2790665fb0c680332c632e3",
     "mat3ra-standata"
 ]
 
