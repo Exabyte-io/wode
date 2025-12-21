@@ -42,7 +42,7 @@ _JSONSchemasInterface.default.setSchemas(_schemas.default);
 function createWorkflows({
   appName = null,
   workflowCls = _workflow.Workflow,
-  workflowSubworkflowMapByApplication = _standata.workflowSubforkflowMapByApplication,
+  workflowSubworkflowMapByApplication = _standata.workflowSubworkflowMapByApplication,
   ...swArgs
 }) {
   let apps = appName !== null ? [appName] : _ade.allApplications;
