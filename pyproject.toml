@@ -4,7 +4,7 @@ dynamic = ["version"]
 description = "WOrkflow DEfinitions"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE.md"}
+license = { file = "LICENSE.md" }
 authors = [
     { name = "Exabyte Inc.", email = "info@mat3ra.com" }
 ]
@@ -23,8 +23,8 @@ dependencies = [
     "mat3ra-utils",
     "mat3ra-esse",
     "mat3ra-mode",
-    "mat3ra-ade @ git+https://github.com/Exabyte-io/ade.git@e27a00f52a1bd7c751a1d43c401fed8a542ba305",
-    "mat3ra-code @ git+https://github.com/Exabyte-io/code.git@8db4182c22de569f98ebfaf33384a32ff1df8900",
+    "mat3ra-ade",
+    "mat3ra-code",
     "mat3ra-standata"
 ]
 

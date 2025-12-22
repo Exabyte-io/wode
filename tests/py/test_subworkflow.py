@@ -59,3 +59,11 @@ def test_id_generation():
     sw1 = Subworkflow(name=SUBWORKFLOW_NAME)
     sw2 = Subworkflow(name=SUBWORKFLOW_NAME)
     assert sw1.id != sw2.id
+
+def test_get_as_unit():
+    sw = Subworkflow(name=SUBWORKFLOW_NAME)
+    unit = sw.get_as_unit()
+    assert unit.type == "subworkflow"
+    assert unit.id == sw.id
+    assert unit.to_dict().get("_id") == sw.id
+    assert unit.name == sw.name
