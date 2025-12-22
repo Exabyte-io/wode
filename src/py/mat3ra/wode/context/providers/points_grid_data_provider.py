@@ -27,11 +27,12 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
     # TODO: handle presence of material
     @property
     def default_data(self) -> Dict[str, Any]:
-        return {
+        return {"kgrid": {
             "dimensions": self.dimensions,
             "shifts": self.shifts,
             "gridMetricType": self.grid_metric_type,
             "divisor": self.divisor,
+        }
         }
 
     # TODO: add a test to verify context and templates are the same as from JS implementation
@@ -39,7 +40,7 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
         raise NotImplementedError
 
     def calculate_dimensions(
-        self, grid_metric_type: str, grid_metric_value: float, units: str = "angstrom"
+            self, grid_metric_type: str, grid_metric_value: float, units: str = "angstrom"
     ) -> List[int]:
         raise NotImplementedError
 
