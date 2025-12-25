@@ -1,7 +1,6 @@
 from typing import Any, Dict, List
 
 from mat3ra.ade.context.context_provider import ContextProvider
-from mat3ra.esse.models.context_providers_directory.enum import ContextProviderNameEnum
 from mat3ra.esse.models.context_providers_directory.points_grid_data_provider import (
     GridMetricType,
     PointsGridDataProviderSchema,
