@@ -22,7 +22,7 @@ dependencies = [
     "numpy",
     "mat3ra-utils",
     "mat3ra-esse",
-    "mat3ra-mode @ git+https://github.com/Exabyte-io/mode.git@a6ce5ce105e0b8aa2c154613b18207f058dee284",
+    "mat3ra-mode",
     "mat3ra-ade",
     "mat3ra-code",
     "mat3ra-standata"
