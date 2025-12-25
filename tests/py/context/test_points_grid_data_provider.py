@@ -18,12 +18,8 @@ KGRID_DATA = {
         "shifts": SHIFTS_DEFAULT,
         "divisor": DIVISOR_DEFAULT,
         "gridMetricType": GRID_METRIC_TYPE_DEFAULT,
-    }
-}
-
-KGRID_MANAGER_DATA = {
-    "KGridFormDataManager": KGRID_DATA,
-    "isKGridFormDataManagerEdited": None,
+    },
+    "isKgridEdited": True,
 }
 
 
@@ -58,15 +54,16 @@ def test_points_grid_data_provider_initialization(init_params, expected_dimensio
 def test_points_grid_data_provider_get_data(init_params, expected_data):
     kgrid_context_provider = PointsGridDataProvider(**init_params)
     actual_data = kgrid_context_provider.get_data()
-    assert actual_data == expected_data
+    assert actual_data == expected_data["kgrid"]
+
 
 
 @pytest.mark.parametrize(
     "init_params,expected_data",
     [
         (
-                {"dimensions": DIMENSIONS_CUSTOM},
-                KGRID_MANAGER_DATA,
+            {"dimensions": DIMENSIONS_CUSTOM, "is_edited": True},
+            KGRID_DATA,
         ),
     ],
 )
@@ -74,3 +71,4 @@ def test_points_grid_data_provider_yield_data(init_params, expected_data):
     kgrid_context_provider = PointsGridDataProvider(**init_params)
     actual_data = kgrid_context_provider.yield_data()
     assert actual_data == expected_data
+

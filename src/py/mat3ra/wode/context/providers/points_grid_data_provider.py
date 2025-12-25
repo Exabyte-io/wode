@@ -17,22 +17,23 @@ class PointsGridDataProvider(PointsGridDataProviderSchema, ContextProvider):
     Handles grid dimensions and shifts for reciprocal space sampling.
     """
 
-    # TODO: Verify the correctness of the name
-    name: ContextProviderNameEnum = ContextProviderNameEnum.KGridFormDataManager
+    name: str = Field(default="kgrid")
     divisor: int = Field(default=1)
     dimensions: List[int] = Field(default_factory=lambda: [1, 1, 1])
     shifts: List[float] = Field(default_factory=lambda: [0.0, 0.0, 0.0])
     grid_metric_type: str = Field(default=GridMetricType.KPPRA)
 
-    # TODO: handle presence of material
+    @property
+    def is_edited_key(self) -> str:
+        return "isKgridEdited"
+
     @property
     def default_data(self) -> Dict[str, Any]:
-        return {"kgrid": {
+        return {
             "dimensions": self.dimensions,
             "shifts": self.shifts,
             "gridMetricType": self.grid_metric_type,
             "divisor": self.divisor,
-        }
         }
 
     # TODO: add a test to verify context and templates are the same as from JS implementation
