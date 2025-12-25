@@ -19,7 +19,7 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
         tags: List of tags for the unit
         context: Context data dictionary for the unit
     """
-
+    id: str = Field(default_factory=get_uuid, alias="_id")
     flowchartId: str = Field(default_factory=get_uuid)
     # TODO: use RuntimeItemNameObjectSchema when available
     preProcessors: List[Any] = Field(default_factory=list)
@@ -27,6 +27,7 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     monitors: List[Any] = Field(default_factory=list)
     results: List[Any] = Field(default_factory=list)
     context: Dict[str, Any] = Field(default_factory=dict)
+
 
     def is_in_status(self, status: str) -> bool:
         return self.status == status

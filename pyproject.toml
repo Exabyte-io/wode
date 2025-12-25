@@ -4,7 +4,7 @@ dynamic = ["version"]
 description = "WOrkflow DEfinitions"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE.md"}
+license = { file = "LICENSE.md" }
 authors = [
     { name = "Exabyte Inc.", email = "info@mat3ra.com" }
 ]
@@ -24,6 +24,7 @@ dependencies = [
     "mat3ra-esse",
     "mat3ra-mode",
     "mat3ra-ade",
+    "mat3ra-code",
     "mat3ra-standata"
 ]
 
