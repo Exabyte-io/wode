@@ -271,7 +271,7 @@ function createSubworkflow({
 function createSubworkflowByName({
   appName,
   swfName,
-  workflowSubworkflowMapByApplication = _standata.workflowSubforkflowMapByApplication,
+  workflowSubworkflowMapByApplication = _standata.workflowSubworkflowMapByApplication,
   ...swArgs
 }) {
   const {
