@@ -8,7 +8,7 @@ import {
 } from "@mat3ra/mode";
 import {
     ApplicationMethodStandata,
-    workflowSubworkflowMapByApplication as allWorkflows,
+    workflowSubworkflowMapByApplication as _workflowSubworkflowMapByApplication,
 } from "@mat3ra/standata";
 import _ from "lodash";
 
@@ -205,7 +205,7 @@ function createSubworkflow({
 function createSubworkflowByName({
     appName,
     swfName,
-    workflowSubworkflowMapByApplication = allWorkflows,
+    workflowSubworkflowMapByApplication = _workflowSubworkflowMapByApplication,
     ...swArgs
 }) {
     const { subworkflows } = workflowSubworkflowMapByApplication;
