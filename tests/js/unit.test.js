@@ -1,4 +1,5 @@
 import { Application } from "@mat3ra/ade";
+import { workflowSubworkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
 
 import { createUnit } from "../../src/js/subworkflows/create";
@@ -9,7 +10,7 @@ import { createWorkflows } from "../../src/js/workflows";
 
 describe("units", () => {
     it("can be cloned with new flowchartId", () => {
-        const workflows = createWorkflows({});
+        const workflows = createWorkflows({ workflowSubworkflowMapByApplication });
         const exampleWorkflow = workflows[0];
         const exampleSubworkflow = exampleWorkflow.subworkflows[0];
         const exampleUnit = exampleSubworkflow.units[0];
