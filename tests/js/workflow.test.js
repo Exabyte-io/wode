@@ -11,7 +11,7 @@ const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
 
 describe("workflows", () => {
     it("can all be created", () => {
-        const workflows = createWorkflows({});
+        const workflows = createWorkflows({ workflowSubworkflowMapByApplication });
         workflows.map((wf) => {
             // eslint-disable-next-line no-unused-expressions
             expect(wf).to.exist;
@@ -56,6 +56,7 @@ describe("workflows", () => {
             // Test using a minimal workflow configuration
             const workflow = createWorkflows({
                 appName: "espresso",
+                workflowSubworkflowMapByApplication,
                 workflowCls: WorkflowCls,
                 SubworkflowCls,
                 UnitFactory,

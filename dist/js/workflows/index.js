@@ -20,7 +20,6 @@ exports.createWorkflows = createWorkflows;
 var _ade = require("@mat3ra/ade");
 var _JSONSchemasInterface = _interopRequireDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 var _schemas = _interopRequireDefault(require("@mat3ra/esse/dist/js/schemas.json"));
-var _standata = require("@mat3ra/standata");
 var _patch = require("../patch");
 var _create = require("./create");
 var _workflow = require("./workflow");
@@ -42,7 +41,7 @@ _JSONSchemasInterface.default.setSchemas(_schemas.default);
 function createWorkflows({
   appName = null,
   workflowCls = _workflow.Workflow,
-  workflowSubworkflowMapByApplication = _standata.workflowSubworkflowMapByApplication,
+  workflowSubworkflowMapByApplication,
   ...swArgs
 }) {
   let apps = appName !== null ? [appName] : _ade.allApplications;
