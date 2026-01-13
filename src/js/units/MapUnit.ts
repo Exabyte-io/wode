@@ -1,15 +1,15 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import type { MapUnitSchema } from "@mat3ra/esse/dist/js/types";
 
-import { UNIT_TYPES } from "../enums";
+import { UnitType } from "../enums";
 import { type MapUnitSchemaMixin, mapUnitSchemaMixin } from "../generated/MapUnitSchemaMixin";
 import { BaseUnit } from "./BaseUnit";
 
 type Schema = MapUnitSchema;
 
-export const defaultMapConfig: Partial<Schema> & Pick<Schema, "name" | "type"> = {
-    name: UNIT_TYPES.map as Schema["name"],
-    type: UNIT_TYPES.map as Schema["type"],
+export const defaultMapConfig = {
+    name: UnitType.map as string,
+    type: UnitType.map as const,
     workflowId: "",
     input: {
         target: "MAP_DATA",
@@ -20,7 +20,7 @@ export const defaultMapConfig: Partial<Schema> & Pick<Schema, "name" | "type"> =
     },
 };
 
-type Base = typeof BaseUnit & Constructor<MapUnitSchemaMixin>;
+type Base = typeof BaseUnit<Schema> & Constructor<MapUnitSchemaMixin>;
 
 export class MapUnit extends (BaseUnit as Base) implements Schema {
     constructor(config: Partial<Schema>) {
@@ -30,8 +30,6 @@ export class MapUnit extends (BaseUnit as Base) implements Schema {
     setWorkflowId(id: string) {
         this.setProp("workflowId", id);
     }
-
-    contextProviders = [];
 }
 
 mapUnitSchemaMixin(MapUnit.prototype);

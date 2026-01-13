@@ -58,12 +58,6 @@ export function baseUnitSchemaMixin<T extends InMemoryEntity>(
         set enableRender(value: WorkflowBaseUnitMixinSchema["enableRender"]) {
             this.setProp("enableRender", value);
         },
-        get context() {
-            return this.prop<WorkflowBaseUnitMixinSchema["context"]>("context");
-        },
-        set context(value: WorkflowBaseUnitMixinSchema["context"]) {
-            this.setProp("context", value);
-        },
     };
 
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));

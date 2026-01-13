@@ -1,12 +1,13 @@
 import type { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
-import type { RuntimeItemsNameObject } from "@mat3ra/code/dist/js/entity/mixins/RuntimeItemsNameObjectMixin";
+import type { RuntimeItems } from "@mat3ra/code/dist/js/entity/mixins/RuntimeItemsMixin";
 import type { NameResultSchema } from "@mat3ra/code/dist/js/utils/object";
+import type { RuntimeItemsSchema } from "@mat3ra/esse/dist/js/types";
 
 type ItemKey = "results" | "monitors" | "preProcessors" | "postProcessors";
 
 export type RuntimeItemsUILogic = {
     setRuntimeItemsToDefaultValues(): void;
-    _initRuntimeItems(): void;
+    _initRuntimeItems(config?: Partial<RuntimeItemsSchema>): void;
     toggleRuntimeItem(key: ItemKey, data: NameResultSchema, isAdding: boolean): void;
     toggleResult(data: NameResultSchema, isAdding: boolean): void;
     toggleMonitor(data: NameResultSchema, isAdding: boolean): void;
@@ -24,7 +25,7 @@ type RuntimeItemsUILogicPrivate = {
 };
 
 type Base = InMemoryEntity &
-    RuntimeItemsNameObject & {
+    RuntimeItems & {
         defaultResults: NameResultSchema[];
         defaultMonitors: NameResultSchema[];
         defaultPreProcessors: NameResultSchema[];
@@ -39,11 +40,11 @@ const propertiesMixn: Base & RuntimeItemsUILogic & RuntimeItemsUILogicPrivate = 
         this.preProcessors = this.defaultPreProcessors;
         this.postProcessors = this.defaultPostProcessors;
     },
-    _initRuntimeItems() {
-        this.results = this.results || this.defaultResults;
-        this.monitors = this.monitors || this.defaultMonitors;
-        this.preProcessors = this.preProcessors || this.defaultPreProcessors;
-        this.postProcessors = this.postProcessors || this.defaultPostProcessors;
+    _initRuntimeItems(config) {
+        this.results = config?.results || this.defaultResults;
+        this.monitors = config?.monitors || this.defaultMonitors;
+        this.preProcessors = config?.preProcessors || this.defaultPreProcessors;
+        this.postProcessors = config?.postProcessors || this.defaultPostProcessors;
     },
     toggleRuntimeItem(key: ItemKey, data: NameResultSchema, isAdding: boolean) {
         if (isAdding) {

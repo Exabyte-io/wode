@@ -1,5 +1,5 @@
 import { wodeProviders } from "./context/providers";
-import { PointsPathFormDataProvider } from "./context/providers/PointsPathFormDataProvider";
+import { PointsPathFormDataProvider } from "./context/providers/PointsPath/PointsPathFormDataProvider";
 import { globalSettings } from "./context/providers/settings";
 import {
     TAB_NAVIGATION_CONFIG,

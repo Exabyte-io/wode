@@ -31,10 +31,14 @@
     "homepage": "https://github.com/Exabyte-io/wode",
     "dependencies": {
         "@exabyte-io/periodic-table.js": "2022.6.8-0",
+        "@types/json-schema": "^7.0.15",
+        "@types/nunjucks": "^3.2.6",
+        "@types/react-jsonschema-form": "^1.7.13",
         "crypto-js": "^4.2.0",
         "js-yaml": "^4.1.0",
         "lodash": "^4.17.21",
         "mixwith": "^0.1.1",
+        "nunjucks": "^3.2.4",
         "ts-node": "^10.9.2",
         "typescript": "^5.6.6",
         "underscore": "^1.13.3",
@@ -42,16 +46,17 @@
         "v20": "^0.1.0"
     },
     "devDependencies": {
-        "@mat3ra/ade": "git+https://github.com/Exabyte-io/ade#58c7899e6d85fe5083fc655106fbd035aef1cfce",
         "@exabyte-io/eslint-config": "2025.5.13-0",
+        "@mat3ra/ade": "git+https://github.com/Exabyte-io/ade#6d494337d83e1b22fe272ff74cc1b6842a7c6561",
+        "@mat3ra/code": "git+https://github.com/Exabyte-io/code.git#cb3fa59e2cc143d744f9019322208d928ff8de88",
+        "@mat3ra/esse": "git+https://github.com/Exabyte-io/esse#3a7eab6a28db4a85711795e84ace3c74f7681577",
         "@mat3ra/ide": "2025.11.19-0",
+        "@mat3ra/made": "git+https://github.com/Exabyte-io/made.git#47b3e12a859c45fa72079ed4ddd1675a6a32b4fe",
         "@mat3ra/mode": "2025.11.13-0",
-        "@mat3ra/utils": "2025.9.20-0",
-        "@mat3ra/code": "git+https://github.com/Exabyte-io/code.git#5803c543e812727ad32dffefd1426497694a427b",
-        "@mat3ra/esse": "git+https://github.com/Exabyte-io/esse#1b47917bb8feadf49c46d8aa4b33a4255a06788a",
-        "@mat3ra/made": "git+https://github.com/Exabyte-io/made.git#129efd8757586eee241e00c840ce9f4730f869fc",
         "@mat3ra/standata": "2025.11.12-0",
         "@mat3ra/tsconfig": "2024.6.3-0",
+        "@mat3ra/utils": "2025.9.20-0",
+        "@types/crypto-js": "^4.2.2",
         "chai": "^4.3.4",
         "eslint": "^7.32.0",
         "eslint-config-airbnb": "^19.0.2",
@@ -74,19 +79,25 @@
     },
     "peerDependencies": {
         "@mat3ra/ade": "*",
-        "@mat3ra/ide": "*",
-        "@mat3ra/mode": "*",
-        "@mat3ra/standata": "*",
-        "@mat3ra/utils": "*",
         "@mat3ra/code": "*",
         "@mat3ra/esse": "*",
-        "@mat3ra/made": "*"
+        "@mat3ra/ide": "*",
+        "@mat3ra/made": "*",
+        "@mat3ra/mode": "*",
+        "@mat3ra/standata": "*",
+        "@mat3ra/utils": "*"
     },
     "engines": {
         "node": ">=20.0.0"
     },
     "lint-staged": {
-        "src/js/**/*.js": ["eslint --cache --fix", "prettier --write"],
-        "tests/js/**/*.js": ["eslint --cache --fix", "prettier --write"]
+        "src/js/**/*.js": [
+            "eslint --cache --fix",
+            "prettier --write"
+        ],
+        "tests/js/**/*.js": [
+            "eslint --cache --fix",
+            "prettier --write"
+        ]
     }
 }

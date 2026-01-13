@@ -1,10 +1,6 @@
 /* eslint-disable class-methods-use-this */
 import { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
 import {
-    type ContextAndRenderFields,
-    contextAndRenderFieldsMixin,
-} from "@mat3ra/code/dist/js/entity/mixins/ContextAndRenderFieldsMixin";
-import {
     type Defaultable,
     defaultableEntityMixin,
 } from "@mat3ra/code/dist/js/entity/mixins/DefaultableMixin";
@@ -16,11 +12,6 @@ import {
     HasRepetition,
     hasRepetitionMixin,
 } from "@mat3ra/code/dist/js/entity/mixins/HasRepetitionMixin";
-import {
-    type ContextProvider,
-    ImportantSettingsProvider,
-    importantSettingsProviderMixin,
-} from "@mat3ra/code/dist/js/entity/mixins/ImportantSettingsProviderMixin";
 import {
     type NamedEntity,
     namedEntityMixin,
@@ -40,7 +31,7 @@ import { type BaseUnitSchemaMixin, baseUnitSchemaMixin } from "../generated/Base
 import { type StatusSchemaMixin, statusSchemaMixin } from "../generated/StatusSchemaMixin";
 import { type RuntimeItemsUILogic, runtimeItemsUILogicMixin } from "../RuntimeItemsUILogicMixin";
 
-type BaseEntity = typeof InMemoryEntity &
+type Base = typeof InMemoryEntity &
     Constructor<NamedEntity> &
     Constructor<Defaultable> &
     Constructor<HasRepetition> &
@@ -49,13 +40,12 @@ type BaseEntity = typeof InMemoryEntity &
     Constructor<RuntimeItems> &
     Constructor<RuntimeItemsUILogic> &
     Constructor<BaseUnitSchemaMixin> &
-    Constructor<StatusSchemaMixin> &
-    Constructor<ImportantSettingsProvider> &
-    Constructor<ContextAndRenderFields>;
+    Constructor<StatusSchemaMixin>;
 
 type Schema = WorkflowBaseUnitSchema;
 
-export abstract class BaseUnit extends (InMemoryEntity as BaseEntity) implements Schema {
+// eslint-disable-next-line prettier/prettier
+export class BaseUnit<S extends Schema = Schema> extends (InMemoryEntity as Base) implements Schema {
     static usePredefinedIds = false;
 
     static generateFlowChartId(name: string) {
@@ -65,48 +55,34 @@ export abstract class BaseUnit extends (InMemoryEntity as BaseEntity) implements
         return Utils.uuid.getUUID();
     }
 
-    constructor(config: Partial<Schema> & Pick<Schema, "name">) {
+    defaultResults: NameResultSchema[] = [];
+
+    defaultMonitors: NameResultSchema[] = [];
+
+    defaultPostProcessors: NameResultSchema[] = [];
+
+    defaultPreProcessors: NameResultSchema[] = [];
+
+    allowedResults: NameResultSchema[] = [];
+
+    allowedMonitors: NameResultSchema[] = [];
+
+    allowedPostProcessors: NameResultSchema[] = [];
+
+    constructor(config: Partial<S> & Pick<S, "name">) {
         super({
+            results: [],
+            monitors: [],
+            preProcessors: [],
+            postProcessors: [],
             ...config,
-            context: config.context || {},
             status: config.status || UNIT_STATUSES.idle,
             statusTrack: config.statusTrack || [],
             flowchartId: config.flowchartId || BaseUnit.generateFlowChartId(config.name),
             tags: config.tags || [],
         });
 
-        this._runtimeContext = config.runtimeContext || {};
-        this._initRuntimeItems();
-    }
-
-    abstract readonly contextProviders: ContextProvider[];
-
-    get defaultResults(): NameResultSchema[] {
-        return [];
-    }
-
-    get defaultMonitors(): NameResultSchema[] {
-        return [];
-    }
-
-    get defaultPreProcessors(): NameResultSchema[] {
-        return [];
-    }
-
-    get defaultPostProcessors(): NameResultSchema[] {
-        return [];
-    }
-
-    get allowedResults(): NameResultSchema[] {
-        return [];
-    }
-
-    get allowedMonitors(): NameResultSchema[] {
-        return [];
-    }
-
-    get allowedPostProcessors(): NameResultSchema[] {
-        return [];
+        this._initRuntimeItems(config);
     }
 
     get lastStatusUpdate() {
@@ -141,7 +117,5 @@ runtimeItemsMixin(BaseUnit.prototype);
 runtimeItemsUILogicMixin(BaseUnit.prototype);
 baseUnitSchemaMixin(BaseUnit.prototype);
 statusSchemaMixin(BaseUnit.prototype);
-importantSettingsProviderMixin(BaseUnit.prototype);
-contextAndRenderFieldsMixin(BaseUnit.prototype);
 namedEntityMixin(BaseUnit.prototype);
 defaultableEntityMixin(BaseUnit);

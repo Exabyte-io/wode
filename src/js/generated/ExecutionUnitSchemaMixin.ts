@@ -40,6 +40,12 @@ export function executionUnitSchemaMixin<T extends InMemoryEntity>(
         set input(value: ExecutionUnitMixinSchema["input"]) {
             this.setProp("input", value);
         },
+        get context() {
+            return this.prop<ExecutionUnitMixinSchema["context"]>("context");
+        },
+        set context(value: ExecutionUnitMixinSchema["context"]) {
+            this.setProp("context", value);
+        },
     };
 
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));

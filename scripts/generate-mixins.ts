@@ -28,6 +28,9 @@ const OUTPUT_PATHS = {
     "workflow/unit/mixins/map": "src/js/generated/MapUnitSchemaMixin.ts",
     "workflow/unit/mixins/processing": "src/js/generated/ProcessingUnitSchemaMixin.ts",
     "workflow/unit/mixins/reduce": "src/js/generated/ReduceUnitSchemaMixin.ts",
+    "workflow/unit/mixins/subworkflow": "src/js/generated/SubworkflowUnitSchemaMixin.ts",
+    "workflow/unit/input/-inputItem": "src/js/generated/ExecutionUnitInputSchemaMixin.ts",
+    "workflow/subworkflow/mixin": "src/js/generated/SubworkflowSchemaMixin.ts",
 };
 
 function main() {

@@ -1,7 +1,7 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import type { ProcessingUnitSchema } from "@mat3ra/esse/dist/js/types";
 
-import { UNIT_TYPES } from "../enums";
+import { UnitType } from "../enums";
 import {
     type ProcessingUnitSchemaMixin,
     processingUnitSchemaMixin,
@@ -9,18 +9,16 @@ import {
 import { BaseUnit } from "./BaseUnit";
 
 type Schema = ProcessingUnitSchema;
-type Base = typeof BaseUnit & Constructor<ProcessingUnitSchemaMixin>;
+type Base = typeof BaseUnit<Schema> & Constructor<ProcessingUnitSchemaMixin>;
 
 export class ProcessingUnit extends (BaseUnit as Base) implements Schema {
     constructor(config: Partial<Schema>) {
         super({
-            name: UNIT_TYPES.processing as Schema["name"],
-            type: UNIT_TYPES.processing as Schema["type"],
+            name: UnitType.processing,
+            type: UnitType.processing,
             ...config,
         });
     }
-
-    contextProviders = [];
 
     setOperation(op: ProcessingUnitSchema["operation"]) {
         this.setProp("operation", op);
