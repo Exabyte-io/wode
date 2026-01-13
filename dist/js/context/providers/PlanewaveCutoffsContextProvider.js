@@ -29,7 +29,7 @@ class PlanewaveCutoffsContextProvider extends ContextProvider_1.default {
         });
     }
     getDefaultData() {
-        // TODO: what if the application is not in the cutoffConfig?
+        // TODO-QUESTION: what if the application is not in the cutoffConfig?
         const { wavefunction, density } = cutoffConfig[this.application.name] || {};
         return {
             wavefunction,
