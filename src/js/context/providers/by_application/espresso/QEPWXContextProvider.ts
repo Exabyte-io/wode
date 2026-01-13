@@ -98,9 +98,10 @@ export default class QEPWXContextProvider extends (JSONSchemaDataProvider as Bas
             // return s.sprintf("%s%s %f %s", symbol, label, el.atomic_mass, filename) || "";
         }); // .join("\n");
 
-        // const CELL_PARAMETERS = lattice.vectorArrays
-        //     .map((x) => x.map((y) => s.sprintf("%14.9f", y).trim()).join(" "))
-        //     .join("\n");
+        // Format numbers with 14 total width, 9 decimal places (equivalent to %14.9f)
+        // const formatNumber = (num: number) => {
+        //     return Number(num.toFixed(9).padStart(14).trim());
+        // };
 
         const CELL_PARAMETERS = {
             v1: lattice.vectorArrays[0],
@@ -139,10 +140,6 @@ export default class QEPWXContextProvider extends (JSONSchemaDataProvider as Bas
         return { perMaterial: this.materials.map((material) => this.buildQEPWXContext(material)) };
     }
 
-    /*
-     * @NOTE: Overriding getData makes this provider "stateless", ie. delivering data from scratch each time and not
-     *        considering the content of `this.data`, and `this.isEdited` field(s).
-     */
     getDefaultData() {
         // the below values are read from PlanewaveDataManager instead
         // ECUTWFC = 40;

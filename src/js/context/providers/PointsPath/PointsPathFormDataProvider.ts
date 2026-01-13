@@ -131,7 +131,7 @@ abstract class PointsPathFormDataProvider<N extends string> extends MixinsContex
 
             const steps = 1;
 
-            // TODO: conform that "point" property should be present after transformation; point was missing in original implementation
+            // TODO-QUESTION: confirm that "point" property should be present after transformation; point was missing in original implementation
             acc.push(
                 {
                     steps,
@@ -141,7 +141,7 @@ abstract class PointsPathFormDataProvider<N extends string> extends MixinsContex
                 ...middlePoints.map((coordinates) => ({
                     steps,
                     coordinates,
-                    // TODO: is this correct?
+                    // TODO-QUESTION: is this correct?
                     point: startPoint.point,
                 })),
             );

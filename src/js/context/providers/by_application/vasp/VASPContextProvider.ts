@@ -76,7 +76,7 @@ export default class VASPContextProvider extends (JSONSchemaDataProvider as Base
     private getDataPerMaterial() {
         if (!this.materials || this.materials.length <= 1) return {};
 
-        // TODO: perMaterial is not defined in the schema
+        // TODO-QUESTION: perMaterial is not defined in the schema
         return { perMaterial: this.materials.map((material) => this.buildVASPContext(material)) };
     }
 
