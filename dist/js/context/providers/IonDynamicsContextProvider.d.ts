@@ -1,31 +1,25 @@
-export class IonDynamicsContextProvider extends JSONSchemaFormDataProvider {
-    jsonSchemaId: string;
-    get defaultData(): {
-        numberOfSteps: number;
-        timeStep: number;
-        electronMass: number;
-        temperature: number;
-    };
-    get jsonSchemaPatchConfig(): {
-        numberOfSteps: {
-            default: number;
-        };
-        timeStep: {
-            default: number;
-        };
-        electronMass: {
-            default: number;
-        };
-        temperature: {
-            default: number;
-        };
-    };
-    get uiSchema(): {
+import type { IonDynamicsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { JSONSchema7 } from "json-schema";
+import type { ContextItem, Domain, ExternalContext } from "./base/ContextProvider";
+import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
+type Data = IonDynamicsContextProviderSchema;
+type Name = "dynamics";
+export default class IonDynamicsContextProvider extends JSONSchemaFormDataProvider<Name, Data> {
+    readonly name: Name;
+    readonly domain: Domain;
+    readonly uiSchema: {
         numberOfSteps: {};
         timeStep: {};
         electronMass: {};
         temperature: {};
     };
-    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
+    readonly jsonSchema: JSONSchema7 | undefined;
+    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext);
+    getDefaultData(): {
+        numberOfSteps: number;
+        timeStep: number;
+        electronMass: number;
+        temperature: number;
+    };
 }
-import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+export {};

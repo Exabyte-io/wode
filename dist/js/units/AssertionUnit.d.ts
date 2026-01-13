@@ -3,11 +3,13 @@ import type { AssertionUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { type AssertionUnitSchemaMixin } from "../generated/AssertionUnitSchemaMixin";
 import { BaseUnit } from "./BaseUnit";
 type Schema = AssertionUnitSchema;
-type Base = typeof BaseUnit & Constructor<AssertionUnitSchemaMixin>;
+type Base = typeof BaseUnit<Schema> & Constructor<AssertionUnitSchemaMixin>;
 declare const AssertionUnit_base: Base;
 export declare class AssertionUnit extends AssertionUnit_base implements Schema {
     constructor(config: Partial<Schema>);
-    contextProviders: never[];
-    getHashObject(): object;
+    getHashObject(): {
+        statement: string;
+        errorMessage: string | undefined;
+    };
 }
 export {};

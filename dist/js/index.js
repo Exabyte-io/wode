@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.globalSettings = exports.PointsPathFormDataProvider = exports.wodeProviders = exports.defaultMapConfig = exports.SubworkflowUnit = exports.ReduceUnit = exports.ProcessingUnit = exports.MapUnit = exports.IOUnit = exports.ConditionUnit = exports.AssignmentUnit = exports.AssertionUnit = exports.ExecutionUnit = exports.BaseUnit = exports.WORKFLOW_STATUSES = exports.UNIT_NAME_INVALID_CHARS = exports.TAB_NAVIGATION_CONFIG = exports.UNIT_STATUSES = exports.UNIT_TYPES = exports.builders = exports.UnitFactory = exports.createSubworkflowByName = exports.createWorkflowConfigs = exports.createWorkflows = exports.createWorkflow = exports.Workflow = exports.Subworkflow = void 0;
 const providers_1 = require("./context/providers");
 Object.defineProperty(exports, "wodeProviders", { enumerable: true, get: function () { return providers_1.wodeProviders; } });
-const PointsPathFormDataProvider_1 = require("./context/providers/PointsPathFormDataProvider");
+const PointsPathFormDataProvider_1 = require("./context/providers/PointsPath/PointsPathFormDataProvider");
 Object.defineProperty(exports, "PointsPathFormDataProvider", { enumerable: true, get: function () { return PointsPathFormDataProvider_1.PointsPathFormDataProvider; } });
 const settings_1 = require("./context/providers/settings");
 Object.defineProperty(exports, "globalSettings", { enumerable: true, get: function () { return settings_1.globalSettings; } });

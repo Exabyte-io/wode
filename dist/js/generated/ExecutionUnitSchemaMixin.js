@@ -34,6 +34,12 @@ function executionUnitSchemaMixin(item) {
         set input(value) {
             this.setProp("input", value);
         },
+        get context() {
+            return this.prop("context");
+        },
+        set context(value) {
+            this.setProp("context", value);
+        },
     };
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));
 }

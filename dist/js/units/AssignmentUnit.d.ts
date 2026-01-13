@@ -3,11 +3,10 @@ import type { AssignmentUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { type AssignmentUnitSchemaMixin } from "../generated/AssignmentUnitSchemaMixin";
 import { BaseUnit } from "./BaseUnit";
 type Schema = AssignmentUnitSchema;
-type Base = typeof BaseUnit & Constructor<AssignmentUnitSchemaMixin>;
+type Base = typeof BaseUnit<Schema> & Constructor<AssignmentUnitSchemaMixin>;
 declare const AssignmentUnit_base: Base;
 export declare class AssignmentUnit extends AssignmentUnit_base implements Schema {
     constructor(config: Partial<Schema>);
-    contextProviders: never[];
     getHashObject(): object;
 }
 export {};

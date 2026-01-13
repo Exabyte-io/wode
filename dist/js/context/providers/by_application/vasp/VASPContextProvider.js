@@ -3,23 +3,25 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const JobContextMixin_1 = require("../../../mixins/JobContextMixin");
-const MaterialContextMixin_1 = require("../../../mixins/MaterialContextMixin");
-const MaterialsContextMixin_1 = require("../../../mixins/MaterialsContextMixin");
-const MethodDataContextMixin_1 = require("../../../mixins/MethodDataContextMixin");
-const WorkflowContextMixin_1 = require("../../../mixins/WorkflowContextMixin");
-const ExecutableContextProvider_1 = __importDefault(require("../ExecutableContextProvider"));
-class VASPContextProvider extends ExecutableContextProvider_1.default {
-    constructor(config) {
-        super(config);
-        this.jsonSchemaId = "context-providers-directory/by-application/vasp-context-provider";
-        this._material = undefined;
-        this._materials = [];
-        this.initJobContextMixin();
-        this.initMaterialsContextMixin();
-        this.initMethodDataContextMixin();
-        this.initWorkflowContextMixin();
-        this.initMaterialContextMixin();
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
+const JobContextMixin_1 = __importDefault(require("../../../mixins/JobContextMixin"));
+const MaterialContextMixin_1 = __importDefault(require("../../../mixins/MaterialContextMixin"));
+const MaterialsContextMixin_1 = __importDefault(require("../../../mixins/MaterialsContextMixin"));
+const MethodDataContextMixin_1 = __importDefault(require("../../../mixins/MethodDataContextMixin"));
+const WorkflowContextMixin_1 = __importDefault(require("../../../mixins/WorkflowContextMixin"));
+const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaDataProvider"));
+const jsonSchemaId = "context-providers-directory/by-application/vasp-context-provider";
+class VASPContextProvider extends JSONSchemaDataProvider_1.default {
+    constructor(config, externalContext) {
+        super(config, externalContext);
+        this.name = "input";
+        this.domain = "executable";
+        this.initJobContextMixin(externalContext);
+        this.initMaterialsContextMixin(externalContext);
+        this.initMethodDataContextMixin(externalContext);
+        this.initWorkflowContextMixin(externalContext);
+        this.initMaterialContextMixin(externalContext);
+        this.jsonSchema = JSONSchemasInterface_1.default.getSchemaById(jsonSchemaId);
     }
     // eslint-disable-next-line class-methods-use-this
     buildVASPContext(material) {
@@ -32,13 +34,10 @@ class VASPContextProvider extends ExecutableContextProvider_1.default {
     getDataPerMaterial() {
         if (!this.materials || this.materials.length <= 1)
             return {};
+        // TODO: perMaterial is not defined in the schema
         return { perMaterial: this.materials.map((material) => this.buildVASPContext(material)) };
     }
-    /*
-     * @NOTE: Overriding getData makes this provider "stateless", ie. delivering data from scratch each time and not
-     *        considering the content of `this.data`, and `this.isEdited` field(s).
-     */
-    getData() {
+    getDefaultData() {
         // consider adjusting so that below values are read from PlanewaveDataManager
         // ECUTWFC;
         // ECUTRHO;
@@ -49,8 +48,8 @@ class VASPContextProvider extends ExecutableContextProvider_1.default {
     }
 }
 exports.default = VASPContextProvider;
-(0, MaterialContextMixin_1.materialContextMixin)(VASPContextProvider.prototype);
-(0, MaterialsContextMixin_1.materialsContextMixin)(VASPContextProvider.prototype);
-(0, MethodDataContextMixin_1.methodDataContextMixin)(VASPContextProvider.prototype);
-(0, WorkflowContextMixin_1.workflowContextMixin)(VASPContextProvider.prototype);
-(0, JobContextMixin_1.jobContextMixin)(VASPContextProvider.prototype);
+(0, MaterialContextMixin_1.default)(VASPContextProvider.prototype);
+(0, MaterialsContextMixin_1.default)(VASPContextProvider.prototype);
+(0, MethodDataContextMixin_1.default)(VASPContextProvider.prototype);
+(0, WorkflowContextMixin_1.default)(VASPContextProvider.prototype);
+(0, JobContextMixin_1.default)(VASPContextProvider.prototype);

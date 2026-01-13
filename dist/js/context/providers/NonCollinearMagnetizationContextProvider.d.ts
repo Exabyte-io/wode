@@ -1,41 +1,27 @@
-export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
-    constructor(config: any);
-    jsonSchemaId: string;
-    isStartingMagnetization: boolean;
-    isConstrainedMagnetization: boolean;
-    isExistingChargeDensity: boolean;
-    isArbitrarySpinDirection: boolean;
-    isFixedMagnetization: boolean;
-    constrainedMagnetization: {};
-    get uniqueElementsWithLabels(): any[];
-    get defaultData(): {
-        isExistingChargeDensity: boolean;
-        isStartingMagnetization: boolean;
-        isConstrainedMagnetization: boolean;
-        isArbitrarySpinAngle: boolean;
-        isFixedMagnetization: boolean;
-        lforcet: boolean;
-        spinAngles: {
-            index: number;
-            atomicSpecies: any;
-            angle1: number;
-            angle2: number;
-        }[];
-        startingMagnetization: {
-            index: number;
-            atomicSpecies: any;
-            value: number;
-        }[];
-        constrainedMagnetization: {
-            lambda: number;
-            constrainType: string;
-        };
-        fixedMagnetization: {
-            x: number;
-            y: number;
-            z: number;
-        };
-    };
+import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { NonCollinearMagnetizationContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { JSONSchema7 } from "json-schema";
+import { type MaterialContextMixin, type MaterialExternalContext } from "../mixins/MaterialContextMixin";
+import type { ContextItem, Domain } from "./base/ContextProvider";
+import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
+type Name = "nonCollinearMagnetization";
+type Data = NonCollinearMagnetizationContextProviderSchema;
+type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaDataProvider<Name, Data> & Constructor<MaterialContextMixin>;
+declare const NonCollinearMagnetizationContextProvider_base: Base;
+export default class NonCollinearMagnetizationContextProvider extends NonCollinearMagnetizationContextProvider_base {
+    readonly name: Name;
+    readonly domain: Domain;
+    readonly isStartingMagnetization: boolean;
+    readonly isConstrainedMagnetization: boolean;
+    readonly isExistingChargeDensity: boolean;
+    readonly isArbitrarySpinDirection: boolean;
+    readonly isFixedMagnetization: boolean;
+    readonly constrainedMagnetization: Data["constrainedMagnetization"];
+    readonly jsonSchema: JSONSchema7 | undefined;
+    private readonly uniqueElementsWithLabels;
+    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext);
+    getDefaultData(): Data;
     get uiSchemaStyled(): {
         isExistingChargeDensity: {};
         lforcet: {
@@ -51,8 +37,6 @@ export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormData
                 atomicSpecies: {
                     "ui:readonly": boolean;
                 };
-                angle1: {};
-                angle2: {};
             };
             "ui:readonly": boolean;
             "ui:options": {
@@ -80,71 +64,14 @@ export class NonCollinearMagnetizationContextProvider extends JSONSchemaFormData
         };
         isConstrainedMagnetization: {};
         constrainedMagnetization: {
-            constrainType: {};
-            lambda: {};
             "ui:readonly": boolean;
         };
         isFixedMagnetization: {
             "ui:readonly": boolean;
         };
         fixedMagnetization: {
-            x: {};
-            y: {};
-            z: {};
             "ui:readonly": boolean;
         };
     };
-    get jsonSchemaPatchConfig(): {
-        isExistingChargeDensity: {
-            default: boolean;
-        };
-        isStartingMagnetization: {
-            default: boolean;
-        };
-        isArbitrarySpinAngle: {
-            default: boolean;
-        };
-        isConstrainedMagnetization: {
-            default: boolean;
-        };
-        isFixedMagnetization: {
-            default: boolean;
-        };
-        startingMagnetization: {
-            minItems: number;
-            maxItems: number;
-        };
-        "startingMagnetization.items.properties.value": {
-            default: number;
-            minimum: number;
-            maximum: number;
-        };
-        spinAngles: {
-            minItems: number;
-            maxItems: number;
-        };
-        "spinAngles.items.properties.angle1": {
-            default: number;
-        };
-        "spinAngles.items.properties.angle2": {
-            default: number;
-        };
-        "constrainedMagnetization.properties.constrainType": {
-            default: string;
-        };
-        "constrainedMagnetization.properties.lambda": {
-            default: number;
-        };
-        "fixedMagnetization.properties.x": {
-            default: number;
-        };
-        "fixedMagnetization.properties.y": {
-            default: number;
-        };
-        "fixedMagnetization.properties.z": {
-            default: number;
-        };
-    };
-    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
-import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+export {};

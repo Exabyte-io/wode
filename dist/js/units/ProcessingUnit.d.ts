@@ -3,11 +3,10 @@ import type { ProcessingUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { type ProcessingUnitSchemaMixin } from "../generated/ProcessingUnitSchemaMixin";
 import { BaseUnit } from "./BaseUnit";
 type Schema = ProcessingUnitSchema;
-type Base = typeof BaseUnit & Constructor<ProcessingUnitSchemaMixin>;
+type Base = typeof BaseUnit<Schema> & Constructor<ProcessingUnitSchemaMixin>;
 declare const ProcessingUnit_base: Base;
 export declare class ProcessingUnit extends ProcessingUnit_base implements Schema {
     constructor(config: Partial<Schema>);
-    contextProviders: never[];
     setOperation(op: ProcessingUnitSchema["operation"]): void;
     setOperationType(type: ProcessingUnitSchema["operationType"]): void;
     setInput(input: ProcessingUnitSchema["inputData"]): void;

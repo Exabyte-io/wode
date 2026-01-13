@@ -1,18 +1,18 @@
-import type { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
-import type { Material } from "@mat3ra/made/dist/js/material";
-type Entity = InMemoryEntity & {
-    isEditedIsSetToFalseOnMaterialUpdate: boolean;
-};
+import type { OrderedInMemoryEntityInSet } from "@mat3ra/code/dist/js/entity/set/ordered/OrderedInMemoryEntityInSetMixin";
+import { Material } from "@mat3ra/made/dist/js/material";
+import type ContextProvider from "../providers/base/ContextProvider";
+export type OrderedMaterial = OrderedInMemoryEntityInSet & Material;
 export type MaterialContextMixin = {
     readonly isMaterialCreatedDefault: boolean;
     readonly isMaterialUpdated: boolean;
-    readonly material: Material;
-    isEdited: boolean;
+    material: OrderedMaterial;
     extraData?: {
         materialHash: string;
     };
-    initMaterialContextMixin(): void;
+    initMaterialContextMixin(externalContext: MaterialExternalContext): void;
     updateMaterialHash(): void;
 };
-export declare function materialContextMixin(item: Entity): void;
-export {};
+export type MaterialExternalContext = {
+    material: OrderedMaterial;
+};
+export default function materialContextMixin(item: ContextProvider): void;

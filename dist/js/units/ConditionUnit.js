@@ -7,8 +7,8 @@ const BaseUnit_1 = require("./BaseUnit");
 class ConditionUnit extends BaseUnit_1.BaseUnit {
     constructor(config) {
         super({
-            name: enums_1.UNIT_TYPES.condition,
-            type: enums_1.UNIT_TYPES.condition,
+            name: enums_1.UnitType.condition,
+            type: enums_1.UnitType.condition,
             input: [],
             results: [],
             preProcessors: [],
@@ -19,7 +19,6 @@ class ConditionUnit extends BaseUnit_1.BaseUnit {
             maxOccurrences: 100,
             ...config,
         });
-        this.contextProviders = [];
     }
     getHashObject() {
         return { statement: this.statement, maxOccurrences: this.maxOccurrences };

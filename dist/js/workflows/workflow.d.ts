@@ -16,6 +16,172 @@ export class Workflow extends BaseWorkflow {
                     type: string;
                     required: string[];
                     properties: {
+                        _id: {
+                            description: string;
+                            type: string;
+                        };
+                        slug: {
+                            description: string;
+                            type: string;
+                        };
+                        systemName: {
+                            type: string;
+                        };
+                        schemaVersion: {
+                            description: string;
+                            type: string;
+                            default: string;
+                        };
+                        name: {
+                            description: string;
+                            type: string;
+                        };
+                        properties: {
+                            description: string;
+                            type: string;
+                            items: {
+                                description: string;
+                                type: string;
+                            };
+                        };
+                        compute: {
+                            $schema: string;
+                            title: string;
+                            description: string;
+                            type: string;
+                            required: string[];
+                            properties: {
+                                queue: {
+                                    description: string;
+                                    type: string;
+                                    enum: string[];
+                                };
+                                nodes: {
+                                    description: string;
+                                    type: string;
+                                };
+                                ppn: {
+                                    description: string;
+                                    type: string;
+                                };
+                                timeLimit: {
+                                    description: string;
+                                    type: string;
+                                };
+                                timeLimitType: {
+                                    description: string;
+                                    type: string;
+                                    default: string;
+                                    enum: string[];
+                                };
+                                isRestartable: {
+                                    description: string;
+                                    type: string;
+                                    default: boolean;
+                                };
+                                notify: {
+                                    description: string;
+                                    type: string;
+                                };
+                                email: {
+                                    description: string;
+                                    type: string;
+                                };
+                                maxCPU: {
+                                    description: string;
+                                    type: string;
+                                };
+                                arguments: {
+                                    description: string;
+                                    default: {};
+                                    $schema: string;
+                                    title: string;
+                                    type: string;
+                                    additionalProperties: boolean;
+                                    properties: {
+                                        nimage: {
+                                            description: string;
+                                            type: string;
+                                            default: number;
+                                            minimum: number;
+                                            maximum: number;
+                                        };
+                                        npools: {
+                                            description: string;
+                                            type: string;
+                                            default: number;
+                                            minimum: number;
+                                            maximum: number;
+                                        };
+                                        nband: {
+                                            description: string;
+                                            type: string;
+                                            default: number;
+                                            minimum: number;
+                                            maximum: number;
+                                        };
+                                        ntg: {
+                                            description: string;
+                                            type: string;
+                                            default: number;
+                                            minimum: number;
+                                            maximum: number;
+                                        };
+                                        ndiag: {
+                                            description: string;
+                                            type: string;
+                                            default: number;
+                                            minimum: number;
+                                            maximum: number;
+                                        };
+                                    };
+                                };
+                                cluster: {
+                                    description: string;
+                                    type: string;
+                                    properties: {
+                                        fqdn: {
+                                            description: string;
+                                            type: string;
+                                        };
+                                        jid: {
+                                            description: string;
+                                            type: string;
+                                        };
+                                    };
+                                };
+                                errors: {
+                                    description: string;
+                                    type: string;
+                                    items: {
+                                        type: string;
+                                        properties: {
+                                            domain: {
+                                                description: string;
+                                                type: string;
+                                                enum: string[];
+                                            };
+                                            reason: {
+                                                description: string;
+                                                type: string;
+                                            };
+                                            message: {
+                                                description: string;
+                                                type: string;
+                                            };
+                                            traceback: {
+                                                description: string;
+                                                type: string;
+                                            };
+                                        };
+                                    };
+                                };
+                                excludeFilesPattern: {
+                                    description: string;
+                                    type: string;
+                                };
+                            };
+                        };
                         units: {
                             description: string;
                             type: string;
@@ -28,7 +194,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -155,7 +320,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -173,9 +338,6 @@ export class Workflow extends BaseWorkflow {
                                             description: string;
                                             type: string;
                                         };
-                                        context: {
-                                            type: string;
-                                        };
                                         subtype: {
                                             enum: string[];
                                         };
@@ -190,18 +352,18 @@ export class Workflow extends BaseWorkflow {
                                                     title: string;
                                                     type: string;
                                                     properties: {
-                                                        endpoint: {
+                                                        type: {
+                                                            const: string;
+                                                        };
+                                                        ids: {
                                                             description: string;
                                                             type: string;
+                                                            items: {
+                                                                type: string;
+                                                            };
                                                         };
-                                                        endpoint_options: {
-                                                            description: string;
-                                                            type: string;
-                                                        };
-                                                        name: {
-                                                            description: string;
-                                                            type: string;
-                                                        };
+                                                        collection?: undefined;
+                                                        draft?: undefined;
                                                         objectData?: undefined;
                                                         overwrite?: undefined;
                                                         pathname?: undefined;
@@ -209,51 +371,39 @@ export class Workflow extends BaseWorkflow {
                                                         filetype?: undefined;
                                                     };
                                                     required: string[];
-                                                    additionalProperties: boolean;
-                                                    oneOf?: undefined;
                                                 } | {
                                                     $schema: string;
                                                     title: string;
                                                     type: string;
-                                                    oneOf: ({
-                                                        properties: {
-                                                            ids: {
-                                                                description: string;
-                                                                type: string;
-                                                                items: {
-                                                                    type: string;
-                                                                };
-                                                            };
-                                                            collection?: undefined;
-                                                            draft?: undefined;
+                                                    properties: {
+                                                        type: {
+                                                            const: string;
                                                         };
-                                                        required: string[];
-                                                        additionalProperties: boolean;
-                                                    } | {
-                                                        properties: {
-                                                            collection: {
-                                                                description: string;
-                                                                type: string;
-                                                            };
-                                                            draft: {
-                                                                description: string;
-                                                                type: string;
-                                                            };
-                                                            ids?: undefined;
+                                                        collection: {
+                                                            description: string;
+                                                            type: string;
                                                         };
-                                                        required: string[];
-                                                        additionalProperties: boolean;
-                                                    })[];
-                                                    properties?: undefined;
-                                                    required?: undefined;
-                                                    additionalProperties?: undefined;
+                                                        draft: {
+                                                            description: string;
+                                                            type: string;
+                                                        };
+                                                        ids?: undefined;
+                                                        objectData?: undefined;
+                                                        overwrite?: undefined;
+                                                        pathname?: undefined;
+                                                        basename?: undefined;
+                                                        filetype?: undefined;
+                                                    };
+                                                    required: string[];
                                                 } | {
                                                     $schema: string;
                                                     title: string;
                                                     type: string;
                                                     required: string[];
-                                                    additionalProperties: boolean;
                                                     properties: {
+                                                        type: {
+                                                            const: string;
+                                                        };
                                                         objectData: {
                                                             $schema: string;
                                                             title: string;
@@ -302,12 +452,14 @@ export class Workflow extends BaseWorkflow {
                                                             description: string;
                                                             type: string;
                                                         };
-                                                        endpoint?: undefined;
-                                                        endpoint_options?: undefined;
-                                                        name?: undefined;
+                                                        ids?: undefined;
+                                                        collection?: undefined;
+                                                        draft?: undefined;
                                                     };
-                                                    oneOf?: undefined;
                                                 })[];
+                                                discriminator: {
+                                                    propertyName: string;
+                                                };
                                                 type?: undefined;
                                                 required?: undefined;
                                                 properties?: undefined;
@@ -326,6 +478,7 @@ export class Workflow extends BaseWorkflow {
                                         application?: undefined;
                                         executable?: undefined;
                                         flavor?: undefined;
+                                        context?: undefined;
                                         scope?: undefined;
                                         operand?: undefined;
                                         value?: undefined;
@@ -338,7 +491,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -465,7 +617,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -481,9 +633,6 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         enableRender: {
                                             description: string;
-                                            type: string;
-                                        };
-                                        context: {
                                             type: string;
                                         };
                                         mapFlowchartId: {
@@ -510,8 +659,12 @@ export class Workflow extends BaseWorkflow {
                                                     };
                                                     scope?: undefined;
                                                     name?: undefined;
+                                                    template?: undefined;
+                                                    rendered?: undefined;
+                                                    isManuallyChanged?: undefined;
                                                 };
                                                 oneOf?: undefined;
+                                                discriminator?: undefined;
                                                 $schema?: undefined;
                                                 title?: undefined;
                                             };
@@ -527,6 +680,7 @@ export class Workflow extends BaseWorkflow {
                                         application?: undefined;
                                         executable?: undefined;
                                         flavor?: undefined;
+                                        context?: undefined;
                                         scope?: undefined;
                                         operand?: undefined;
                                         value?: undefined;
@@ -539,7 +693,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -666,7 +819,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -682,9 +835,6 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         enableRender: {
                                             description: string;
-                                            type: string;
-                                        };
-                                        context: {
                                             type: string;
                                         };
                                         input: {
@@ -706,8 +856,12 @@ export class Workflow extends BaseWorkflow {
                                                     };
                                                     operation?: undefined;
                                                     arguments?: undefined;
+                                                    template?: undefined;
+                                                    rendered?: undefined;
+                                                    isManuallyChanged?: undefined;
                                                 };
                                                 oneOf?: undefined;
+                                                discriminator?: undefined;
                                             };
                                         };
                                         statement: {
@@ -737,6 +891,7 @@ export class Workflow extends BaseWorkflow {
                                         application?: undefined;
                                         executable?: undefined;
                                         flavor?: undefined;
+                                        context?: undefined;
                                         scope?: undefined;
                                         operand?: undefined;
                                         value?: undefined;
@@ -749,7 +904,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -876,7 +1030,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -892,9 +1046,6 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         enableRender: {
                                             description: string;
-                                            type: string;
-                                        };
-                                        context: {
                                             type: string;
                                         };
                                         statement: {
@@ -916,6 +1067,7 @@ export class Workflow extends BaseWorkflow {
                                         application?: undefined;
                                         executable?: undefined;
                                         flavor?: undefined;
+                                        context?: undefined;
                                         scope?: undefined;
                                         operand?: undefined;
                                         value?: undefined;
@@ -928,7 +1080,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -1055,7 +1206,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -1071,9 +1222,6 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         enableRender: {
                                             description: string;
-                                            type: string;
-                                        };
-                                        context: {
                                             type: string;
                                         };
                                         application: {
@@ -1380,9 +1528,108 @@ export class Workflow extends BaseWorkflow {
                                             };
                                         };
                                         input: {
-                                            description: string;
-                                            type?: undefined;
-                                            items?: undefined;
+                                            type: string;
+                                            items: {
+                                                $schema: string;
+                                                title: string;
+                                                type: string;
+                                                required: string[];
+                                                properties: {
+                                                    template: {
+                                                        $schema: string;
+                                                        title: string;
+                                                        type: string;
+                                                        required: string[];
+                                                        properties: {
+                                                            _id: {
+                                                                description: string;
+                                                                type: string;
+                                                            };
+                                                            slug: {
+                                                                description: string;
+                                                                type: string;
+                                                            };
+                                                            systemName: {
+                                                                type: string;
+                                                            };
+                                                            schemaVersion: {
+                                                                description: string;
+                                                                type: string;
+                                                                default: string;
+                                                            };
+                                                            name: {
+                                                                description: string;
+                                                                type: string;
+                                                            };
+                                                            applicationName: {
+                                                                type: string;
+                                                            };
+                                                            applicationVersion: {
+                                                                type: string;
+                                                            };
+                                                            executableName: {
+                                                                type: string;
+                                                            };
+                                                            contextProviders: {
+                                                                type: string;
+                                                                items: {
+                                                                    $schema: string;
+                                                                    title: string;
+                                                                    type: string;
+                                                                    required: string[];
+                                                                    properties: {
+                                                                        name: {
+                                                                            description: string;
+                                                                            type: string;
+                                                                        };
+                                                                    };
+                                                                };
+                                                            };
+                                                            content: {
+                                                                description: string;
+                                                                type: string;
+                                                            };
+                                                        };
+                                                    };
+                                                    rendered: {
+                                                        description: string;
+                                                        type: string;
+                                                    };
+                                                    isManuallyChanged: {
+                                                        type: string;
+                                                        default: boolean;
+                                                    };
+                                                    operation?: undefined;
+                                                    arguments?: undefined;
+                                                    scope?: undefined;
+                                                    name?: undefined;
+                                                };
+                                                oneOf?: undefined;
+                                                discriminator?: undefined;
+                                            };
+                                            description?: undefined;
+                                        };
+                                        context: {
+                                            type: string;
+                                            items: {
+                                                type: string;
+                                                required: string[];
+                                                properties: {
+                                                    name: {
+                                                        type: string;
+                                                        tsType: string;
+                                                    };
+                                                    isEdited: {
+                                                        type: string;
+                                                    };
+                                                    data: {
+                                                        type: string;
+                                                    };
+                                                    extraData: {
+                                                        type: string;
+                                                    };
+                                                };
+                                            };
                                         };
                                         subtype?: undefined;
                                         source?: undefined;
@@ -1405,7 +1652,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -1532,7 +1778,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -1548,9 +1794,6 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         enableRender: {
                                             description: string;
-                                            type: string;
-                                        };
-                                        context: {
                                             type: string;
                                         };
                                         scope: {
@@ -1575,8 +1818,12 @@ export class Workflow extends BaseWorkflow {
                                                     };
                                                     operation?: undefined;
                                                     arguments?: undefined;
+                                                    template?: undefined;
+                                                    rendered?: undefined;
+                                                    isManuallyChanged?: undefined;
                                                 };
                                                 oneOf?: undefined;
+                                                discriminator?: undefined;
                                             };
                                         };
                                         operand: {
@@ -1601,6 +1848,7 @@ export class Workflow extends BaseWorkflow {
                                         application?: undefined;
                                         executable?: undefined;
                                         flavor?: undefined;
+                                        context?: undefined;
                                         operation?: undefined;
                                         operationType?: undefined;
                                         inputData?: undefined;
@@ -1610,7 +1858,6 @@ export class Workflow extends BaseWorkflow {
                                     title: string;
                                     type: string;
                                     required: string[];
-                                    additionalProperties: boolean;
                                     properties: {
                                         _id: {
                                             description: string;
@@ -1737,7 +1984,7 @@ export class Workflow extends BaseWorkflow {
                                         type: {
                                             description: string;
                                             type: string;
-                                            enum: string[];
+                                            const: string;
                                         };
                                         head: {
                                             description: string;
@@ -1753,9 +2000,6 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         enableRender: {
                                             description: string;
-                                            type: string;
-                                        };
-                                        context: {
                                             type: string;
                                         };
                                         operation: {
@@ -1782,6 +2026,7 @@ export class Workflow extends BaseWorkflow {
                                         application?: undefined;
                                         executable?: undefined;
                                         flavor?: undefined;
+                                        context?: undefined;
                                         scope?: undefined;
                                         operand?: undefined;
                                         value?: undefined;
@@ -1896,160 +2141,6 @@ export class Workflow extends BaseWorkflow {
                             type: string;
                             default: boolean;
                         };
-                        _id: {
-                            description: string;
-                            type: string;
-                        };
-                        name: {
-                            description: string;
-                            type: string;
-                        };
-                        properties: {
-                            description: string;
-                            type: string;
-                            items: {
-                                description: string;
-                                type: string;
-                            };
-                        };
-                        compute: {
-                            $schema: string;
-                            title: string;
-                            description: string;
-                            type: string;
-                            required: string[];
-                            properties: {
-                                queue: {
-                                    description: string;
-                                    type: string;
-                                    enum: string[];
-                                };
-                                nodes: {
-                                    description: string;
-                                    type: string;
-                                };
-                                ppn: {
-                                    description: string;
-                                    type: string;
-                                };
-                                timeLimit: {
-                                    description: string;
-                                    type: string;
-                                };
-                                timeLimitType: {
-                                    description: string;
-                                    type: string;
-                                    default: string;
-                                    enum: string[];
-                                };
-                                isRestartable: {
-                                    description: string;
-                                    type: string;
-                                    default: boolean;
-                                };
-                                notify: {
-                                    description: string;
-                                    type: string;
-                                };
-                                email: {
-                                    description: string;
-                                    type: string;
-                                };
-                                maxCPU: {
-                                    description: string;
-                                    type: string;
-                                };
-                                arguments: {
-                                    description: string;
-                                    default: {};
-                                    $schema: string;
-                                    title: string;
-                                    type: string;
-                                    additionalProperties: boolean;
-                                    properties: {
-                                        nimage: {
-                                            description: string;
-                                            type: string;
-                                            default: number;
-                                            minimum: number;
-                                            maximum: number;
-                                        };
-                                        npools: {
-                                            description: string;
-                                            type: string;
-                                            default: number;
-                                            minimum: number;
-                                            maximum: number;
-                                        };
-                                        nband: {
-                                            description: string;
-                                            type: string;
-                                            default: number;
-                                            minimum: number;
-                                            maximum: number;
-                                        };
-                                        ntg: {
-                                            description: string;
-                                            type: string;
-                                            default: number;
-                                            minimum: number;
-                                            maximum: number;
-                                        };
-                                        ndiag: {
-                                            description: string;
-                                            type: string;
-                                            default: number;
-                                            minimum: number;
-                                            maximum: number;
-                                        };
-                                    };
-                                };
-                                cluster: {
-                                    description: string;
-                                    type: string;
-                                    properties: {
-                                        fqdn: {
-                                            description: string;
-                                            type: string;
-                                        };
-                                        jid: {
-                                            description: string;
-                                            type: string;
-                                        };
-                                    };
-                                };
-                                errors: {
-                                    description: string;
-                                    type: string;
-                                    items: {
-                                        type: string;
-                                        properties: {
-                                            domain: {
-                                                description: string;
-                                                type: string;
-                                                enum: string[];
-                                            };
-                                            reason: {
-                                                description: string;
-                                                type: string;
-                                            };
-                                            message: {
-                                                description: string;
-                                                type: string;
-                                            };
-                                            traceback: {
-                                                description: string;
-                                                type: string;
-                                            };
-                                        };
-                                    };
-                                };
-                                excludeFilesPattern: {
-                                    description: string;
-                                    type: string;
-                                };
-                            };
-                        };
                     };
                 };
             };
@@ -2065,7 +2156,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -2192,7 +2282,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -2210,9 +2300,6 @@ export class Workflow extends BaseWorkflow {
                                 description: string;
                                 type: string;
                             };
-                            context: {
-                                type: string;
-                            };
                             subtype: {
                                 enum: string[];
                             };
@@ -2227,18 +2314,18 @@ export class Workflow extends BaseWorkflow {
                                         title: string;
                                         type: string;
                                         properties: {
-                                            endpoint: {
+                                            type: {
+                                                const: string;
+                                            };
+                                            ids: {
                                                 description: string;
                                                 type: string;
+                                                items: {
+                                                    type: string;
+                                                };
                                             };
-                                            endpoint_options: {
-                                                description: string;
-                                                type: string;
-                                            };
-                                            name: {
-                                                description: string;
-                                                type: string;
-                                            };
+                                            collection?: undefined;
+                                            draft?: undefined;
                                             objectData?: undefined;
                                             overwrite?: undefined;
                                             pathname?: undefined;
@@ -2246,51 +2333,39 @@ export class Workflow extends BaseWorkflow {
                                             filetype?: undefined;
                                         };
                                         required: string[];
-                                        additionalProperties: boolean;
-                                        oneOf?: undefined;
                                     } | {
                                         $schema: string;
                                         title: string;
                                         type: string;
-                                        oneOf: ({
-                                            properties: {
-                                                ids: {
-                                                    description: string;
-                                                    type: string;
-                                                    items: {
-                                                        type: string;
-                                                    };
-                                                };
-                                                collection?: undefined;
-                                                draft?: undefined;
+                                        properties: {
+                                            type: {
+                                                const: string;
                                             };
-                                            required: string[];
-                                            additionalProperties: boolean;
-                                        } | {
-                                            properties: {
-                                                collection: {
-                                                    description: string;
-                                                    type: string;
-                                                };
-                                                draft: {
-                                                    description: string;
-                                                    type: string;
-                                                };
-                                                ids?: undefined;
+                                            collection: {
+                                                description: string;
+                                                type: string;
                                             };
-                                            required: string[];
-                                            additionalProperties: boolean;
-                                        })[];
-                                        properties?: undefined;
-                                        required?: undefined;
-                                        additionalProperties?: undefined;
+                                            draft: {
+                                                description: string;
+                                                type: string;
+                                            };
+                                            ids?: undefined;
+                                            objectData?: undefined;
+                                            overwrite?: undefined;
+                                            pathname?: undefined;
+                                            basename?: undefined;
+                                            filetype?: undefined;
+                                        };
+                                        required: string[];
                                     } | {
                                         $schema: string;
                                         title: string;
                                         type: string;
                                         required: string[];
-                                        additionalProperties: boolean;
                                         properties: {
+                                            type: {
+                                                const: string;
+                                            };
                                             objectData: {
                                                 $schema: string;
                                                 title: string;
@@ -2339,12 +2414,14 @@ export class Workflow extends BaseWorkflow {
                                                 description: string;
                                                 type: string;
                                             };
-                                            endpoint?: undefined;
-                                            endpoint_options?: undefined;
-                                            name?: undefined;
+                                            ids?: undefined;
+                                            collection?: undefined;
+                                            draft?: undefined;
                                         };
-                                        oneOf?: undefined;
                                     })[];
+                                    discriminator: {
+                                        propertyName: string;
+                                    };
                                     type?: undefined;
                                     required?: undefined;
                                     properties?: undefined;
@@ -2365,6 +2442,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;
@@ -2378,7 +2456,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -2505,7 +2582,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -2521,9 +2598,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             mapFlowchartId: {
@@ -2550,8 +2624,12 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         scope?: undefined;
                                         name?: undefined;
+                                        template?: undefined;
+                                        rendered?: undefined;
+                                        isManuallyChanged?: undefined;
                                     };
                                     oneOf?: undefined;
+                                    discriminator?: undefined;
                                     $schema?: undefined;
                                     title?: undefined;
                                 };
@@ -2569,6 +2647,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;
@@ -2582,7 +2661,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -2709,7 +2787,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -2725,9 +2803,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             input: {
@@ -2749,8 +2824,12 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         operation?: undefined;
                                         arguments?: undefined;
+                                        template?: undefined;
+                                        rendered?: undefined;
+                                        isManuallyChanged?: undefined;
                                     };
                                     oneOf?: undefined;
+                                    discriminator?: undefined;
                                 };
                                 required?: undefined;
                                 properties?: undefined;
@@ -2782,6 +2861,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;
@@ -2795,7 +2875,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -2922,7 +3001,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -2938,9 +3017,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             statement: {
@@ -2962,6 +3038,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;
@@ -2975,7 +3052,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -3102,7 +3178,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -3118,9 +3194,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             application: {
@@ -3427,11 +3500,110 @@ export class Workflow extends BaseWorkflow {
                                 };
                             };
                             input: {
-                                description: string;
-                                type?: undefined;
-                                items?: undefined;
+                                type: string;
+                                items: {
+                                    $schema: string;
+                                    title: string;
+                                    type: string;
+                                    required: string[];
+                                    properties: {
+                                        template: {
+                                            $schema: string;
+                                            title: string;
+                                            type: string;
+                                            required: string[];
+                                            properties: {
+                                                _id: {
+                                                    description: string;
+                                                    type: string;
+                                                };
+                                                slug: {
+                                                    description: string;
+                                                    type: string;
+                                                };
+                                                systemName: {
+                                                    type: string;
+                                                };
+                                                schemaVersion: {
+                                                    description: string;
+                                                    type: string;
+                                                    default: string;
+                                                };
+                                                name: {
+                                                    description: string;
+                                                    type: string;
+                                                };
+                                                applicationName: {
+                                                    type: string;
+                                                };
+                                                applicationVersion: {
+                                                    type: string;
+                                                };
+                                                executableName: {
+                                                    type: string;
+                                                };
+                                                contextProviders: {
+                                                    type: string;
+                                                    items: {
+                                                        $schema: string;
+                                                        title: string;
+                                                        type: string;
+                                                        required: string[];
+                                                        properties: {
+                                                            name: {
+                                                                description: string;
+                                                                type: string;
+                                                            };
+                                                        };
+                                                    };
+                                                };
+                                                content: {
+                                                    description: string;
+                                                    type: string;
+                                                };
+                                            };
+                                        };
+                                        rendered: {
+                                            description: string;
+                                            type: string;
+                                        };
+                                        isManuallyChanged: {
+                                            type: string;
+                                            default: boolean;
+                                        };
+                                        operation?: undefined;
+                                        arguments?: undefined;
+                                        scope?: undefined;
+                                        name?: undefined;
+                                    };
+                                    oneOf?: undefined;
+                                    discriminator?: undefined;
+                                };
+                                description?: undefined;
                                 required?: undefined;
                                 properties?: undefined;
+                            };
+                            context: {
+                                type: string;
+                                items: {
+                                    type: string;
+                                    required: string[];
+                                    properties: {
+                                        name: {
+                                            type: string;
+                                            tsType: string;
+                                        };
+                                        isEdited: {
+                                            type: string;
+                                        };
+                                        data: {
+                                            type: string;
+                                        };
+                                        extraData: {
+                                            type: string;
+                                        };
+                                    };
+                                };
                             };
                             subtype?: undefined;
                             source?: undefined;
@@ -3455,7 +3627,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -3582,7 +3753,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -3598,9 +3769,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             scope: {
@@ -3625,8 +3793,12 @@ export class Workflow extends BaseWorkflow {
                                         };
                                         operation?: undefined;
                                         arguments?: undefined;
+                                        template?: undefined;
+                                        rendered?: undefined;
+                                        isManuallyChanged?: undefined;
                                     };
                                     oneOf?: undefined;
+                                    discriminator?: undefined;
                                 };
                                 required?: undefined;
                                 properties?: undefined;
@@ -3653,6 +3825,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             operation?: undefined;
                             operationType?: undefined;
                             inputData?: undefined;
@@ -3663,7 +3836,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -3790,7 +3962,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -3806,9 +3978,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             operation: {
@@ -3835,6 +4004,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;
@@ -3845,7 +4015,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -3972,7 +4141,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -3988,9 +4157,6 @@ export class Workflow extends BaseWorkflow {
                             };
                             enableRender: {
                                 description: string;
-                                type: string;
-                            };
-                            context: {
                                 type: string;
                             };
                             workflowId: {
@@ -4041,6 +4207,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;
@@ -4053,7 +4220,6 @@ export class Workflow extends BaseWorkflow {
                         title: string;
                         type: string;
                         required: string[];
-                        additionalProperties: boolean;
                         properties: {
                             _id: {
                                 description: string;
@@ -4180,7 +4346,7 @@ export class Workflow extends BaseWorkflow {
                             type: {
                                 description: string;
                                 type: string;
-                                enum: string[];
+                                const: string;
                             };
                             head: {
                                 description: string;
@@ -4198,9 +4364,6 @@ export class Workflow extends BaseWorkflow {
                                 description: string;
                                 type: string;
                             };
-                            context: {
-                                type: string;
-                            };
                             subtype?: undefined;
                             source?: undefined;
                             input?: undefined;
@@ -4214,6 +4377,7 @@ export class Workflow extends BaseWorkflow {
                             application?: undefined;
                             executable?: undefined;
                             flavor?: undefined;
+                            context?: undefined;
                             scope?: undefined;
                             operand?: undefined;
                             value?: undefined;

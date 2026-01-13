@@ -52,12 +52,6 @@ function baseUnitSchemaMixin(item) {
         set enableRender(value) {
             this.setProp("enableRender", value);
         },
-        get context() {
-            return this.prop("context");
-        },
-        set context(value) {
-            this.setProp("context", value);
-        },
     };
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));
 }

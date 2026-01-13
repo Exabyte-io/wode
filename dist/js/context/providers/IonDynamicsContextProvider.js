@@ -3,43 +3,36 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.IonDynamicsContextProvider = void 0;
-const ade_1 = require("@mat3ra/ade");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
-const defaultMDConfig = {
+const JSONSchemaFormDataProvider_1 = __importDefault(require("./base/JSONSchemaFormDataProvider"));
+const jsonSchemaId = "context-providers-directory/ion-dynamics-context-provider";
+const defaultData = {
     numberOfSteps: 100,
     timeStep: 5.0,
     electronMass: 100.0,
     temperature: 300.0,
 };
-class IonDynamicsContextProvider extends ade_1.JSONSchemaFormDataProvider {
-    constructor() {
-        super(...arguments);
-        this.jsonSchemaId = "context-providers-directory/ion-dynamics-context-provider";
-    }
-    // eslint-disable-next-line class-methods-use-this
-    get defaultData() {
-        return defaultMDConfig;
-    }
-    get jsonSchemaPatchConfig() {
-        return {
-            numberOfSteps: { default: this.defaultData.numberOfSteps },
-            timeStep: { default: this.defaultData.timeStep },
-            electronMass: { default: this.defaultData.electronMass },
-            temperature: { default: this.defaultData.temperature },
-        };
-    }
-    // eslint-disable-next-line class-methods-use-this
-    get uiSchema() {
-        return {
+class IonDynamicsContextProvider extends JSONSchemaFormDataProvider_1.default {
+    constructor(contextItem, externalContext) {
+        super(contextItem, externalContext);
+        this.name = "dynamics";
+        this.domain = "important";
+        this.uiSchema = {
             numberOfSteps: {},
             timeStep: {},
             electronMass: {},
             temperature: {},
         };
+        this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
+            numberOfSteps: { default: defaultData.numberOfSteps },
+            timeStep: { default: defaultData.timeStep },
+            electronMass: { default: defaultData.electronMass },
+            temperature: { default: defaultData.temperature },
+        });
     }
-    get jsonSchema() {
-        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
+    // eslint-disable-next-line class-methods-use-this
+    getDefaultData() {
+        return defaultData;
     }
 }
-exports.IonDynamicsContextProvider = IonDynamicsContextProvider;
+exports.default = IonDynamicsContextProvider;

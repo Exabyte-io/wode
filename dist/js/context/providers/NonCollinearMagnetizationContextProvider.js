@@ -3,29 +3,60 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.NonCollinearMagnetizationContextProvider = void 0;
-const ade_1 = require("@mat3ra/ade");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
-const lodash_1 = __importDefault(require("lodash"));
-const MaterialContextMixin_1 = require("../mixins/MaterialContextMixin");
-class NonCollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataProvider {
-    constructor(config) {
-        super(config);
-        this.jsonSchemaId = "context-providers-directory/non-collinear-magnetization-context-provider";
-        this.initMaterialContextMixin();
-        this.isStartingMagnetization = lodash_1.default.get(this.data, "isStartingMagnetization", true);
-        this.isConstrainedMagnetization = lodash_1.default.get(this.data, "isConstrainedMagnetization", false);
-        this.isExistingChargeDensity = lodash_1.default.get(this.data, "isExistingChargeDensity", false);
-        this.isArbitrarySpinDirection = lodash_1.default.get(this.data, "isArbitrarySpinDirection", false);
-        this.isFixedMagnetization = lodash_1.default.get(this.data, "isFixedMagnetization", false);
-        this.constrainedMagnetization = lodash_1.default.get(this.data, "constrainedMagnetization", {});
+const MaterialContextMixin_1 = __importDefault(require("../mixins/MaterialContextMixin"));
+const JSONSchemaDataProvider_1 = __importDefault(require("./base/JSONSchemaDataProvider"));
+const jsonSchemaId = "context-providers-directory/non-collinear-magnetization-context-provider";
+class NonCollinearMagnetizationContextProvider extends JSONSchemaDataProvider_1.default {
+    constructor(contextItem, externalContext) {
+        var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k, _l, _m, _o, _p;
+        super(contextItem, externalContext);
+        this.name = "nonCollinearMagnetization";
+        this.domain = "important";
+        this.initMaterialContextMixin(externalContext);
+        this.isStartingMagnetization = (_b = (_a = this.data) === null || _a === void 0 ? void 0 : _a.isStartingMagnetization) !== null && _b !== void 0 ? _b : true;
+        this.isConstrainedMagnetization = (_d = (_c = this.data) === null || _c === void 0 ? void 0 : _c.isConstrainedMagnetization) !== null && _d !== void 0 ? _d : false;
+        this.isExistingChargeDensity = (_f = (_e = this.data) === null || _e === void 0 ? void 0 : _e.isExistingChargeDensity) !== null && _f !== void 0 ? _f : false;
+        this.isArbitrarySpinDirection = (_h = (_g = this.data) === null || _g === void 0 ? void 0 : _g.isArbitrarySpinDirection) !== null && _h !== void 0 ? _h : false;
+        this.isFixedMagnetization = (_k = (_j = this.data) === null || _j === void 0 ? void 0 : _j.isFixedMagnetization) !== null && _k !== void 0 ? _k : false;
+        this.constrainedMagnetization = (_m = (_l = this.data) === null || _l === void 0 ? void 0 : _l.constrainedMagnetization) !== null && _m !== void 0 ? _m : {
+            lambda: 0.0,
+            constrainType: "atomic direction",
+        };
+        this.uniqueElementsWithLabels = [
+            ...new Set(((_p = (_o = this.material) === null || _o === void 0 ? void 0 : _o.Basis) === null || _p === void 0 ? void 0 : _p.elementsWithLabelsArray) || []),
+        ];
+        this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
+            isExistingChargeDensity: { default: false },
+            isStartingMagnetization: { default: true },
+            isArbitrarySpinAngle: { default: false },
+            isConstrainedMagnetization: { default: false },
+            isFixedMagnetization: { default: true },
+            startingMagnetization: {
+                minItems: this.uniqueElementsWithLabels.length,
+                maxItems: this.uniqueElementsWithLabels.length,
+            },
+            "startingMagnetization.items.properties.value": {
+                default: 0.0,
+                minimum: -1.0,
+                maximum: 1.0,
+            },
+            spinAngles: {
+                minItems: this.uniqueElementsWithLabels.length,
+                maxItems: this.uniqueElementsWithLabels.length,
+            },
+            "spinAngles.items.properties.angle1": { default: 0.0 },
+            "spinAngles.items.properties.angle2": { default: 0.0 },
+            "constrainedMagnetization.properties.constrainType": {
+                default: "atomic direction",
+            },
+            "constrainedMagnetization.properties.lambda": { default: 0.0 },
+            "fixedMagnetization.properties.x": { default: 0.0 },
+            "fixedMagnetization.properties.y": { default: 0.0 },
+            "fixedMagnetization.properties.z": { default: 0.0 },
+        });
     }
-    get uniqueElementsWithLabels() {
-        var _a, _b;
-        const elementsWithLabelsArray = ((_b = (_a = this.material) === null || _a === void 0 ? void 0 : _a.Basis) === null || _b === void 0 ? void 0 : _b.elementsWithLabelsArray) || [];
-        return [...new Set(elementsWithLabelsArray)];
-    }
-    get defaultData() {
+    getDefaultData() {
         const startingMagnetization = this.uniqueElementsWithLabels.map((element, index) => {
             return {
                 index: index + 1,
@@ -46,6 +77,7 @@ class NonCollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataP
             isStartingMagnetization: true,
             isConstrainedMagnetization: false,
             isArbitrarySpinAngle: false,
+            isArbitrarySpinDirection: false,
             isFixedMagnetization: false,
             lforcet: true,
             spinAngles,
@@ -76,11 +108,8 @@ class NonCollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataP
             spinAngles: {
                 items: {
                     atomicSpecies: {
-                        ...this.defaultFieldStyles,
                         "ui:readonly": true,
                     },
-                    angle1: this.defaultFieldStyles,
-                    angle2: this.defaultFieldStyles,
                 },
                 "ui:readonly": !this.isArbitrarySpinDirection,
                 "ui:options": {
@@ -93,7 +122,6 @@ class NonCollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataP
             startingMagnetization: {
                 items: {
                     atomicSpecies: {
-                        ...this.defaultFieldStyles,
                         "ui:readonly": true,
                     },
                     value: {
@@ -109,8 +137,6 @@ class NonCollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataP
             },
             isConstrainedMagnetization: {},
             constrainedMagnetization: {
-                constrainType: this.defaultFieldStyles,
-                lambda: this.defaultFieldStyles,
                 "ui:readonly": !this.isConstrainedMagnetization,
             },
             isFixedMagnetization: {
@@ -118,49 +144,12 @@ class NonCollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataP
                     ((_a = this.constrainedMagnetization) === null || _a === void 0 ? void 0 : _a.constrainType) === "total"),
             },
             fixedMagnetization: {
-                x: this.defaultFieldStyles,
-                y: this.defaultFieldStyles,
-                z: this.defaultFieldStyles,
                 "ui:readonly": !(this.isFixedMagnetization &&
                     this.isConstrainedMagnetization &&
                     ((_b = this.constrainedMagnetization) === null || _b === void 0 ? void 0 : _b.constrainType) === "total"),
             },
         };
     }
-    get jsonSchemaPatchConfig() {
-        return {
-            isExistingChargeDensity: { default: false },
-            isStartingMagnetization: { default: true },
-            isArbitrarySpinAngle: { default: false },
-            isConstrainedMagnetization: { default: false },
-            isFixedMagnetization: { default: true },
-            startingMagnetization: {
-                minItems: this.uniqueElementsWithLabels.length,
-                maxItems: this.uniqueElementsWithLabels.length,
-            },
-            "startingMagnetization.items.properties.value": {
-                default: 0.0,
-                minimum: -1.0,
-                maximum: 1.0,
-            },
-            spinAngles: {
-                minItems: this.uniqueElementsWithLabels.length,
-                maxItems: this.uniqueElementsWithLabels.length,
-            },
-            "spinAngles.items.properties.angle1": { default: 0.0 },
-            "spinAngles.items.properties.angle2": { default: 0.0 },
-            "constrainedMagnetization.properties.constrainType": {
-                default: "atomic direction",
-            },
-            "constrainedMagnetization.properties.lambda": { default: 0.0 },
-            "fixedMagnetization.properties.x": { default: 0.0 },
-            "fixedMagnetization.properties.y": { default: 0.0 },
-            "fixedMagnetization.properties.z": { default: 0.0 },
-        };
-    }
-    get jsonSchema() {
-        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
-    }
 }
-exports.NonCollinearMagnetizationContextProvider = NonCollinearMagnetizationContextProvider;
-(0, MaterialContextMixin_1.materialContextMixin)(NonCollinearMagnetizationContextProvider.prototype);
+exports.default = NonCollinearMagnetizationContextProvider;
+(0, MaterialContextMixin_1.default)(NonCollinearMagnetizationContextProvider.prototype);

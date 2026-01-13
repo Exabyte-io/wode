@@ -1,74 +1,89 @@
-export default class QEPWXContextProvider extends ExecutableContextProvider {
-    static atomSymbols(material: any): any;
-    static uniqueElementsWithLabels(material: any): any[];
-    /** Returns the input text block for atomic positions WITH constraints.
-     */
-    static atomicPositionsWithConstraints(material: any): any;
-    /** Returns the input text block for atomic positions
-     *  Note: does NOT include constraints
-     */
-    static atomicPositions(material: any): any;
-    static NAT(material: any): any;
-    static NTYP(material: any): any;
-    static NTYP_WITH_LABELS(material: any): number;
-    static CELL_PARAMETERS(material: any): any;
-    static symbolToAtomicSpecie(symbol: any, pseudo: any): string;
-    static elementAndPseudoToAtomicSpecieWithLabels(symbol: any, pseudo: any, label?: string): string;
-    _material: undefined;
-    _materials: any[];
-    buildQEPWXContext(material: any): {
-        IBRAV: number;
-        RESTART_MODE: string;
-        ATOMIC_SPECIES: any;
-        ATOMIC_SPECIES_WITH_LABELS: string;
-        NAT: any;
-        NTYP: any;
-        NTYP_WITH_LABELS: number;
-        ATOMIC_POSITIONS: any;
-        ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: any;
-        CELL_PARAMETERS: any;
-    };
-    getDataPerMaterial(): {
-        perMaterial?: undefined;
-    } | {
-        perMaterial: any;
-    };
-    getData(): {
+import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { QEPwxContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { JSONSchema7 } from "json-schema";
+import { type JobContextMixin, type JobExternalContext } from "../../../mixins/JobContextMixin";
+import { type MaterialContextMixin, type MaterialExternalContext } from "../../../mixins/MaterialContextMixin";
+import { type MaterialsContextMixin, type MaterialsExternalContext } from "../../../mixins/MaterialsContextMixin";
+import { type MethodDataContextMixin, type MethodDataExternalContext } from "../../../mixins/MethodDataContextMixin";
+import { type WorkflowContextMixin, type WorkflowExternalContext } from "../../../mixins/WorkflowContextMixin";
+import type { ContextItem, Domain } from "../../base/ContextProvider";
+import JSONSchemaDataProvider, { type JinjaExternalContext } from "../../base/JSONSchemaDataProvider";
+type Name = "input";
+type Data = QEPwxContextProviderSchema;
+type ExternalContext = JinjaExternalContext & WorkflowExternalContext & MaterialExternalContext & JobExternalContext & MethodDataExternalContext & MaterialsExternalContext;
+type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> & Constructor<JobContextMixin> & Constructor<MaterialContextMixin> & Constructor<MaterialsContextMixin> & Constructor<MethodDataContextMixin> & Constructor<WorkflowContextMixin>;
+declare const QEPWXContextProvider_base: Base;
+export default class QEPWXContextProvider extends QEPWXContextProvider_base {
+    readonly name: Name;
+    readonly domain: Domain;
+    readonly jsonSchema: JSONSchema7 | undefined;
+    constructor(config: ContextItem<Data>, externalContext: ExternalContext);
+    private buildQEPWXContext;
+    private getDataPerMaterial;
+    getDefaultData(): {
         perMaterial?: undefined;
         IBRAV: number;
-        RESTART_MODE: string;
-        ATOMIC_SPECIES: any;
-        ATOMIC_SPECIES_WITH_LABELS: string;
-        NAT: any;
-        NTYP: any;
+        RESTART_MODE: "from_scratch" | "restart";
+        ATOMIC_SPECIES: {
+            X?: string;
+            Mass_X?: number;
+            PseudoPot_X?: string;
+        }[];
+        ATOMIC_SPECIES_WITH_LABELS: {
+            X?: string;
+            Mass_X?: number;
+            PseudoPot_X?: string;
+        }[];
+        NAT: number;
+        NTYP: number;
         NTYP_WITH_LABELS: number;
-        ATOMIC_POSITIONS: any;
-        ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: any;
-        CELL_PARAMETERS: any;
+        ATOMIC_POSITIONS: {
+            X?: string;
+            x: number;
+            y: number;
+            z: number;
+            "if_pos(1)"?: number;
+            "if_pos(2)"?: number;
+            "if_pos(3)"?: number;
+        }[];
+        ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+        CELL_PARAMETERS: {
+            v1?: [number, number, number];
+            v2?: [number, number, number];
+            v3?: [number, number, number];
+        };
     } | {
-        perMaterial: any;
+        perMaterial: QEPwxContextProviderSchema[];
         IBRAV: number;
-        RESTART_MODE: string;
-        ATOMIC_SPECIES: any;
-        ATOMIC_SPECIES_WITH_LABELS: string;
-        NAT: any;
-        NTYP: any;
+        RESTART_MODE: "from_scratch" | "restart";
+        ATOMIC_SPECIES: {
+            X?: string;
+            Mass_X?: number;
+            PseudoPot_X?: string;
+        }[];
+        ATOMIC_SPECIES_WITH_LABELS: {
+            X?: string;
+            Mass_X?: number;
+            PseudoPot_X?: string;
+        }[];
+        NAT: number;
+        NTYP: number;
         NTYP_WITH_LABELS: number;
-        ATOMIC_POSITIONS: any;
-        ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: any;
-        CELL_PARAMETERS: any;
+        ATOMIC_POSITIONS: {
+            X?: string;
+            x: number;
+            y: number;
+            z: number;
+            "if_pos(1)"?: number;
+            "if_pos(2)"?: number;
+            "if_pos(3)"?: number;
+        }[];
+        ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+        CELL_PARAMETERS: {
+            v1?: [number, number, number];
+            v2?: [number, number, number];
+            v3?: [number, number, number];
+        };
     };
-    get RESTART_MODE(): "restart" | "from_scratch";
-    getPseudoBySymbol(symbol: any): any;
-    /** Builds ATOMIC SPECIES block of pw.x input in the format
-     *  X   Mass_X   PseudoPot_X
-     *  where X            is the atom label
-     *        Mass_X       is the mass of element X [amu]
-     *        PseudoPot_X  is the pseudopotential filename associated with element X
-     *
-     *  Note: assumes this.methodData is defined
-     */
-    ATOMIC_SPECIES(material: any): any;
-    ATOMIC_SPECIES_WITH_LABELS(material: any): string;
 }
-import ExecutableContextProvider from "../ExecutableContextProvider";
+export {};

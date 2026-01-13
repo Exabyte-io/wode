@@ -7,11 +7,10 @@ const BaseUnit_1 = require("./BaseUnit");
 class ProcessingUnit extends BaseUnit_1.BaseUnit {
     constructor(config) {
         super({
-            name: enums_1.UNIT_TYPES.processing,
-            type: enums_1.UNIT_TYPES.processing,
+            name: enums_1.UnitType.processing,
+            type: enums_1.UnitType.processing,
             ...config,
         });
-        this.contextProviders = [];
     }
     setOperation(op) {
         this.setProp("operation", op);

@@ -3,11 +3,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BaseUnit = void 0;
 /* eslint-disable class-methods-use-this */
 const entity_1 = require("@mat3ra/code/dist/js/entity");
-const ContextAndRenderFieldsMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/ContextAndRenderFieldsMixin");
 const DefaultableMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/DefaultableMixin");
 const HashedEntityMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/HashedEntityMixin");
 const HasRepetitionMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/HasRepetitionMixin");
-const ImportantSettingsProviderMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/ImportantSettingsProviderMixin");
 const NamedEntityMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/NamedEntityMixin");
 const RuntimeItemsMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/RuntimeItemsMixin");
 const TaggableMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/TaggableMixin");
@@ -16,6 +14,7 @@ const enums_1 = require("../enums");
 const BaseUnitSchemaMixin_1 = require("../generated/BaseUnitSchemaMixin");
 const StatusSchemaMixin_1 = require("../generated/StatusSchemaMixin");
 const RuntimeItemsUILogicMixin_1 = require("../RuntimeItemsUILogicMixin");
+// eslint-disable-next-line prettier/prettier
 class BaseUnit extends entity_1.InMemoryEntity {
     static generateFlowChartId(name) {
         if (this.usePredefinedIds) {
@@ -25,36 +24,24 @@ class BaseUnit extends entity_1.InMemoryEntity {
     }
     constructor(config) {
         super({
+            results: [],
+            monitors: [],
+            preProcessors: [],
+            postProcessors: [],
             ...config,
-            context: config.context || {},
             status: config.status || enums_1.UNIT_STATUSES.idle,
             statusTrack: config.statusTrack || [],
             flowchartId: config.flowchartId || BaseUnit.generateFlowChartId(config.name),
             tags: config.tags || [],
         });
-        this._runtimeContext = config.runtimeContext || {};
-        this._initRuntimeItems();
-    }
-    get defaultResults() {
-        return [];
-    }
-    get defaultMonitors() {
-        return [];
-    }
-    get defaultPreProcessors() {
-        return [];
-    }
-    get defaultPostProcessors() {
-        return [];
-    }
-    get allowedResults() {
-        return [];
-    }
-    get allowedMonitors() {
-        return [];
-    }
-    get allowedPostProcessors() {
-        return [];
+        this.defaultResults = [];
+        this.defaultMonitors = [];
+        this.defaultPostProcessors = [];
+        this.defaultPreProcessors = [];
+        this.allowedResults = [];
+        this.allowedMonitors = [];
+        this.allowedPostProcessors = [];
+        this._initRuntimeItems(config);
     }
     get lastStatusUpdate() {
         const statusTrack = (this.statusTrack || []).filter((s) => (s.repetition || 0) === this.repetition);
@@ -84,7 +71,5 @@ BaseUnit.usePredefinedIds = false;
 (0, RuntimeItemsUILogicMixin_1.runtimeItemsUILogicMixin)(BaseUnit.prototype);
 (0, BaseUnitSchemaMixin_1.baseUnitSchemaMixin)(BaseUnit.prototype);
 (0, StatusSchemaMixin_1.statusSchemaMixin)(BaseUnit.prototype);
-(0, ImportantSettingsProviderMixin_1.importantSettingsProviderMixin)(BaseUnit.prototype);
-(0, ContextAndRenderFieldsMixin_1.contextAndRenderFieldsMixin)(BaseUnit.prototype);
 (0, NamedEntityMixin_1.namedEntityMixin)(BaseUnit.prototype);
 (0, DefaultableMixin_1.defaultableEntityMixin)(BaseUnit);

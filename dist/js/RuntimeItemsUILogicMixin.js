@@ -9,11 +9,11 @@ const propertiesMixn = {
         this.preProcessors = this.defaultPreProcessors;
         this.postProcessors = this.defaultPostProcessors;
     },
-    _initRuntimeItems() {
-        this.results = this.results || this.defaultResults;
-        this.monitors = this.monitors || this.defaultMonitors;
-        this.preProcessors = this.preProcessors || this.defaultPreProcessors;
-        this.postProcessors = this.postProcessors || this.defaultPostProcessors;
+    _initRuntimeItems(config) {
+        this.results = (config === null || config === void 0 ? void 0 : config.results) || this.defaultResults;
+        this.monitors = (config === null || config === void 0 ? void 0 : config.monitors) || this.defaultMonitors;
+        this.preProcessors = (config === null || config === void 0 ? void 0 : config.preProcessors) || this.defaultPreProcessors;
+        this.postProcessors = (config === null || config === void 0 ? void 0 : config.postProcessors) || this.defaultPostProcessors;
     },
     toggleRuntimeItem(key, data, isAdding) {
         if (isAdding) {

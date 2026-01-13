@@ -1,22 +1,26 @@
-export class MLSettingsContextProvider extends ContextProvider {
-    constructor(config: any);
-    jsonSchemaId: string;
-    get uiSchema(): {
+import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { MLSettingsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { JSONSchema7 } from "json-schema";
+import { type ApplicationContextMixin } from "../mixins/ApplicationContextMixin";
+import { type ContextItem, type Domain } from "./base/ContextProvider";
+import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
+type Name = "mlSettings";
+type Data = MLSettingsContextProviderSchema;
+type ExternalContext = JinjaExternalContext & ApplicationContextMixin;
+type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> & Constructor<ApplicationContextMixin>;
+declare const MLSettingsContextProvider_base: Base;
+export default class MLSettingsContextProvider extends MLSettingsContextProvider_base {
+    readonly name: Name;
+    readonly domain: Domain;
+    readonly jsonSchema: JSONSchema7 | undefined;
+    readonly uiSchema: {
         target_column_name: {};
         problem_category: {};
     };
-    get defaultData(): {
+    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext);
+    getDefaultData(): {
         target_column_name: string;
-        problem_category: string;
+        problem_category: "regression";
     };
-    get jsonSchemaPatchConfig(): {
-        target_column_name: {
-            default: string;
-        };
-        problem_category: {
-            default: string;
-        };
-    };
-    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
-import { ContextProvider } from "@mat3ra/ade";
+export {};

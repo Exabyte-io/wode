@@ -3,39 +3,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MLSettingsContextProvider = void 0;
-const ade_1 = require("@mat3ra/ade");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const ApplicationContextMixin_1 = require("../mixins/ApplicationContextMixin");
-class MLSettingsContextProvider extends ade_1.ContextProvider {
-    constructor(config) {
-        super(config);
-        this.jsonSchemaId = "context-providers-directory/ml-settings-context-provider";
-        this.initApplicationContextMixin();
-    }
-    // eslint-disable-next-line class-methods-use-this
-    get uiSchema() {
-        return {
+const JSONSchemaDataProvider_1 = __importDefault(require("./base/JSONSchemaDataProvider"));
+const jsonSchemaId = "context-providers-directory/ml-settings-context-provider";
+const defaultData = {
+    target_column_name: "target",
+    problem_category: "regression",
+};
+class MLSettingsContextProvider extends JSONSchemaDataProvider_1.default {
+    constructor(contextItem, externalContext) {
+        super(contextItem, externalContext);
+        this.name = "mlSettings";
+        this.domain = "important";
+        this.uiSchema = {
             target_column_name: {},
             problem_category: {},
         };
+        this.initApplicationContextMixin(externalContext);
+        this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
+            target_column_name: { default: defaultData.target_column_name },
+            problem_category: { default: defaultData.problem_category },
+        });
     }
     // eslint-disable-next-line class-methods-use-this
-    get defaultData() {
-        return {
-            target_column_name: "target",
-            problem_category: "regression",
-        };
-    }
-    get jsonSchemaPatchConfig() {
-        return {
-            target_column_name: { default: this.defaultData.target_column_name },
-            problem_category: { default: this.defaultData.problem_category },
-        };
-    }
-    get jsonSchema() {
-        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
+    getDefaultData() {
+        return defaultData;
     }
 }
-exports.MLSettingsContextProvider = MLSettingsContextProvider;
+exports.default = MLSettingsContextProvider;
 (0, ApplicationContextMixin_1.applicationContextMixin)(MLSettingsContextProvider.prototype);

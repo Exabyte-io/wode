@@ -3,54 +3,24 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CollinearMagnetizationContextProvider = void 0;
-const ade_1 = require("@mat3ra/ade");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
-const lodash_1 = __importDefault(require("lodash"));
-const MaterialContextMixin_1 = require("../mixins/MaterialContextMixin");
-class CollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataProvider {
-    constructor(config) {
-        var _a;
-        super(config);
-        this.jsonSchemaId = "context-providers-directory/collinear-magnetization-context-provider";
-        this.indexOfElement = (element) => {
-            return this.uniqueElementsWithLabels.indexOf(element) + 1;
-        };
-        this.transformData = (data) => {
-            const startingMagnetizationWithIndex = data.startingMagnetization.map((row) => ({
-                ...row,
-                index: this.indexOfElement(row.atomicSpecies),
-            }));
-            return {
-                ...data,
-                startingMagnetization: startingMagnetizationWithIndex,
-            };
-        };
-        this.initMaterialContextMixin();
+const MaterialContextMixin_1 = __importDefault(require("../mixins/MaterialContextMixin"));
+const JSONSchemaDataProvider_1 = __importDefault(require("./base/JSONSchemaDataProvider"));
+const jsonSchemaId = "context-providers-directory/collinear-magnetization-context-provider";
+class CollinearMagnetizationContextProvider extends JSONSchemaDataProvider_1.default {
+    constructor(contextItem, externalContext) {
+        var _a, _b, _c, _d;
+        super(contextItem, externalContext);
+        this.name = "collinearMagnetization";
+        this.domain = "important";
+        this.initMaterialContextMixin(externalContext);
+        this.uniqueElementsWithLabels = [
+            ...new Set(((_b = (_a = this.material) === null || _a === void 0 ? void 0 : _a.Basis) === null || _b === void 0 ? void 0 : _b.elementsWithLabelsArray) || []),
+        ];
         this.firstElement =
-            ((_a = this.uniqueElementsWithLabels) === null || _a === void 0 ? void 0 : _a.length) > 0 ? this.uniqueElementsWithLabels[0] : "";
-        this.isTotalMagnetization = lodash_1.default.get(this.data, "isTotalMagnetization", false);
-    }
-    get uniqueElementsWithLabels() {
-        var _a, _b;
-        const elementsWithLabelsArray = ((_b = (_a = this.material) === null || _a === void 0 ? void 0 : _a.Basis) === null || _b === void 0 ? void 0 : _b.elementsWithLabelsArray) || [];
-        return [...new Set(elementsWithLabelsArray)];
-    }
-    get defaultData() {
-        return {
-            startingMagnetization: [
-                {
-                    index: 1,
-                    atomicSpecies: this.firstElement,
-                    value: 0.0,
-                },
-            ],
-            isTotalMagnetization: false,
-            totalMagnetization: 0.0,
-        };
-    }
-    get jsonSchemaPatchConfig() {
-        return {
+            ((_c = this.uniqueElementsWithLabels) === null || _c === void 0 ? void 0 : _c.length) > 0 ? this.uniqueElementsWithLabels[0] : "";
+        this.isTotalMagnetization = ((_d = this.data) === null || _d === void 0 ? void 0 : _d.isTotalMagnetization) || false;
+        this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
             "properties.startingMagnetization": {
                 maxItems: this.uniqueElementsWithLabels.length,
             },
@@ -67,7 +37,30 @@ class CollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataProv
             "properties.totalMagnetization": {
                 default: 0.0,
             },
+        });
+    }
+    getDefaultData() {
+        return {
+            startingMagnetization: [
+                {
+                    index: 1,
+                    atomicSpecies: this.firstElement,
+                    value: 0.0,
+                },
+            ],
+            isTotalMagnetization: false,
+            totalMagnetization: 0.0,
         };
+    }
+    setData(data) {
+        const startingMagnetization = data.startingMagnetization.map((row) => ({
+            ...row,
+            index: this.uniqueElementsWithLabels.indexOf(row.atomicSpecies) + 1,
+        }));
+        super.setData({
+            ...data,
+            startingMagnetization,
+        });
     }
     get uiSchemaStyled() {
         return {
@@ -89,9 +82,6 @@ class CollinearMagnetizationContextProvider extends ade_1.JSONSchemaFormDataProv
             },
         };
     }
-    get jsonSchema() {
-        return JSONSchemasInterface_1.default.getPatchedSchemaById(this.jsonSchemaId, this.jsonSchemaPatchConfig);
-    }
 }
-exports.CollinearMagnetizationContextProvider = CollinearMagnetizationContextProvider;
-(0, MaterialContextMixin_1.materialContextMixin)(CollinearMagnetizationContextProvider.prototype);
+exports.default = CollinearMagnetizationContextProvider;
+(0, MaterialContextMixin_1.default)(CollinearMagnetizationContextProvider.prototype);

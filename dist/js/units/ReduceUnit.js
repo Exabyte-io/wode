@@ -6,8 +6,7 @@ const ReduceUnitSchemaMixin_1 = require("../generated/ReduceUnitSchemaMixin");
 const BaseUnit_1 = require("./BaseUnit");
 class ReduceUnit extends BaseUnit_1.BaseUnit {
     constructor(unitName, mapUnit, input) {
-        super({ type: enums_1.UNIT_TYPES.reduce, name: unitName, mapFlowchartId: mapUnit, input });
-        this.contextProviders = [];
+        super({ type: enums_1.UnitType.reduce, name: unitName, mapFlowchartId: mapUnit, input });
     }
 }
 exports.ReduceUnit = ReduceUnit;

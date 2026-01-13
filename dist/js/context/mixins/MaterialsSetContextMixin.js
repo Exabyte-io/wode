@@ -1,16 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.materialsSetContextMixin = materialsSetContextMixin;
+exports.default = materialsSetContextMixin;
 const utils_1 = require("@mat3ra/code/dist/js/entity/set/ordered/utils");
 function materialsSetContextMixin(item) {
+    // @ts-expect-error
     const properties = {
-        _materialsSet: undefined,
-        get materialsSet() {
-            return this._materialsSet;
-        },
-        initMaterialsSetContextMixin() {
-            var _a;
-            this._materialsSet = (_a = this.config.context) === null || _a === void 0 ? void 0 : _a.materialsSet;
+        initMaterialsSetContextMixin(externalContext) {
+            this.materialsSet = externalContext.materialsSet;
         },
         sortMaterialsByIndexInSet(materials = []) {
             // DO NOT SORT IN PLACE AS IT CHANGES THE ORDER IN `this.materials` AND HAS SIDE EFFECTS (MaterialViewer).

@@ -1,38 +1,24 @@
-export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataProvider {
-    constructor(config: any);
-    jsonSchemaId: string;
-    firstElement: any;
-    isTotalMagnetization: boolean;
-    get uniqueElementsWithLabels(): any[];
-    indexOfElement: (element: any) => number;
-    get defaultData(): {
-        startingMagnetization: {
-            index: number;
-            atomicSpecies: any;
-            value: number;
-        }[];
-        isTotalMagnetization: boolean;
-        totalMagnetization: number;
-    };
-    get jsonSchemaPatchConfig(): {
-        "properties.startingMagnetization": {
-            maxItems: number;
-        };
-        "properties.startingMagnetization.items.properties.atomicSpecies": {
-            enum: any[];
-            default: any;
-        };
-        "properties.startingMagnetization.items.properties.value": {
-            default: number;
-        };
-        "properties.isTotalMagnetization": {
-            default: boolean;
-        };
-        "properties.totalMagnetization": {
-            default: number;
-        };
-    };
-    transformData: (data: any) => any;
+import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { CollinearMagnetizationContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { JSONSchema7 } from "json-schema";
+import { type MaterialContextMixin, type MaterialExternalContext } from "../mixins/MaterialContextMixin";
+import type { ContextItem, Domain } from "./base/ContextProvider";
+import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
+type Name = "collinearMagnetization";
+type Data = CollinearMagnetizationContextProviderSchema;
+type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> & Constructor<MaterialContextMixin>;
+declare const CollinearMagnetizationContextProvider_base: Base;
+export default class CollinearMagnetizationContextProvider extends CollinearMagnetizationContextProvider_base {
+    readonly name: Name;
+    readonly domain: Domain;
+    readonly jsonSchema: JSONSchema7 | undefined;
+    private readonly isTotalMagnetization;
+    private readonly firstElement;
+    private readonly uniqueElementsWithLabels;
+    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext);
+    getDefaultData(): Data;
+    setData(data: Data): void;
     get uiSchemaStyled(): {
         startingMagnetization: {
             items: {
@@ -51,6 +37,5 @@ export class CollinearMagnetizationContextProvider extends JSONSchemaFormDataPro
             "ui:readonly": boolean;
         };
     };
-    get jsonSchema(): import("json-schema").JSONSchema7 | undefined;
 }
-import { JSONSchemaFormDataProvider } from "@mat3ra/ade";
+export {};

@@ -1,10 +1,11 @@
 import type { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
-import type { RuntimeItemsNameObject } from "@mat3ra/code/dist/js/entity/mixins/RuntimeItemsNameObjectMixin";
+import type { RuntimeItems } from "@mat3ra/code/dist/js/entity/mixins/RuntimeItemsMixin";
 import type { NameResultSchema } from "@mat3ra/code/dist/js/utils/object";
+import type { RuntimeItemsSchema } from "@mat3ra/esse/dist/js/types";
 type ItemKey = "results" | "monitors" | "preProcessors" | "postProcessors";
 export type RuntimeItemsUILogic = {
     setRuntimeItemsToDefaultValues(): void;
-    _initRuntimeItems(): void;
+    _initRuntimeItems(config?: Partial<RuntimeItemsSchema>): void;
     toggleRuntimeItem(key: ItemKey, data: NameResultSchema, isAdding: boolean): void;
     toggleResult(data: NameResultSchema, isAdding: boolean): void;
     toggleMonitor(data: NameResultSchema, isAdding: boolean): void;
@@ -16,7 +17,7 @@ export type RuntimeItemsUILogic = {
     get postProcessorNames(): string[];
     get preProcessorNames(): string[];
 };
-type Base = InMemoryEntity & RuntimeItemsNameObject & {
+type Base = InMemoryEntity & RuntimeItems & {
     defaultResults: NameResultSchema[];
     defaultMonitors: NameResultSchema[];
     defaultPreProcessors: NameResultSchema[];

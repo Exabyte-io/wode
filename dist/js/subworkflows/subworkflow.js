@@ -6,49 +6,38 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Subworkflow = void 0;
 const ade_1 = require("@mat3ra/ade");
 const entity_1 = require("@mat3ra/code/dist/js/entity");
+const DefaultableMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/DefaultableMixin");
+const NamedEntityMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/NamedEntityMixin");
 const mode_1 = require("@mat3ra/mode");
 const utils_1 = require("@mat3ra/utils");
 const lodash_1 = __importDefault(require("lodash"));
-const mixwith_1 = require("mixwith");
 const underscore_1 = __importDefault(require("underscore"));
 const enums_1 = require("../enums");
+const SubworkflowSchemaMixin_1 = require("../generated/SubworkflowSchemaMixin");
 const units_1 = require("../units");
 const utils_2 = require("../utils");
-const convergence_1 = require("./convergence");
-/* eslint max-classes-per-file:0 */
-class BaseSubworkflow extends (0, mixwith_1.mix)(entity_1.NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(convergence_1.ConvergenceMixin, entity_1.ContextAndRenderFieldsMixin) {
-}
-class Subworkflow extends BaseSubworkflow {
-    constructor(config, _Application = ade_1.Application, _ModelFactory = mode_1.ModelFactory, _UnitFactory = units_1.UnitFactory) {
+class Subworkflow extends entity_1.InMemoryEntity {
+    constructor(config, _ModelFactory = mode_1.ModelFactory, _UnitFactory = units_1.UnitFactory) {
         super(config);
-        this._Application = _Application;
-        this._ModelFactory = _ModelFactory;
-        this._UnitFactory = _UnitFactory;
-        this.initialize();
-    }
-    initialize() {
-        this._application = new this._Application(this.prop("application"));
-        this._model = this._ModelFactory.create({
-            ...this.prop("model"),
-            application: this.prop("application"),
+        this.ModelFactory = _ModelFactory;
+        this.UnitFactory = _UnitFactory;
+        this.applicationInstance = new ade_1.Application(this.application);
+        this.modelInstance = this.ModelFactory.create({
+            ...this.model,
+            application: this.application,
         });
-        this._units = (0, utils_2.setNextLinks)((0, utils_2.setUnitsHead)(this.prop("units", [])), this.id).map((cfg) => this._UnitFactory.create(Object.assign(cfg, { application: this.application.toJSON() })));
+        this.unitsInstances = (0, utils_2.setNextLinks)((0, utils_2.setUnitsHead)(this.units || []).map((cfg) => {
+            return this.UnitFactory.create({ ...cfg, application: this.application });
+        }));
     }
-    static generateSubworkflowId(name, application = null, model = null, method = null) {
-        var _a, _b, _c, _d;
-        const appName = application ? application.name || application : "";
-        const modelInfo = model
-            ? `${(((_a = model.toJSON) === null || _a === void 0 ? void 0 : _a.call(model)) || model).type}-${(((_b = model.toJSON) === null || _b === void 0 ? void 0 : _b.call(model)) || model).subtype || ""}`
-            : "";
-        const methodInfo = method
-            ? `${(((_c = method.toJSON) === null || _c === void 0 ? void 0 : _c.call(method)) || method).type}-${(((_d = method.toJSON) === null || _d === void 0 ? void 0 : _d.call(method)) || method).subtype || ""}`
-            : "";
+    static generateSubworkflowId(name, application, model, method) {
+        const appName = (application === null || application === void 0 ? void 0 : application.name) || "";
+        const modelInfo = model ? `${model.type}-${model.subtype || ""}` : "";
+        const methodInfo = method ? `${method.type}-${method.subtype || ""}` : "";
         const seed = [`subworkflow-${name}`, appName, modelInfo, methodInfo]
             .filter((p) => p)
             .join("-");
-        if (this.usePredefinedIds)
-            return utils_1.Utils.uuid.getUUIDFromNamespace(seed);
-        return utils_1.Utils.uuid.getUUID();
+        return this.usePredefinedIds ? utils_1.Utils.uuid.getUUIDFromNamespace(seed) : utils_1.Utils.uuid.getUUID();
     }
     static get defaultConfig() {
         const defaultName = "New Subworkflow";
@@ -65,8 +54,8 @@ class Subworkflow extends BaseSubworkflow {
      * @returns {SubworkflowUnit}
      */
     getAsUnit() {
-        return this._UnitFactory.create({
-            type: enums_1.UNIT_TYPES.subworkflow,
+        return this.UnitFactory.create({
+            type: enums_1.UnitType.subworkflow,
             _id: this.id,
             name: this.name,
         });
@@ -93,14 +82,11 @@ class Subworkflow extends BaseSubworkflow {
             units: units.map((unit) => (unit.toJSON ? unit.toJSON() : unit)),
         });
     }
-    get application() {
-        return this._application;
-    }
     setApplication(application) {
         // TODO: adjust the logic above to take into account whether units need re-rendering after version change etc.
         // reset units if application name changes
         const previousApplicationName = this.application.name;
-        this._application = application;
+        this.applicationInstance = application;
         if (previousApplicationName !== application.name) {
             // TODO: figure out how to set a default unit per new application instead of removing all
             this.setUnits([]);
@@ -109,38 +95,32 @@ class Subworkflow extends BaseSubworkflow {
             // propagate new application version to all units
             this.units
                 .filter((unit) => typeof unit.setApplication === "function")
-                .forEach((unit) => unit.setApplication(application, true));
+                .forEach((unit) => unit.setApplication(this.applicationInstance, true));
         }
-        this.setProp("application", application.toJSON());
+        this.application = application.toJSON();
         // set model to the default one for the application selected
-        this.setModel(this._ModelFactory.createFromApplication({
-            application: this.prop("application"),
+        this.setModel(this.ModelFactory.createFromApplication({
+            application: this.application,
         }));
     }
-    get model() {
-        return this._model;
-    }
     setModel(model) {
-        this._model = model;
-    }
-    get units() {
-        return this._units;
+        this.modelInstance = model;
     }
     setUnits(units) {
-        this._units = units;
+        this.unitsInstances = units;
     }
     toJSON(exclude = []) {
         return {
             ...super.toJSON(exclude),
-            model: this.model.toJSON(),
-            units: this.units.map((x) => x.toJSON()),
+            model: this.modelInstance.toJSON(),
+            units: this.unitsInstances.map((x) => x.toJSON()),
             ...(this.compute ? { compute: this.compute } : {}), // {"compute": null } won't pass esse validation
         };
     }
     get contextProviders() {
         const unitsWithContextProviders = this.units.filter((u) => u.allContextProviders && u.allContextProviders.length);
         const allContextProviders = underscore_1.default.flatten(unitsWithContextProviders.map((u) => u.allContextProviders));
-        const subworkflowContextProviders = allContextProviders.filter((p) => p.isSubworkflowContextProvider);
+        const subworkflowContextProviders = allContextProviders.filter((p) => p.entityName === "subworkflow");
         return underscore_1.default.uniq(subworkflowContextProviders, (p) => p.name);
     }
     /**
@@ -187,9 +167,6 @@ class Subworkflow extends BaseSubworkflow {
     }
     /**
      * TODO: reuse workflow function instead
-     * @param unit {Unit}
-     * @param head {Boolean}
-     * @param index {Number}
      */
     addUnit(unit, index = -1) {
         const { units } = this;
@@ -284,3 +261,6 @@ class Subworkflow extends BaseSubworkflow {
 }
 exports.Subworkflow = Subworkflow;
 Subworkflow.usePredefinedIds = false;
+(0, NamedEntityMixin_1.namedEntityMixin)(Subworkflow.prototype);
+(0, DefaultableMixin_1.defaultableEntityMixin)(Subworkflow);
+(0, SubworkflowSchemaMixin_1.subworkflowSchemaMixin)(Subworkflow.prototype);

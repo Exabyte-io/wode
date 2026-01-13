@@ -4,78 +4,52 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const periodic_table_js_1 = require("@exabyte-io/periodic-table.js");
-const lodash_1 = __importDefault(require("lodash"));
-const underscore_1 = __importDefault(require("underscore"));
-const underscore_string_1 = __importDefault(require("underscore.string"));
-const JobContextMixin_1 = require("../../../mixins/JobContextMixin");
-const MaterialContextMixin_1 = require("../../../mixins/MaterialContextMixin");
-const MethodDataContextMixin_1 = require("../../../mixins/MethodDataContextMixin");
-const WorkflowContextMixin_1 = require("../../../mixins/WorkflowContextMixin");
-const ExecutableContextProvider_1 = __importDefault(require("../ExecutableContextProvider"));
-class NWChemTotalEnergyContextProvider extends ExecutableContextProvider_1.default {
-    constructor(config) {
-        super(config);
-        this.jsonSchemaId = "context-providers-directory/by-application/nwchem-total-energy-context-provider";
-        this._material = undefined;
-        this.initMethodDataContextMixin();
-        this.initWorkflowContextMixin();
-        this.initJobContextMixin();
-        this.initMaterialContextMixin();
-    }
-    get atomicPositionsWithoutConstraints() {
-        return this.material.Basis.atomicPositions;
-    }
-    get atomicPositions() {
-        const basis = this.material.Basis;
-        basis.toCartesian();
-        return basis.getAtomicPositionsWithConstraintsAsStrings();
-    }
-    get atomSymbols() {
-        return this.material.Basis.uniqueElements;
-    }
-    get cartesianAtomicPositions() {
-        return this.material.Basis.toCartesian !== undefined;
-    }
-    get ATOMIC_SPECIES() {
-        return underscore_1.default.map(this.atomSymbols, (symbol) => {
-            return NWChemTotalEnergyContextProvider.symbolToAtomicSpecies(symbol);
-        }).join("\n");
+const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
+const JobContextMixin_1 = __importDefault(require("../../../mixins/JobContextMixin"));
+const MaterialContextMixin_1 = __importDefault(require("../../../mixins/MaterialContextMixin"));
+const MethodDataContextMixin_1 = __importDefault(require("../../../mixins/MethodDataContextMixin"));
+const WorkflowContextMixin_1 = __importDefault(require("../../../mixins/WorkflowContextMixin"));
+const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaDataProvider"));
+const jsonSchemaId = "context-providers-directory/by-application/nwchem-total-energy-context-provider";
+class NWChemTotalEnergyContextProvider extends JSONSchemaDataProvider_1.default {
+    constructor(config, externalContext) {
+        super(config, externalContext);
+        this.name = "input";
+        this.domain = "executable";
+        this.initMethodDataContextMixin(externalContext);
+        this.initWorkflowContextMixin(externalContext);
+        this.initJobContextMixin(externalContext);
+        this.initMaterialContextMixin(externalContext);
+        this.jsonSchema = JSONSchemasInterface_1.default.getSchemaById(jsonSchemaId);
     }
     /*
-     * @NOTE: Overriding getData makes this provider "stateless", ie. delivering data from scratch each time and not
-     *        considering the content of `this.data`, and `this.isEdited` field(s).
+     * TODO: Create ability for user to define CHARGE, MULT, BASIS and FUNCTIONAL parameters.
      */
-    getData() {
-        /*
-        TODO: Create ability for user to define CHARGE, MULT, BASIS and FUNCTIONAL parameters.
-         */
-        const CHARGE = 0;
-        const MULT = 1;
-        const BASIS = "6-31G";
-        const FUNCTIONAL = "B3LYP";
+    getDefaultData() {
+        const basis = this.material.Basis;
+        const NTYP = basis.uniqueElements.length;
+        const ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS = basis.atomicPositions.join("\n") || "";
+        const ATOMIC_SPECIES = basis.uniqueElements
+            .map((symbol) => `${symbol} ${periodic_table_js_1.PERIODIC_TABLE[symbol].atomic_mass} `)
+            .join("\n");
+        basis.toCartesian();
+        const atomicPositions = basis.getAtomicPositionsWithConstraintsAsStrings();
         return {
-            CHARGE,
-            MULT,
-            BASIS,
-            NAT: this.atomicPositions.length,
-            NTYP: this.atomSymbols.length,
-            ATOMIC_POSITIONS: this.atomicPositions.join("\n"),
-            ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: this.atomicPositionsWithoutConstraints.join("\n"),
-            ATOMIC_SPECIES: this.ATOMIC_SPECIES,
-            FUNCTIONAL,
-            CARTESIAN: this.cartesianAtomicPositions,
+            CHARGE: 0,
+            MULT: 1,
+            BASIS: "6-31G",
+            NAT: atomicPositions.length,
+            NTYP,
+            ATOMIC_POSITIONS: atomicPositions.join("\n"),
+            ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS,
+            ATOMIC_SPECIES,
+            FUNCTIONAL: "B3LYP",
+            CARTESIAN: basis.toCartesian !== undefined,
         };
-    }
-    static symbolToAtomicSpecies(symbol, pseudo) {
-        const el = periodic_table_js_1.PERIODIC_TABLE[symbol];
-        const filename = pseudo
-            ? lodash_1.default.get(pseudo, "filename", underscore_string_1.default.strRightBack(pseudo.path || "", "/"))
-            : "";
-        return el ? underscore_string_1.default.sprintf("%s %f %s", symbol, el.atomic_mass, filename) : undefined;
     }
 }
 exports.default = NWChemTotalEnergyContextProvider;
-(0, MaterialContextMixin_1.materialContextMixin)(NWChemTotalEnergyContextProvider.prototype);
-(0, MethodDataContextMixin_1.methodDataContextMixin)(NWChemTotalEnergyContextProvider.prototype);
-(0, WorkflowContextMixin_1.workflowContextMixin)(NWChemTotalEnergyContextProvider.prototype);
-(0, JobContextMixin_1.jobContextMixin)(NWChemTotalEnergyContextProvider.prototype);
+(0, MaterialContextMixin_1.default)(NWChemTotalEnergyContextProvider.prototype);
+(0, MethodDataContextMixin_1.default)(NWChemTotalEnergyContextProvider.prototype);
+(0, WorkflowContextMixin_1.default)(NWChemTotalEnergyContextProvider.prototype);
+(0, JobContextMixin_1.default)(NWChemTotalEnergyContextProvider.prototype);

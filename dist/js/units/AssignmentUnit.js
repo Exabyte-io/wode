@@ -7,14 +7,13 @@ const BaseUnit_1 = require("./BaseUnit");
 class AssignmentUnit extends BaseUnit_1.BaseUnit {
     constructor(config) {
         super({
-            name: enums_1.UNIT_TYPES.assignment,
-            type: enums_1.UNIT_TYPES.assignment,
+            name: enums_1.UnitType.assignment,
+            type: enums_1.UnitType.assignment,
             operand: "X",
             value: "1",
             input: [],
             ...config,
         });
-        this.contextProviders = [];
     }
     getHashObject() {
         return { input: this.input, operand: this.operand, value: this.value };

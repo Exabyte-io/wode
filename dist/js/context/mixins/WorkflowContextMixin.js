@@ -1,22 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.workflowContextMixin = workflowContextMixin;
-const defaultWorkflow = {
-    subworkflows: [],
-    units: [],
-    hasRelaxation: false,
-};
+exports.default = workflowContextMixin;
 function workflowContextMixin(item) {
+    // @ts-expect-error
     const properties = {
         isEdited: false,
-        _workflow: defaultWorkflow,
-        get workflow() {
-            return this._workflow;
-        },
-        initWorkflowContextMixin() {
-            const { config } = this; // as WorkflowConfig;
-            this._workflow = (config.context && config.context.workflow) || defaultWorkflow;
-            this.isEdited = false; // we always get the `defaultData` (recalculated from scratch, not persistent)
+        initWorkflowContextMixin(externalContext) {
+            this.workflow = externalContext.workflow;
+            this.isEdited = false;
         },
     };
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));

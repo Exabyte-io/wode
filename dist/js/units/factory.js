@@ -4,7 +4,6 @@ exports.UnitFactory = void 0;
 const enums_1 = require("../enums");
 const AssertionUnit_1 = require("./AssertionUnit");
 const AssignmentUnit_1 = require("./AssignmentUnit");
-const BaseUnit_1 = require("./BaseUnit");
 const ConditionUnit_1 = require("./ConditionUnit");
 const ExecutionUnit_1 = require("./ExecutionUnit");
 const IOUnit_1 = require("./IOUnit");
@@ -14,34 +13,25 @@ const SubworkflowUnit_1 = require("./SubworkflowUnit");
 class UnitFactory {
     static create(config) {
         switch (config.type) {
-            case enums_1.UNIT_TYPES.execution:
-                return new this.ExecutionUnit(config);
-            case enums_1.UNIT_TYPES.assignment:
-                return new this.AssignmentUnit(config);
-            case enums_1.UNIT_TYPES.condition:
-                return new this.ConditionUnit(config);
-            case enums_1.UNIT_TYPES.io:
-                return new this.IOUnit(config);
-            case enums_1.UNIT_TYPES.processing:
-                return new this.ProcessingUnit(config);
-            case enums_1.UNIT_TYPES.map:
-                return new this.MapUnit(config);
-            case enums_1.UNIT_TYPES.subworkflow:
-                return new this.SubworkflowUnit(config);
-            case enums_1.UNIT_TYPES.assertion:
-                return new this.AssertionUnit(config);
+            case enums_1.UnitType.execution:
+                return new ExecutionUnit_1.ExecutionUnit(config);
+            case enums_1.UnitType.assignment:
+                return new AssignmentUnit_1.AssignmentUnit(config);
+            case enums_1.UnitType.condition:
+                return new ConditionUnit_1.ConditionUnit(config);
+            case enums_1.UnitType.io:
+                return new IOUnit_1.IOUnit(config);
+            case enums_1.UnitType.processing:
+                return new ProcessingUnit_1.ProcessingUnit(config);
+            case enums_1.UnitType.map:
+                return new MapUnit_1.MapUnit(config);
+            case enums_1.UnitType.subworkflow:
+                return new SubworkflowUnit_1.SubworkflowUnit(config);
+            case enums_1.UnitType.assertion:
+                return new AssertionUnit_1.AssertionUnit(config);
             default:
-                return new this.BaseUnit(config);
+                throw new Error(`Unknown unit type: ${config.type}`);
         }
     }
 }
 exports.UnitFactory = UnitFactory;
-UnitFactory.AssertionUnit = AssertionUnit_1.AssertionUnit;
-UnitFactory.AssignmentUnit = AssignmentUnit_1.AssignmentUnit;
-UnitFactory.BaseUnit = BaseUnit_1.BaseUnit;
-UnitFactory.ConditionUnit = ConditionUnit_1.ConditionUnit;
-UnitFactory.ExecutionUnit = ExecutionUnit_1.ExecutionUnit;
-UnitFactory.IOUnit = IOUnit_1.IOUnit;
-UnitFactory.MapUnit = MapUnit_1.MapUnit;
-UnitFactory.ProcessingUnit = ProcessingUnit_1.ProcessingUnit;
-UnitFactory.SubworkflowUnit = SubworkflowUnit_1.SubworkflowUnit;
