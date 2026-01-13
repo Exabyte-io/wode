@@ -3,7 +3,7 @@ export function createWorkflows({ appName, workflowCls, workflowSubworkflowMapBy
     [x: string]: any;
     appName?: null | undefined;
     workflowCls?: typeof Workflow | undefined;
-    workflowSubworkflowMapByApplication?: any;
+    workflowSubworkflowMapByApplication: any;
 }): any[];
 /**
  * @summary Create workflow configurations for all applications

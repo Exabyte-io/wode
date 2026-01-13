@@ -9,7 +9,6 @@ exports.createWorkflowConfigs = createWorkflowConfigs;
 const ade_1 = require("@mat3ra/ade");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const schemas_json_1 = __importDefault(require("@mat3ra/esse/dist/js/schemas.json"));
-const standata_1 = require("@mat3ra/standata");
 // Import Template here to apply context provider patch
 // eslint-disable-next-line no-unused-vars
 const patch_1 = require("../patch");
@@ -27,14 +26,14 @@ JSONSchemasInterface_1.default.setSchemas(schemas_json_1.default);
         4. map units are added along with their workflows according to data in "units"
         5. top-level subworkflows are added directly in the order also specified by "units"
  */
-function createWorkflows({ appName = null, workflowCls = workflow_1.Workflow, workflowSubworkflowMapByApplication = standata_1.workflowSubforkflowMapByApplication, ...swArgs }) {
+function createWorkflows({ appName = null, workflowCls = workflow_1.Workflow, workflowSubworkflowMapByApplication, ...swArgs }) {
     let apps = appName !== null ? [appName] : ade_1.allApplications;
     const allApplicationsFromWorkflowData = Object.keys(workflowSubworkflowMapByApplication.workflows);
     // output warning if allApplications and allApplicationsFromWorkflowData do not match
     if (appName === null) {
         if (apps && apps.sort().join(",") !== allApplicationsFromWorkflowData.sort().join(",")) {
             // eslint-disable-next-line no-console
-            console.warn(`Warning: allApplications and allApplicationsFromWorkflowData do not match: 
+            console.warn(`Warning: allApplications and allApplicationsFromWorkflowData do not match:
                 ${apps.sort().join(",")} !== ${allApplicationsFromWorkflowData.sort().join(",")}`);
             console.warn("Using allApplicationsFromWorkflowData");
         }

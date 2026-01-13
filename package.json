@@ -53,7 +53,7 @@
         "@mat3ra/ide": "2025.11.19-0",
         "@mat3ra/made": "git+https://github.com/Exabyte-io/made.git#47b3e12a859c45fa72079ed4ddd1675a6a32b4fe",
         "@mat3ra/mode": "2025.11.13-0",
-        "@mat3ra/standata": "2025.11.12-0",
+        "@mat3ra/standata": "git+https://github.com/Exabyte-io/standata.git#3c5b6365a6a5fcfbbd4e5da3a30cd5dd4c0301ee",
         "@mat3ra/tsconfig": "2024.6.3-0",
         "@mat3ra/utils": "2025.9.20-0",
         "@types/crypto-js": "^4.2.2",

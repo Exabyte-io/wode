@@ -165,7 +165,7 @@ function createSubworkflow({ subworkflowData, AppRegistry = ade_1.ApplicationReg
  * @param swArgs {Object} classes for instantiation
  * @returns {*} subworkflow object
  */
-function createSubworkflowByName({ appName, swfName, workflowSubworkflowMapByApplication = standata_1.workflowSubforkflowMapByApplication, ...swArgs }) {
+function createSubworkflowByName({ appName, swfName, workflowSubworkflowMapByApplication, ...swArgs }) {
     const { subworkflows } = workflowSubworkflowMapByApplication;
     const { [appName]: allSubworkflowData } = subworkflows;
     const { [swfName]: subworkflowData } = allSubworkflowData;

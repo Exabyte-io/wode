@@ -4,7 +4,7 @@ dynamic = ["version"]
 description = "WOrkflow DEfinitions"
 readme = "README.md"
 requires-python = ">=3.10"
-license = {file = "LICENSE.md"}
+license = { file = "LICENSE.md" }
 authors = [
     { name = "Exabyte Inc.", email = "info@mat3ra.com" }
 ]
@@ -20,6 +20,12 @@ classifiers = [
 ]
 dependencies = [
     "numpy",
+    "mat3ra-utils",
+    "mat3ra-esse",
+    "mat3ra-mode",
+    "mat3ra-ade",
+    "mat3ra-code",
+    "mat3ra-standata"
 ]
 
 [project.optional-dependencies]
@@ -62,13 +68,15 @@ extend-exclude = '''
     tests\/fixtures*,
     examples\/.*\/.*\.py
   | other\/.*\/.*\.(py|ipynb)
+  | dist\/.*
 )
 '''
 
 [tool.ruff]
 extend-exclude = [
     "src/js",
-    "tests/fixtures"
+    "tests/fixtures",
+    "dist"
 ]
 line-length = 120
 target-version = "py310"
@@ -80,6 +88,7 @@ target-version = "py310"
 profile = "black"
 multi_line_output = 3
 include_trailing_comma = true
+extend_skip_glob = ["dist/*"]
 
 [tool.pytest.ini_options]
 pythonpath = [
@@ -88,4 +97,3 @@ pythonpath = [
 testpaths = [
     "tests/py"
 ]
-
