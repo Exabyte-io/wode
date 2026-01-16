@@ -1,9 +1,6 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type {
-    QENEBContextProviderSchema,
-    QEPwxContextProviderSchema,
-} from "@mat3ra/esse/dist/js/types";
+import type { QENEBContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import jobContextMixin, {
@@ -55,10 +52,6 @@ type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
     Constructor<WorkflowContextMixin> &
     Constructor<MethodDataContextMixin>;
 
-function atomicPositionsToString(atomicPositions: QEPwxContextProviderSchema["ATOMIC_POSITIONS"]) {
-    return atomicPositions.map(({ X, x, y, z }) => `${X} ${x} ${y} ${z}`).join("\n");
-}
-
 export default class QENEBContextProvider extends (JSONSchemaDataProvider as Base) {
     readonly name: Name = "input";
 
@@ -92,13 +85,11 @@ export default class QENEBContextProvider extends (JSONSchemaDataProvider as Bas
 
         return {
             ...rest,
-            FIRST_IMAGE: atomicPositionsToString(ATOMIC_POSITIONS),
-            LAST_IMAGE: atomicPositionsToString(
-                PWXContexts[PWXContexts.length - 1].ATOMIC_POSITIONS,
-            ),
-            INTERMEDIATE_IMAGES: PWXContexts.slice(1, PWXContexts.length - 1).map((data) =>
-                atomicPositionsToString(data.ATOMIC_POSITIONS),
-            ),
+            FIRST_IMAGE: ATOMIC_POSITIONS,
+            LAST_IMAGE: PWXContexts[PWXContexts.length - 1].ATOMIC_POSITIONS,
+            INTERMEDIATE_IMAGES: PWXContexts.slice(1, PWXContexts.length - 1).map((data) => {
+                return data.ATOMIC_POSITIONS;
+            }),
         };
     }
 }
