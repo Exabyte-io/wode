@@ -15,7 +15,7 @@ import {
     importantSettingsProviderMixin,
 } from "../context/mixins/ImportantSettingsProviderMixin";
 import type { ContextItem } from "../context/providers/base/ContextProvider";
-import ExecutionUnitInput from "../ExecutionUnitInput";
+import ExecutionUnitInput, { type ExecutionUnitInputContext } from "../ExecutionUnitInput";
 import {
     type ExecutionUnitSchemaMixin,
     executionUnitSchemaMixin,
@@ -50,6 +50,8 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
     inputInstances: ExecutionUnitInput[] = [];
 
     renderingContext: ContextItem[] = [];
+
+    declare toJSON: () => Schema & AnyObject;
 
     constructor(config: Schema) {
         super(config);
@@ -125,26 +127,27 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
         return this.allContextProviders.filter((p) => p.entityName === "unit");
     }
 
-    /** Update rendering context and persistent context
-     * Note: this function is sometimes being called without passing a context!
-     */
-    render(context: AnyObject = {}) {
-        this.renderingContext = { ...this.renderingContext, ...context };
+    get importantSettingsProviders() {
+        return this.contextProviders.filter((p) => p.domain === "important");
+    }
+
+    render(externalContext: AnyObject = {}) {
+        this.renderingContext = this.context;
 
         const newInput: ExecutionUnitInputItemSchema[] = [];
         const newPersistentContext: ContextItem[] = [];
         const newRenderingContext: ContextItem[] = [];
 
         this.inputInstances.forEach((input) => {
-            input.setContext(this.renderingContext);
+            input.setContext(context, externalContext);
             input.render();
 
             const inputJSON = input.toJSON();
-            const context = input.getFullContext();
+            const fullContext = input.getFullContext();
 
             newInput.push(inputJSON);
-            newRenderingContext.push(...context);
-            newPersistentContext.push(...context.filter((c) => c.isEdited));
+            newRenderingContext.push(...fullContext);
+            newPersistentContext.push(...fullContext.filter((c) => c.isEdited));
         });
 
         this.input = newInput;

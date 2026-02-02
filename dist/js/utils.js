@@ -10,8 +10,6 @@ exports.findUnit = findUnit;
 const lodash_1 = __importDefault(require("lodash"));
 /**
  * @summary set the head of an array of units
- * @param units
- * @returns {Unit[]}
  */
 function setUnitsHead(units) {
     if (units.length > 0) {
@@ -23,10 +21,9 @@ function setUnitsHead(units) {
 // TODO: fix setNextLinks on unit removal and convergence logic.
 /**
  * @summary Re-establishes the linked `next => flowchartId` logic in an array of units
- * @params units {Unit[]}
- * @returns units {Unit[]}
  */
 function setNextLinks(units) {
+    var _a;
     const flowchartIds = units.map((u) => u.flowchartId);
     for (let i = 0; i < units.length - 1; i++) {
         if (!units[i].next) {
@@ -35,7 +32,7 @@ function setNextLinks(units) {
             if (i > 0)
                 units[i - 1].next = units[i].flowchartId;
         }
-        else if (!flowchartIds.includes(units[i].next)) {
+        else if (!flowchartIds.includes((_a = units[i].next) !== null && _a !== void 0 ? _a : "")) {
             // newly removed units may create broken next links => fix it
             units[i].next = units[i + 1].flowchartId;
         }
@@ -49,7 +46,7 @@ function setNextLinks(units) {
  * @param callBuild {boolean} if true; call build between applying functions and attributes
  * @returns {*} updated object
  */
-function applyConfig({ obj, config = {}, callBuild = false }) {
+function applyConfig({ obj, config = {}, callBuild = false, }) {
     const { functions = {}, attributes = {} } = config;
     // eslint-disable-next-line no-restricted-syntax
     for (const [func, args] of Object.entries(functions)) {
@@ -70,12 +67,8 @@ function applyConfig({ obj, config = {}, callBuild = false }) {
 }
 /**
  * @summary Safely extract unit object from subworkflow data
- * @param subworkflowData {Object} subworkflow data
- * @param index {number} index of subworkflow unit
- * @param type {string} type of subworkflow unit
- * @returns {Object|null} subworkflow unit object (not a unit class instance!)
  */
-function findUnit({ subworkflowData, index, type }) {
+function findUnit({ subworkflowData, index, type, }) {
     const unit = subworkflowData.units[index];
     if (unit.type !== type)
         throw new Error("findUnit() error: unit type does not match!");

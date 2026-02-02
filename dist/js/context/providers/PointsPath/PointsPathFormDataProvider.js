@@ -88,7 +88,6 @@ class PointsPathFormDataProvider extends MixinsContextProvider {
             }
             const middlePoints = math_1.math.calculateSegmentsBetweenPoints3D(startPoint.coordinates, nextPoint.coordinates, startPoint.steps);
             const steps = 1;
-            // TODO-QUESTION: confirm that "point" property should be present after transformation; point was missing in original implementation
             acc.push({
                 steps,
                 coordinates: startPoint.coordinates,
@@ -96,8 +95,8 @@ class PointsPathFormDataProvider extends MixinsContextProvider {
             }, ...middlePoints.map((coordinates) => ({
                 steps,
                 coordinates,
-                // TODO-QUESTION: is this correct?
-                point: startPoint.point,
+                // TODO: make point optional
+                // point: startPoint.point,
             })));
             // nextPoint is the last point in the path
             if (path.length - 2 === index) {

@@ -3,7 +3,7 @@ import PointsGridFormDataProvider from "./PointsGridFormDataProvider";
 type Name = "qgrid";
 
 export default class QGridFormDataManager extends PointsGridFormDataProvider<Name> {
-    readonly name: Name = "qgrid";
+    readonly name = "qgrid" as const;
 
-    readonly divisor: number = 5;
+    readonly divisor = 5 as const;
 }

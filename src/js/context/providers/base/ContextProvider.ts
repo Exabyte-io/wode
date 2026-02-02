@@ -94,7 +94,7 @@ abstract class ContextProvider<
         this.data = data ? Utils.clone.deepClone(data) : undefined;
     }
 
-    getContextItem(): ExtendedContextItem<N, D, ED> {
+    getContextItemData(): ExtendedContextItem<N, D, ED> {
         return {
             name: this.name,
             isEdited: this.isEdited,

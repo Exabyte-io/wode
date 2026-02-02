@@ -2,25 +2,16 @@ import type { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
 import { deepClone } from "@mat3ra/code/dist/js/utils/clone";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 
-export interface ContextProvider {
-    domain?: string;
-}
-
 export type ImportantSettingsProvider = {
     important: object;
     setImportant(key: string, value: unknown): void;
-    importantSettingsProviders: ContextProvider[];
     isImportantEdited: boolean | undefined;
-};
-
-type AbstractBase = {
-    contextProviders: ContextProvider[];
 };
 
 export type ImportantSettingsProviderInMemoryEntityConstructor =
     Constructor<ImportantSettingsProvider>;
 
-export function importantSettingsProviderMixin<T extends InMemoryEntity & AbstractBase>(
+export function importantSettingsProviderMixin<T extends InMemoryEntity>(
     item: T,
 ): asserts item is T & ImportantSettingsProvider {
     // @ts-expect-error
@@ -31,10 +22,6 @@ export function importantSettingsProviderMixin<T extends InMemoryEntity & Abstra
 
         setImportant(key: string, value: unknown) {
             this.setProp("important", { [key]: value });
-        },
-
-        get importantSettingsProviders() {
-            return this.contextProviders.filter((p) => p.domain === "important");
         },
 
         get isImportantEdited() {

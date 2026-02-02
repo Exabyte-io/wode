@@ -1,7 +1,7 @@
 /* eslint-disable class-methods-use-this */
 import type { JSONSchema } from "@mat3ra/esse/dist/js/esse/utils";
 
-import type { ContextItem, EntityName, ExternalContext } from "./ContextProvider";
+import type { ContextItem, ExternalContext } from "./ContextProvider";
 import ContextProvider from "./ContextProvider";
 
 export interface JinjaExternalContext extends ExternalContext {
@@ -20,7 +20,7 @@ abstract class JSONSchemaDataProvider<
 > extends ContextProvider<N, D, ED, EC> {
     abstract readonly jsonSchema: JSONSchema | undefined;
 
-    readonly entityName: EntityName = "unit";
+    readonly entityName = "unit" as const;
 
     isUsingJinjaVariables: boolean;
 

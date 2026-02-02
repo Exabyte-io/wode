@@ -11,9 +11,6 @@ function importantSettingsProviderMixin(item) {
         setImportant(key, value) {
             this.setProp("important", { [key]: value });
         },
-        get importantSettingsProviders() {
-            return this.contextProviders.filter((p) => p.domain === "important");
-        },
         get isImportantEdited() {
             return this.prop("important.isEdited");
         },

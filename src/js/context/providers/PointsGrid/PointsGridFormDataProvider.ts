@@ -11,21 +11,21 @@ import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../../mixins/MaterialContextMixin";
-import type { ContextItem, Domain } from "../base/ContextProvider";
+import type { ContextItem } from "../base/ContextProvider";
 import type { JinjaExternalContext } from "../base/JSONSchemaDataProvider";
 import JSONSchemaFormDataProvider from "../base/JSONSchemaFormDataProvider";
 import { globalSettings } from "../settings";
 
-type Name = string;
+type Name = "qgrid" | "kgrid" | "igrid";
 type Data = PointsGridDataProviderSchema;
-type EContext = JinjaExternalContext &
-    MaterialExternalContext & {
-        divisor: number;
-    };
+type EContext = JinjaExternalContext & MaterialExternalContext;
 type Base = typeof JSONSchemaFormDataProvider<Name, Data, object, EContext> &
     Constructor<MaterialContextMixin>;
 
-type GridMetricType = Required<Data>["gridMetricType"];
+type GridMetricType = Data["gridMetricType"];
+
+export type PointsGridFormDataManagerContextItem = ContextItem<Data>;
+export type PointsGridFormDataManagerExternalContext = EContext;
 
 // Helper function to create vector schema with defaults
 const vector = (
@@ -51,11 +51,11 @@ const defaultShift = 0;
 const defaultShifts: Vector3DSchema = [defaultShift, defaultShift, defaultShift];
 
 export default abstract class PointsGridFormDataProvider<
-    N extends string = string,
+    N extends Name,
 > extends (JSONSchemaFormDataProvider as Base) {
     abstract readonly name: N;
 
-    readonly domain: Domain = "important";
+    readonly domain = "important" as const;
 
     public dimensions!: Vector3DSchema;
 
@@ -72,6 +72,8 @@ export default abstract class PointsGridFormDataProvider<
     private defaultDimensions!: Vector3DSchema;
 
     private reciprocalVectorRatios!: Vector3DSchema;
+
+    abstract readonly divisor: number;
 
     private defaultMetric!: {
         type: GridMetricType;
@@ -117,11 +119,8 @@ export default abstract class PointsGridFormDataProvider<
 
     private getDefaultGridMetricValue(metric: GridMetricType) {
         switch (metric) {
-            case "KPPRA": {
-                const divisor = this.externalContext?.divisor || 1;
-                const { defaultKPPRA } = globalSettings;
-                return Math.floor(defaultKPPRA / divisor);
-            }
+            case "KPPRA":
+                return Math.floor(globalSettings.defaultKPPRA / this.divisor);
             case "spacing":
                 return 0.3;
             default:

@@ -13,9 +13,6 @@ const WorkflowContextMixin_1 = __importDefault(require("../../../mixins/Workflow
 const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaDataProvider"));
 const QEPWXContextProvider_1 = __importDefault(require("./QEPWXContextProvider"));
 const jsonSchemaId = "context-providers-directory/by-application/qe-neb-context-provider";
-function atomicPositionsToString(atomicPositions) {
-    return atomicPositions.map(({ X, x, y, z }) => `${X} ${x} ${y} ${z}`).join("\n");
-}
 class QENEBContextProvider extends JSONSchemaDataProvider_1.default {
     constructor(config, externalContext) {
         super(config, externalContext);
@@ -38,9 +35,11 @@ class QENEBContextProvider extends JSONSchemaDataProvider_1.default {
         ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: _, ...rest } = PWXContexts[0];
         return {
             ...rest,
-            FIRST_IMAGE: atomicPositionsToString(ATOMIC_POSITIONS),
-            LAST_IMAGE: atomicPositionsToString(PWXContexts[PWXContexts.length - 1].ATOMIC_POSITIONS),
-            INTERMEDIATE_IMAGES: PWXContexts.slice(1, PWXContexts.length - 1).map((data) => atomicPositionsToString(data.ATOMIC_POSITIONS)),
+            FIRST_IMAGE: ATOMIC_POSITIONS,
+            LAST_IMAGE: PWXContexts[PWXContexts.length - 1].ATOMIC_POSITIONS,
+            INTERMEDIATE_IMAGES: PWXContexts.slice(1, PWXContexts.length - 1).map((data) => {
+                return data.ATOMIC_POSITIONS;
+            }),
         };
     }
 }

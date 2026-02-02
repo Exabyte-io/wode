@@ -5,7 +5,7 @@ function subworkflowSchemaMixin(item) {
     // @ts-expect-error
     const properties = {
         get properties() {
-            return this.prop("properties");
+            return this.requiredProp("properties");
         },
         set properties(value) {
             this.setProp("properties", value);

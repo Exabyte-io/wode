@@ -7,6 +7,7 @@ import { type RuntimeItems } from "@mat3ra/code/dist/js/entity/mixins/RuntimeIte
 import { Taggable } from "@mat3ra/code/dist/js/entity/mixins/TaggableMixin";
 import type { NameResultSchema } from "@mat3ra/code/dist/js/utils/object";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { StatusSchema, WorkflowBaseUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { type BaseUnitSchemaMixin } from "../generated/BaseUnitSchemaMixin";
 import { type StatusSchemaMixin } from "../generated/StatusSchemaMixin";
@@ -17,6 +18,7 @@ declare const BaseUnit_base: Base;
 export declare class BaseUnit<S extends Schema = Schema> extends BaseUnit_base implements Schema {
     static usePredefinedIds: boolean;
     static generateFlowChartId(name: string): any;
+    toJSON: () => Schema & AnyObject;
     defaultResults: NameResultSchema[];
     defaultMonitors: NameResultSchema[];
     defaultPostProcessors: NameResultSchema[];

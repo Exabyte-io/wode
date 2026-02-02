@@ -1,4 +1,5 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { AssertionUnitSchema } from "@mat3ra/esse/dist/js/types";
 
 import { UnitType } from "../enums";
@@ -21,6 +22,8 @@ export class AssertionUnit extends (BaseUnit as Base) implements Schema {
             ...config,
         });
     }
+
+    declare toJSON: () => Schema & AnyObject;
 
     getHashObject() {
         return { statement: this.statement, errorMessage: this.errorMessage };

@@ -8,15 +8,11 @@ export type ApplicationContextMixin = {
     initApplicationContextMixin(externalContext: ApplicationExternalContext): void;
 };
 
-type PrivateProperties = {
-    application?: Application;
-};
-
 export type ApplicationExternalContext = { application?: Application };
 
 export function applicationContextMixin(item: ContextProvider) {
     // @ts-expect-error
-    const properties: Provider & ApplicationContextMixin & PrivateProperties = {
+    const properties: Provider & ApplicationContextMixin = {
         initApplicationContextMixin(externalContext: ApplicationExternalContext) {
             this.application =
                 externalContext.application ?? globalSettings.Application.createDefault();

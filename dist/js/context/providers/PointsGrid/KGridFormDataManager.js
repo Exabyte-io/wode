@@ -8,6 +8,7 @@ class KGridFormDataManager extends PointsGridFormDataProvider_1.default {
     constructor() {
         super(...arguments);
         this.name = "kgrid";
+        this.divisor = 1;
     }
 }
 exports.default = KGridFormDataManager;

@@ -4,7 +4,7 @@ import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../../mixins/MaterialContextMixin";
-import type { ContextItem, Domain } from "../base/ContextProvider";
+import type { ContextItem } from "../base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "../base/JSONSchemaDataProvider";
 
 type HubbardName = "hubbard_u" | "hubbard_j" | "hubbard_v" | "hubbard_legacy";
@@ -23,7 +23,7 @@ export default abstract class HubbardContextProvider<
 
     abstract getDefaultData(): D;
 
-    readonly domain: Domain = "important";
+    readonly domain = "important" as const;
 
     protected readonly uniqueElementsWithLabels: string[];
 

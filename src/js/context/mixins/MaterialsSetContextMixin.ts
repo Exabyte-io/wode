@@ -1,25 +1,26 @@
 import { compareEntitiesInOrderedSetForSorting } from "@mat3ra/code/dist/js/entity/set/ordered/utils";
 
+import type ContextProvider from "../providers/base/ContextProvider";
 import type { OrderedMaterial } from "./MaterialContextMixin";
 
 type MaterialsSet = {
     _id: string;
 };
 
+export type MaterialsSetExternalContext = {
+    materialsSet: MaterialsSet;
+};
+
 export type MaterialsSetContextMixin = {
     materialsSet: MaterialsSet;
-    initMaterialsSetContextMixin(externalContext: MaterialsSetContextProvider): void;
+    initMaterialsSetContextMixin(externalContext: MaterialsSetExternalContext): void;
     sortMaterialsByIndexInSet(materials?: OrderedMaterial[]): OrderedMaterial[];
 };
 
-type MaterialsSetContextProvider = {
-    materialsSet: MaterialsSet;
-};
-
-export default function materialsSetContextMixin(item: MaterialsSetContextProvider) {
+export default function materialsSetContextMixin(item: ContextProvider) {
     // @ts-expect-error
     const properties: MaterialsSetContextProvider & MaterialsSetContextMixin = {
-        initMaterialsSetContextMixin(externalContext: MaterialsSetContextProvider) {
+        initMaterialsSetContextMixin(externalContext: MaterialsSetExternalContext) {
             this.materialsSet = externalContext.materialsSet;
         },
 

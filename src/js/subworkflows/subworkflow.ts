@@ -9,54 +9,66 @@ import {
     namedEntityMixin,
 } from "@mat3ra/code/dist/js/entity/mixins/NamedEntityMixin";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
-import type { ApplicationSchema, BaseMethod, BaseModel } from "@mat3ra/esse/dist/js/types";
+import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
+import type {
+    ApplicationSchema,
+    BaseMethod,
+    BaseModel,
+    JobSchema,
+    SubworkflowSchema,
+} from "@mat3ra/esse/dist/js/types";
 import { type Method, Model, ModelFactory } from "@mat3ra/mode";
 import { Utils } from "@mat3ra/utils";
-import lodash from "lodash";
 import _ from "underscore";
 
-import { UNIT_TYPES, UnitType } from "../enums";
+import { UnitTag, UnitType } from "../enums";
 import {
     type SubworkflowSchemaMixin,
     subworkflowSchemaMixin,
 } from "../generated/SubworkflowSchemaMixin";
-import { type BaseUnit, UnitFactory } from "../units";
+import { AssignmentUnit, ConditionUnit, SubworkflowUnit, UnitFactory } from "../units";
+import type { AnySubworkflowUnit } from "../units/factory";
 import { setNextLinks, setUnitsHead } from "../utils";
-import { ConvergenceMixin } from "./convergence";
-
-/* eslint max-classes-per-file:0 */
+import { createConvergenceParameter } from "./convergence/factory";
 
 // class BaseSubworkflow extends mix(NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(
 //     ConvergenceMixin,
 //     ContextAndRenderFieldsMixin,
 // ) {}
 
+type ConvergenceConfig = {
+    parameter: "N_k" | "N_k_nonuniform";
+    parameterInitial: number | [number, number, number];
+    parameterIncrement: number;
+    result: string;
+    resultInitial: number;
+    condition: string;
+    operator: string;
+    tolerance: number;
+    maxOccurrences: number;
+};
+
 type Base = typeof InMemoryEntity &
     DefaultableInMemoryEntityConstructor &
     NamedInMemoryEntityConstructor &
     Constructor<SubworkflowSchemaMixin>;
 
-export class Subworkflow extends (InMemoryEntity as Base) {
+export class Subworkflow extends (InMemoryEntity as Base) implements SubworkflowSchema {
     static usePredefinedIds = false;
 
     private ModelFactory: typeof ModelFactory;
 
-    private UnitFactory: typeof UnitFactory;
-
     private applicationInstance: Application;
 
-    private modelInstance: Model;
+    modelInstance: Model;
 
-    private unitsInstances: BaseUnit[];
+    private unitsInstances: AnySubworkflowUnit[];
 
-    constructor(
-        config: SubworkflowSchemaMixin,
-        _ModelFactory = ModelFactory,
-        _UnitFactory = UnitFactory,
-    ) {
+    declare static createDefault: () => Subworkflow;
+
+    constructor(config: SubworkflowSchema, _ModelFactory = ModelFactory) {
         super(config);
         this.ModelFactory = _ModelFactory;
-        this.UnitFactory = _UnitFactory;
 
         this.applicationInstance = new Application(this.application);
         this.modelInstance = this.ModelFactory.create({
@@ -64,9 +76,7 @@ export class Subworkflow extends (InMemoryEntity as Base) {
             application: this.application,
         });
         this.unitsInstances = setNextLinks(
-            setUnitsHead(this.units || []).map((cfg) => {
-                return this.UnitFactory.create({ ...cfg, application: this.application });
-            }),
+            setUnitsHead(this.units).map((cfg) => UnitFactory.createInSubworkflow(cfg)),
         );
     }
 
@@ -98,14 +108,16 @@ export class Subworkflow extends (InMemoryEntity as Base) {
         };
     }
 
-    /*
-     * @returns {SubworkflowUnit}
-     */
     getAsUnit() {
-        return this.UnitFactory.create({
+        return new SubworkflowUnit({
             type: UnitType.subworkflow,
             _id: this.id,
             name: this.name,
+            preProcessors: [],
+            postProcessors: [],
+            monitors: [],
+            results: [],
+            flowchartId: "",
         });
     }
 
@@ -117,9 +129,8 @@ export class Subworkflow extends (InMemoryEntity as Base) {
         model: Model,
         method: Method,
         name: string,
-        units: BaseUnit[] = [],
+        units: AnySubworkflowUnit[] = [],
         config = {},
-        Cls = Subworkflow,
     ) {
         const nameForIdGeneration = config.attributes?.name || name;
         const { functions, attributes, ...cleanConfig } = config;
@@ -127,19 +138,25 @@ export class Subworkflow extends (InMemoryEntity as Base) {
         // Set the method on the model so it can be properly serialized
         model.setMethod(method);
 
-        return new Cls({
+        return new Subworkflow({
             ...cleanConfig,
-            _id: Cls.generateSubworkflowId(nameForIdGeneration, application, model, method),
+            _id: Subworkflow.generateSubworkflowId(nameForIdGeneration, application, model, method),
             name,
             application: application.toJSON(),
-            properties: lodash.sortedUniq(
-                lodash.flatten(units.filter((x) => x.resultNames).map((x) => x.resultNames)),
+            properties: Array.from(
+                new Set(
+                    units
+                        .filter((x) => x.resultNames)
+                        .map((x) => x.resultNames)
+                        .flat()
+                        .sort(),
+                ),
             ),
             model: {
                 ...model.toJSON(),
                 method: method.toJSON(),
             },
-            units: units.map((unit) => (unit.toJSON ? unit.toJSON() : unit)),
+            units: units.map((unit) => unit.toJSON()),
         });
     }
 
@@ -154,9 +171,11 @@ export class Subworkflow extends (InMemoryEntity as Base) {
             this.setUnits([]);
         } else {
             // propagate new application version to all units
-            this.units
-                .filter((unit) => typeof unit.setApplication === "function")
-                .forEach((unit) => unit.setApplication(this.applicationInstance, true));
+            this.unitsInstances
+                .filter((unit) => unit.type === UnitType.execution)
+                .forEach((unit) => {
+                    unit.setApplication({ application });
+                });
         }
 
         this.application = application.toJSON();
@@ -172,13 +191,16 @@ export class Subworkflow extends (InMemoryEntity as Base) {
         this.modelInstance = model;
     }
 
-    setUnits(units: BaseUnit[]) {
+    setUnits(units: AnySubworkflowUnit[]) {
         this.unitsInstances = units;
     }
 
-    toJSON(exclude: string[] = []) {
+    toJSON(exclude: string[] = []): SubworkflowSchema & AnyObject {
         return {
             ...super.toJSON(exclude),
+            name: this.name,
+            properties: this.properties,
+            application: this.application,
             model: this.modelInstance.toJSON(),
             units: this.unitsInstances.map((x) => x.toJSON()),
             ...(this.compute ? { compute: this.compute } : {}), // {"compute": null } won't pass esse validation
@@ -186,132 +208,104 @@ export class Subworkflow extends (InMemoryEntity as Base) {
     }
 
     get contextProviders() {
-        const unitsWithContextProviders = this.units.filter(
-            (u) => u.allContextProviders && u.allContextProviders.length,
-        );
-        const allContextProviders = _.flatten(
-            unitsWithContextProviders.map((u) => u.allContextProviders),
-        );
-        const subworkflowContextProviders = allContextProviders.filter(
-            (p) => p.entityName === "subworkflow",
-        );
+        const subworkflowContextProviders = this.unitsInstances
+            .filter((u) => u.type === UnitType.execution)
+            .filter((u) => u.allContextProviders.length)
+            .map((u) => u.allContextProviders)
+            .flat()
+            .filter((p) => p.entityName === "subworkflow");
+
         return _.uniq(subworkflowContextProviders, (p) => p.name);
     }
 
-    /**
-     * Extracts a reduced version of the entity config to be stored inside redux state.
-     * This is used to track changes to context, monitors, properties, etc. when multiple materials are in state.
-     */
-    extractReducedExternalDependentConfig() {
-        return {
-            id: this.id,
-            context: this.context || {},
-            units: this.units.map((unit) => unit.extractReducedExternalDependentConfig()),
-        };
-    }
-
-    /**
-     * Applies the reduced config obtained from extractReducedExternalDependentConfig on the entity.
-     */
-    applyReducedExternalDependentConfig(config) {
-        this.context = config.context || {};
-        this.units.forEach((unit) => {
-            const unitConfig = (config.units || []).find((c) => c.id === unit.flowchartId);
-            unit.applyReducedExternalDependentConfig(unitConfig || {});
-        });
-    }
-
-    get contextFromAssignmentUnits() {
-        const ctx = {};
-        this.units
-            .filter((u) => u.type === UNIT_TYPES.assignment)
-            .forEach((u) => {
-                ctx[u.operand] = u.value;
-            });
-        return ctx;
+    private getContextFromAssignmentUnits() {
+        return this.unitsInstances
+            .filter((u) => u.type === UnitType.assignment)
+            .reduce((acc, u) => {
+                return {
+                    ...acc,
+                    [u.operand]: u.value,
+                };
+            }, {} as Record<string, string | number | boolean>);
     }
 
     render(context = {}) {
         const ctx = {
             ...context,
-            application: this.application,
-            methodData: this.model.Method.data,
-            model: this.model.toJSON(),
+            application: this.applicationInstance,
+            methodData: this.modelInstance.Method.data,
+            model: this.modelInstance.toJSON(),
             // context below is assembled from context providers and passed to units to override theirs
-            ...this.context,
-            subworkflowContext: this.contextFromAssignmentUnits,
+            // ...this.context,
+            subworkflowContext: this.getContextFromAssignmentUnits(),
         };
 
-        this.units.forEach((u) => u.render(ctx));
+        this.unitsInstances.forEach((u) => {
+            if (u.type === UnitType.execution) {
+                u.render({}, ctx);
+            }
+        });
     }
 
     /**
      * TODO: reuse workflow function instead
      */
-    addUnit(unit: BaseUnit, index = -1) {
-        const { units } = this;
-        if (units.length === 0) {
+    addUnit(unit: AnySubworkflowUnit, index = -1) {
+        const { unitsInstances } = this;
+
+        if (unitsInstances.length === 0) {
             unit.head = true;
             this.setUnits([unit]);
         } else {
-            if (index >= 0) units.splice(index, 0, unit);
-            else units.push(unit);
-            this.setUnits(setNextLinks(setUnitsHead(units)));
+            if (index >= 0) {
+                unitsInstances.splice(index, 0, unit);
+            } else {
+                unitsInstances.push(unit);
+            }
+            this.setUnits(setNextLinks(setUnitsHead(unitsInstances)));
         }
     }
 
     removeUnit(flowchartId: string) {
-        const previousUnit = this.units.find((x) => x.next === flowchartId);
-        if (previousUnit) previousUnit.unsetProp("next");
+        const previousUnit = this.unitsInstances.find((x) => x.next === flowchartId);
+
+        if (previousUnit) {
+            previousUnit.unsetProp("next");
+        }
+
         // TODO: remove the setNextLinks and setUnitsHead and handle the logic via flowchart designer
         this.setUnits(
-            setNextLinks(setUnitsHead(this.units.filter((x) => x.flowchartId !== flowchartId))),
+            setNextLinks(
+                setUnitsHead(this.unitsInstances.filter((x) => x.flowchartId !== flowchartId)),
+            ),
         );
     }
 
     get properties() {
-        return lodash.flatten(this.units.map((x) => x.resultNames));
+        return this.unitsInstances.map((x) => x.resultNames).flat();
     }
 
     getUnit(flowchartId: string) {
-        return this.units.find((x) => x.flowchartId === flowchartId);
+        return this.unitsInstances.find((x) => x.flowchartId === flowchartId);
     }
 
     unitIndex(flowchartId: string) {
-        return lodash.findIndex(this.units, (unit) => {
+        return this.unitsInstances.findIndex((unit) => {
             return unit.flowchartId === flowchartId;
         });
     }
 
-    replaceUnit(index: number, unit: BaseUnit) {
-        this.units[index] = unit;
-        this.setUnits(setNextLinks(setUnitsHead(this.units)));
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    get scopeVariables() {
-        return ["N_k", "N_k_nonuniform"];
-    }
-
-    // eslint-disable-next-line class-methods-use-this
-    get scalarResults() {
-        return ["total_energy", "pressure"];
-    }
-
-    get isMultiMaterial() {
-        return this.prop("isMultiMaterial", false);
-    }
-
-    get isDraft() {
-        return this.prop("isDraft", false);
+    replaceUnit(index: number, unit: AnySubworkflowUnit) {
+        this.unitsInstances[index] = unit;
+        this.setUnits(setNextLinks(setUnitsHead(this.unitsInstances)));
     }
 
     setIsDraft(bool: boolean) {
-        return this.setProp("isDraft", bool);
+        this.isDraft = bool;
     }
 
     get methodData() {
-        return this.model.Method.data;
+        return this.modelInstance.Method.data;
     }
 
     /**
@@ -322,16 +316,20 @@ export class Subworkflow extends (InMemoryEntity as Base) {
         const config = this.toJSON();
         const meaningfulFields = {
             application: Utils.specific.removeTimestampableKeysFromConfig(config.application),
-            model: this._calculateModelHash(),
-            units: _.map(this.units, (u) => u.calculateHash()).join(),
+            model: this.calculateModelHash(),
+            units: _.map(this.unitsInstances, (u) => u.calculateHash()).join(),
         };
         return Utils.hash.calculateHashFromObject(meaningfulFields);
     }
 
-    _calculateModelHash() {
+    private calculateModelHash() {
         const { model } = this.toJSON();
+
         // ignore empty data object
-        if (this.model.Method.omitInHashCalculation) delete model.method.data;
+        if (this.modelInstance.Method.omitInHashCalculation) {
+            delete model.method.data;
+        }
+
         return Utils.hash.calculateHashFromObject(model);
     }
 
@@ -345,12 +343,207 @@ export class Subworkflow extends (InMemoryEntity as Base) {
         return `units.${index}`;
     }
 
-    findUnitWithTag(tag: string) {
-        return this.units.find((unit) => unit.tags.includes(tag));
+    private findUnitWithTag(tag: UnitTag) {
+        return this.units
+            .filter((unit) => unit.type === UnitType.assignment)
+            .find((unit) => unit.tags?.includes(tag));
     }
 
     get hasConvergence() {
-        return !!this.convergenceParam && !!this.convergenceResult && !!this.convergenceSeries;
+        return !!this.convergenceParam && !!this.convergenceResult;
+    }
+
+    get convergenceParam() {
+        return this.findUnitWithTag(UnitTag.hasConvergenceParam)?.operand;
+    }
+
+    get convergenceResult() {
+        return this.findUnitWithTag(UnitTag.hasConvergenceResult)?.operand;
+    }
+
+    convergenceSeries(scopeTrack: JobSchema["scopeTrack"]) {
+        if (!this.hasConvergence || !scopeTrack?.length) {
+            return [];
+        }
+
+        let lastResult;
+
+        return scopeTrack
+            .map((scopeItem, i) => {
+                return {
+                    x: i,
+                    // TODO-question: what is the type of scopeItem.scope?.global?
+                    param: scopeItem.scope?.global[this.convergenceParam],
+                    y: scopeItem.scope?.global[this.convergenceResult],
+                };
+            })
+            .filter(({ y }) => {
+                lastResult = y;
+                const isNewResult = y !== undefined && y !== lastResult;
+                return isNewResult;
+            })
+            .map((item, i) => {
+                return {
+                    x: i + 1,
+                    param: item.param,
+                    y: item.y,
+                };
+            });
+    }
+
+    addConvergence({
+        parameter,
+        parameterInitial,
+        parameterIncrement,
+        result,
+        resultInitial,
+        condition,
+        operator,
+        tolerance,
+        maxOccurrences,
+    }: ConvergenceConfig) {
+        // Find unit to converge: should contain passed result in its results list
+        // TODO: make user to select unit for convergence explicitly
+        const unitForConvergence = this.unitsInstances
+            .filter((x) => x.type === UnitType.execution)
+            .find((x) => {
+                return x.resultNames.find((name) => name === result);
+            });
+
+        if (!unitForConvergence) {
+            // sAlert.error(
+            //     `Subworkflow does not contain unit with '${result}' as extracted property.`,
+            // );
+            throw new Error(
+                `Subworkflow does not contain unit with '${result}' as extracted property.`,
+            );
+        }
+
+        // initialize parameter
+        const param = createConvergenceParameter({
+            name: parameter,
+            initialValue: parameterInitial,
+            increment: parameterIncrement,
+        });
+
+        // Replace kgrid to be ready for convergence
+        // TODO: kgrid should be abstracted and selected by user
+        const gridProvider = unitForConvergence.importantSettingsProviders.find((p) => {
+            return ["kgrid", "qgrid"].includes(p.name);
+        });
+
+        let mergedContext = param.unitContext;
+
+        if (gridProvider) {
+            const providerContext = gridProvider.getContextItemData();
+
+            mergedContext = merge(providerContext, param.unitContext);
+            gridProvider.setData(mergedContext);
+            gridProvider.setIsEdited(true);
+        }
+
+        unitForConvergence.updateContext(mergedContext);
+
+        const prevResult = "prev_result";
+        const iteration = "iteration";
+
+        // Assignment with result's initial value
+        const prevResultInit = new AssignmentUnit({
+            name: "init result",
+            head: true,
+            operand: prevResult,
+            value: resultInitial,
+        });
+
+        // Assignment with initial value of convergence parameter
+        const paramInit = new AssignmentUnit({
+            name: "init parameter",
+            operand: param.name,
+            value: param.initialValue,
+            tags: [UnitTag.hasConvergenceParam],
+        });
+
+        // Assignment with initial value of iteration counter
+        const iterInit = new AssignmentUnit({
+            name: "init counter",
+            operand: iteration,
+            value: 1,
+        });
+
+        // Assignment for storing iteration result: extracts 'result' from convergence unit scope
+        const storePrevResult = new AssignmentUnit({
+            name: "store result",
+            input: [
+                {
+                    scope: unitForConvergence.flowchartId,
+                    name: result,
+                },
+            ],
+            operand: prevResult,
+            value: result,
+        });
+
+        // Assignment for convergence param increase
+        const nextStep = new AssignmentUnit({
+            name: "update parameter",
+            input: param.useVariablesFromUnitContext(unitForConvergence.flowchartId),
+            operand: param.name,
+            value: param.increment,
+            next: unitForConvergence.flowchartId,
+        });
+
+        // Final step of convergence
+        const exit = new AssignmentUnit({
+            name: "exit",
+            input: [],
+            operand: param.name,
+            value: param.finalValue,
+        });
+
+        // Final step of convergence
+        const storeResult = new AssignmentUnit({
+            name: "update result",
+            input: [
+                {
+                    scope: unitForConvergence.flowchartId,
+                    name: result,
+                },
+            ],
+            operand: result,
+            value: result,
+            tags: [UnitTag.hasConvergenceResult],
+        });
+
+        // Assign next iteration value
+        const nextIter = new AssignmentUnit({
+            name: "update counter",
+            input: [],
+            operand: iteration,
+            value: `${iteration} + 1`,
+        });
+
+        // Convergence condition unit
+        const conditionUnit = new ConditionUnit({
+            name: "check convergence",
+            statement: `${condition} ${operator} ${tolerance}`,
+            then: exit.flowchartId,
+            else: storePrevResult.flowchartId,
+            maxOccurrences,
+            next: storePrevResult.flowchartId,
+        });
+
+        this.addUnit(paramInit, 0);
+        this.addUnit(prevResultInit, 1);
+        this.addUnit(iterInit, 2);
+        this.addUnit(storeResult);
+        this.addUnit(conditionUnit);
+        this.addUnit(storePrevResult);
+        this.addUnit(nextIter);
+        this.addUnit(nextStep);
+        this.addUnit(exit);
+
+        // `addUnit` adjusts the `next` field, hence the below.
+        nextStep.next = unitForConvergence.flowchartId;
     }
 }
 

@@ -11,7 +11,7 @@ export function subworkflowSchemaMixin<T extends InMemoryEntity>(
     // @ts-expect-error
     const properties: InMemoryEntity & SubworkflowSchemaMixin = {
         get properties() {
-            return this.prop<SubworkflowMixinSchema["properties"]>("properties");
+            return this.requiredProp<SubworkflowMixinSchema["properties"]>("properties");
         },
         set properties(value: SubworkflowMixinSchema["properties"]) {
             this.setProp("properties", value);

@@ -1,0 +1,33 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.workflowSchemaMixin = workflowSchemaMixin;
+function workflowSchemaMixin(item) {
+    // @ts-expect-error
+    const properties = {
+        get properties() {
+            return this.requiredProp("properties");
+        },
+        set properties(value) {
+            this.setProp("properties", value);
+        },
+        get isUsingDataset() {
+            return this.prop("isUsingDataset");
+        },
+        set isUsingDataset(value) {
+            this.setProp("isUsingDataset", value);
+        },
+        get subworkflows() {
+            return this.requiredProp("subworkflows");
+        },
+        set subworkflows(value) {
+            this.setProp("subworkflows", value);
+        },
+        get units() {
+            return this.requiredProp("units");
+        },
+        set units(value) {
+            this.setProp("units", value);
+        },
+    };
+    Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));
+}

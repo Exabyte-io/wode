@@ -1,4 +1,3 @@
-import { wodeProviders } from "./context/providers";
 import { PointsPathFormDataProvider } from "./context/providers/PointsPath/PointsPathFormDataProvider";
 import { globalSettings } from "./context/providers/settings";
 import {
@@ -51,7 +50,6 @@ export {
     ReduceUnit,
     SubworkflowUnit,
     defaultMapConfig,
-    wodeProviders,
     PointsPathFormDataProvider,
     globalSettings,
 };

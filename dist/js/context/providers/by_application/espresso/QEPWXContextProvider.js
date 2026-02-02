@@ -61,12 +61,15 @@ class QEPWXContextProvider extends JSONSchemaDataProvider_1.default {
             v3: lattice.vectorArrays[2],
         };
         // const ATOMIC_POSITIONS = basis.getAtomicPositionsWithConstraintsAsStrings().join("\n");
-        const ATOMIC_POSITIONS = basis.elementsAndCoordinatesAndLabelsArray.map(([element, coordinate, label]) => {
+        const ATOMIC_POSITIONS = basis.elementsCoordinatesConstraintsArray.map(([element, label, coordinate, constraint]) => {
             return {
                 X: `${element}${label}`,
                 x: coordinate[0],
                 y: coordinate[1],
                 z: coordinate[2],
+                "if_pos(1)": constraint[0] ? 1 : 0,
+                "if_pos(2)": constraint[1] ? 1 : 0,
+                "if_pos(3)": constraint[2] ? 1 : 0,
             };
         });
         return {

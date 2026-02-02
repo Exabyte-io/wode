@@ -36,6 +36,6 @@ declare abstract class ContextProvider<N extends string = string, D extends obje
     setIsEdited(isEdited: boolean): void;
     getData(): D;
     setData(data?: D): void;
-    getContextItem(): ExtendedContextItem<N, D, ED>;
+    getContextItemData(): ExtendedContextItem<N, D, ED>;
 }
 export default ContextProvider;

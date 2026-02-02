@@ -7,21 +7,27 @@ import s from "underscore.string";
 
 import {
     type ApplicationContextMixin,
+    type ApplicationExternalContext,
     applicationContextMixin,
 } from "../../mixins/ApplicationContextMixin";
 import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../../mixins/MaterialContextMixin";
-import type { ContextItem, Domain } from "../base/ContextProvider";
+import type { ContextItem } from "../base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "../base/JSONSchemaDataProvider";
 
 const defaultPoint = "Г" as const;
 const defaultSteps = 10 as const;
 
-type Data = PointsPathDataProviderSchema; // same as KPointCoordinates
+export type PointsPathFormDataProviderData = PointsPathDataProviderSchema; // same as KPointCoordinates
+export type PointsPathFormDataProviderExternalContext = JinjaExternalContext &
+    MaterialExternalContext &
+    ApplicationExternalContext;
+
+type Data = PointsPathFormDataProviderData;
 type DataItem = Data[0];
-type ExternalContext = JinjaExternalContext & MaterialExternalContext & ApplicationContextMixin;
+type ExternalContext = PointsPathFormDataProviderExternalContext;
 type Base = typeof JSONSchemaDataProvider<string, Data> &
     Constructor<MaterialContextMixin> &
     Constructor<ApplicationContextMixin>;
@@ -42,7 +48,7 @@ applicationContextMixin(MixinsContextProvider.prototype);
 abstract class PointsPathFormDataProvider<N extends string> extends MixinsContextProvider {
     abstract name: N;
 
-    readonly domain: Domain = "important";
+    readonly domain = "important" as const;
 
     private reciprocalLattice: ReciprocalLattice;
 
@@ -131,7 +137,6 @@ abstract class PointsPathFormDataProvider<N extends string> extends MixinsContex
 
             const steps = 1;
 
-            // TODO-QUESTION: confirm that "point" property should be present after transformation; point was missing in original implementation
             acc.push(
                 {
                     steps,
@@ -141,8 +146,8 @@ abstract class PointsPathFormDataProvider<N extends string> extends MixinsContex
                 ...middlePoints.map((coordinates) => ({
                     steps,
                     coordinates,
-                    // TODO-QUESTION: is this correct?
-                    point: startPoint.point,
+                    // TODO: make point optional
+                    // point: startPoint.point,
                 })),
             );
 

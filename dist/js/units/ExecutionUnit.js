@@ -71,22 +71,22 @@ class ExecutionUnit extends BaseUnit_1.BaseUnit {
     get contextProviders() {
         return this.allContextProviders.filter((p) => p.entityName === "unit");
     }
-    /** Update rendering context and persistent context
-     * Note: this function is sometimes being called without passing a context!
-     */
-    render(context = {}) {
-        this.renderingContext = { ...this.renderingContext, ...context };
+    get importantSettingsProviders() {
+        return this.contextProviders.filter((p) => p.domain === "important");
+    }
+    render(externalContext = {}) {
+        this.renderingContext = this.context;
         const newInput = [];
         const newPersistentContext = [];
         const newRenderingContext = [];
         this.inputInstances.forEach((input) => {
-            input.setContext(this.renderingContext);
+            input.setContext(context, externalContext);
             input.render();
             const inputJSON = input.toJSON();
-            const context = input.getFullContext();
+            const fullContext = input.getFullContext();
             newInput.push(inputJSON);
-            newRenderingContext.push(...context);
-            newPersistentContext.push(...context.filter((c) => c.isEdited));
+            newRenderingContext.push(...fullContext);
+            newPersistentContext.push(...fullContext.filter((c) => c.isEdited));
         });
         this.input = newInput;
         this.renderingContext = newRenderingContext;

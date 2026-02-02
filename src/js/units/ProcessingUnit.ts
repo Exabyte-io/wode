@@ -1,4 +1,5 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { ProcessingUnitSchema } from "@mat3ra/esse/dist/js/types";
 
 import { UnitType } from "../enums";
@@ -19,6 +20,8 @@ export class ProcessingUnit extends (BaseUnit as Base) implements Schema {
             ...config,
         });
     }
+
+    declare toJSON: () => Schema & AnyObject;
 
     setOperation(op: ProcessingUnitSchema["operation"]) {
         this.setProp("operation", op);

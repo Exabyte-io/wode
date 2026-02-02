@@ -13,13 +13,7 @@ export type ContextMixin = {
     getCombinedContext(): Context;
 };
 
-type AbstractBase = {
-    render(ctx: Context): void;
-};
-
-export function contextMixin<T extends InMemoryEntity & AbstractBase>(
-    item: T,
-): asserts item is T & ContextMixin {
+export function contextMixin<T extends InMemoryEntity>(item: T): asserts item is T & ContextMixin {
     // @ts-expect-error
     const properties: InMemoryEntity & ContextMixin = {
         get context() {

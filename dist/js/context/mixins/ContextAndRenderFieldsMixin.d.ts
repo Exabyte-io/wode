@@ -10,8 +10,4 @@ export type ContextMixin = {
     updatePersistentContext(ctx: Context): void;
     getCombinedContext(): Context;
 };
-type AbstractBase = {
-    render(ctx: Context): void;
-};
-export declare function contextMixin<T extends InMemoryEntity & AbstractBase>(item: T): asserts item is T & ContextMixin;
-export {};
+export declare function contextMixin<T extends InMemoryEntity>(item: T): asserts item is T & ContextMixin;

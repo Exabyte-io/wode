@@ -48,6 +48,11 @@ export const UNIT_TAGS = {
     hasConvergenceResult: "hasConvergenceResult",
 };
 
+export enum UnitTag {
+    hasConvergenceParam = "hasConvergenceParam",
+    hasConvergenceResult = "hasConvergenceResult",
+}
+
 export const WORKFLOW_STATUSES = {
     "up-to-date": "up-to-date",
     outdated: "outdated",

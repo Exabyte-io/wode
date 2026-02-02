@@ -4,7 +4,7 @@
  * DO NOT IMPORT ANYTHINGS IN THIS MODULE.
  */
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UNIT_NAME_INVALID_CHARS = exports.TAB_NAVIGATION_CONFIG = exports.WORKFLOW_STATUSES = exports.UNIT_TAGS = exports.UNIT_STATUSES = exports.UnitType = exports.UNIT_TYPES = exports.IO_ID_COLUMN = void 0;
+exports.UNIT_NAME_INVALID_CHARS = exports.TAB_NAVIGATION_CONFIG = exports.WORKFLOW_STATUSES = exports.UnitTag = exports.UNIT_TAGS = exports.UNIT_STATUSES = exports.UnitType = exports.UNIT_TYPES = exports.IO_ID_COLUMN = void 0;
 exports.IO_ID_COLUMN = "exabyteId";
 exports.UNIT_TYPES = {
     // not currently used
@@ -46,6 +46,11 @@ exports.UNIT_TAGS = {
     hasConvergenceParam: "hasConvergenceParam",
     hasConvergenceResult: "hasConvergenceResult",
 };
+var UnitTag;
+(function (UnitTag) {
+    UnitTag["hasConvergenceParam"] = "hasConvergenceParam";
+    UnitTag["hasConvergenceResult"] = "hasConvergenceResult";
+})(UnitTag || (exports.UnitTag = UnitTag = {}));
 exports.WORKFLOW_STATUSES = {
     "up-to-date": "up-to-date",
     outdated: "outdated",

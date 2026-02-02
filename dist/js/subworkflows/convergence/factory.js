@@ -1,16 +1,18 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createConvergenceParameter = createConvergenceParameter;
-const non_uniform_kgrid_1 = require("./non_uniform_kgrid");
-const parameter_1 = require("./parameter");
-const uniform_kgrid_1 = require("./uniform_kgrid");
-function createConvergenceParameter({ name, initialValue, increment }) {
+const NonUniformKGridConvergence_1 = __importDefault(require("./NonUniformKGridConvergence"));
+const UniformKGridConvergence_1 = __importDefault(require("./UniformKGridConvergence"));
+function createConvergenceParameter({ name, ...params }) {
     switch (name) {
         case "N_k":
-            return new uniform_kgrid_1.UniformKGridConvergence({ name, initialValue, increment });
+            return new UniformKGridConvergence_1.default(params);
         case "N_k_nonuniform":
-            return new non_uniform_kgrid_1.NonUniformKGridConvergence({ name, initialValue, increment });
+            return new NonUniformKGridConvergence_1.default(params);
         default:
-            return new parameter_1.ConvergenceParameter({ name, initialValue, increment });
+            throw new Error(`Invalid convergence parameter name: ${name}`);
     }
 }

@@ -56,13 +56,9 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
         this.reciprocalVectorRatios = this.reciprocalLattice.reciprocalVectorRatios.map((r) => Number(math_1.math.numberToPrecision(r, 3)));
     }
     getDefaultGridMetricValue(metric) {
-        var _a;
         switch (metric) {
-            case "KPPRA": {
-                const divisor = ((_a = this.externalContext) === null || _a === void 0 ? void 0 : _a.divisor) || 1;
-                const { defaultKPPRA } = settings_1.globalSettings;
-                return Math.floor(defaultKPPRA / divisor);
-            }
+            case "KPPRA":
+                return Math.floor(settings_1.globalSettings.defaultKPPRA / this.divisor);
             case "spacing":
                 return 0.3;
             default:

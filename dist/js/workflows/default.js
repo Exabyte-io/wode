@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.default = {
+const defaultWorkflowConfig = {
     name: "New Workflow",
     properties: [],
     subworkflows: [
@@ -8,7 +8,9 @@ exports.default = {
             _id: "c6e9dbbee8929de01f4e76ee",
             application: {
                 name: "espresso",
+                shortName: "espresso",
                 summary: "Quantum Espresso",
+                build: "6.3",
                 version: "6.3",
             },
             model: {
@@ -39,3 +41,4 @@ exports.default = {
         },
     ],
 };
+exports.default = defaultWorkflowConfig;

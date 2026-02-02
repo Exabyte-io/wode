@@ -1,12 +1,14 @@
 import type { IonDynamicsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
-import type { ContextItem, Domain, ExternalContext } from "./base/ContextProvider";
+import type { ContextItem, ExternalContext } from "./base/ContextProvider";
 import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
 type Data = IonDynamicsContextProviderSchema;
 type Name = "dynamics";
+export type IonDynamicsContextProviderContextItem = ContextItem<Data>;
+export type IonDynamicsContextProviderExternalContext = ExternalContext;
 export default class IonDynamicsContextProvider extends JSONSchemaFormDataProvider<Name, Data> {
-    readonly name: Name;
-    readonly domain: Domain;
+    readonly name: "dynamics";
+    readonly domain: "important";
     readonly uiSchema: {
         numberOfSteps: {};
         timeStep: {};

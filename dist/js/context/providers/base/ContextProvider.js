@@ -17,7 +17,7 @@ class ContextProvider {
     setData(data) {
         this.data = data ? utils_1.Utils.clone.deepClone(data) : undefined;
     }
-    getContextItem() {
+    getContextItemData() {
         return {
             name: this.name,
             isEdited: this.isEdited,

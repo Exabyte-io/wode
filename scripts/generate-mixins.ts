@@ -31,6 +31,7 @@ const OUTPUT_PATHS = {
     "workflow/unit/mixins/subworkflow": "src/js/generated/SubworkflowUnitSchemaMixin.ts",
     "workflow/unit/input/-inputItem": "src/js/generated/ExecutionUnitInputSchemaMixin.ts",
     "workflow/subworkflow/mixin": "src/js/generated/SubworkflowSchemaMixin.ts",
+    "workflow/base": "src/js/generated/WorkflowSchemaMixin.ts",
 };
 
 function main() {

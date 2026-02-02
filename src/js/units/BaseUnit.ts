@@ -23,6 +23,7 @@ import {
 import { Taggable, taggableMixin } from "@mat3ra/code/dist/js/entity/mixins/TaggableMixin";
 import type { NameResultSchema } from "@mat3ra/code/dist/js/utils/object";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { StatusSchema, WorkflowBaseUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { Utils } from "@mat3ra/utils";
 
@@ -54,6 +55,8 @@ export class BaseUnit<S extends Schema = Schema> extends (InMemoryEntity as Base
         }
         return Utils.uuid.getUUID();
     }
+
+    declare toJSON: () => Schema & AnyObject;
 
     defaultResults: NameResultSchema[] = [];
 
