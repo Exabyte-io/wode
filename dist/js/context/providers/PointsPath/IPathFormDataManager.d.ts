@@ -1,9 +1,8 @@
-import type { ContextItem } from "../base/ContextProvider";
-import PointsPathFormDataProvider, { type PointsPathFormDataProviderData, type PointsPathFormDataProviderExternalContext } from "./PointsPathFormDataProvider";
+import type { UnitContext } from "../base/ContextProvider";
+import PointsPathFormDataProvider, { type PointsPathFormDataProviderExternalContext } from "./PointsPathFormDataProvider";
 type Name = "ipath";
-export type IPathFormDataManagerContextItem = ContextItem<PointsPathFormDataProviderData>;
-export type IPathFormDataManagerExternalContext = PointsPathFormDataProviderExternalContext;
 export default class IPathFormDataManager extends PointsPathFormDataProvider<Name> {
     readonly name: "ipath";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: PointsPathFormDataProviderExternalContext): IPathFormDataManager;
 }
 export {};

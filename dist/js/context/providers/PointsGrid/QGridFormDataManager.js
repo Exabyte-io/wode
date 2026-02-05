@@ -10,5 +10,9 @@ class QGridFormDataManager extends PointsGridFormDataProvider_1.default {
         this.name = "qgrid";
         this.divisor = 5;
     }
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "qgrid");
+        return new QGridFormDataManager(contextItem, externalContext);
+    }
 }
 exports.default = QGridFormDataManager;

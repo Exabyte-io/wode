@@ -1,6 +1,9 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { QENEBContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    InputContextItemSchema,
+    QENEBContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import jobContextMixin, {
@@ -27,7 +30,7 @@ import workflowContextMixin, {
     type WorkflowContextMixin,
     type WorkflowExternalContext,
 } from "../../../mixins/WorkflowContextMixin";
-import type { ContextItem } from "../../base/ContextProvider";
+import type { UnitContext } from "../../base/ContextProvider";
 import JSONSchemaDataProvider, {
     type JinjaExternalContext,
 } from "../../base/JSONSchemaDataProvider";
@@ -35,20 +38,16 @@ import QEPWXInputDataManager from "./QEPWXInputDataManager";
 
 const jsonSchemaId = "context-providers-directory/by-application/qe-neb-context-provider";
 
-type Name = "input";
 type Data = QENEBContextProviderSchema;
-export type QENEBInputDataManagerContextItem = ContextItem<Data>;
-export type QENEBInputDataManagerExternalContext = JinjaExternalContext &
+type Schema = InputContextItemSchema & { data: Data };
+type ExternalContext = JinjaExternalContext &
     WorkflowExternalContext &
     JobExternalContext &
     MaterialsExternalContext &
     MethodDataExternalContext &
     MaterialsSetExternalContext &
     MaterialExternalContext;
-
-type ExternalContext = QENEBInputDataManagerExternalContext;
-
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
     Constructor<JobContextMixin> &
     Constructor<MaterialContextMixin> &
     Constructor<MaterialsContextMixin> &
@@ -61,9 +60,17 @@ export default class QENEBInputDataManager extends (JSONSchemaDataProvider as Ba
 
     readonly domain = "executable" as const;
 
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "input");
+
+        return new QENEBInputDataManager(contextItem, externalContext);
+    }
+
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(config: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(config: Partial<Schema>, externalContext: ExternalContext) {
         super(config, externalContext);
         this.initJobContextMixin(externalContext);
         this.initMaterialsContextMixin(externalContext);
@@ -94,6 +101,7 @@ export default class QENEBInputDataManager extends (JSONSchemaDataProvider as Ba
             INTERMEDIATE_IMAGES: PWXContexts.slice(1, PWXContexts.length - 1).map((data) => {
                 return data.ATOMIC_POSITIONS;
             }),
+            contextProviderName: "qe-neb" as const,
         };
     }
 }

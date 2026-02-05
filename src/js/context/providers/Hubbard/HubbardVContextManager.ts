@@ -1,13 +1,15 @@
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { HubbardVContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    HubbardVContextItemSchema,
+    HubbardVContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import type { ContextItem } from "../base/ContextProvider";
+import type { UnitContext } from "../base/ContextProvider";
 import HubbardContextProvider, { type HubbardExternalContext } from "./HubbardContextProvider";
 
-type Name = "hubbard_v";
+type Schema = HubbardVContextItemSchema;
 type Data = HubbardVContextProviderSchema;
-export type HubbardVContextManagerContextItem = ContextItem<Data>;
 
 const defaultHubbardConfig = {
     atomicSpecies: "",
@@ -21,8 +23,19 @@ const defaultHubbardConfig = {
 
 const jsonSchemaId = "context-providers-directory/hubbard-v-context-provider";
 
-export default class HubbardVContextManager extends HubbardContextProvider<Name, Data> {
+export default class HubbardVContextManager extends HubbardContextProvider<Schema> {
     readonly name = "hubbard_v" as const;
+
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(
+        unitContext: UnitContext,
+        externalContext: HubbardExternalContext,
+    ) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "hubbard_v");
+
+        return new HubbardVContextManager(contextItem, externalContext);
+    }
 
     readonly uiSchemaStyled = {
         "ui:options": {
@@ -34,7 +47,7 @@ export default class HubbardVContextManager extends HubbardContextProvider<Name,
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: HubbardExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: HubbardExternalContext) {
         super(contextItem, externalContext);
 
         this.jsonSchema = JSONSchemasInterface.getPatchedSchemaById(jsonSchemaId, {

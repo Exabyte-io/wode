@@ -3,6 +3,7 @@ import type {
     AssignmentUnitSchema,
     ConditionUnitSchema,
     DataIOUnitSchema,
+    ExecutionUnitSchema,
     MapUnitSchema,
     ProcessingUnitSchema,
     ReduceUnitSchema,
@@ -13,11 +14,10 @@ import { UnitType } from "../enums";
 import { AssertionUnit } from "./AssertionUnit";
 import { AssignmentUnit } from "./AssignmentUnit";
 import { ConditionUnit } from "./ConditionUnit";
-import { type ExecutionUnitSchema, ExecutionUnit } from "./ExecutionUnit";
+import { ExecutionUnit } from "./ExecutionUnit";
 import { IOUnit } from "./IOUnit";
 import { MapUnit } from "./MapUnit";
 import { ProcessingUnit } from "./ProcessingUnit";
-import { ReduceUnit } from "./ReduceUnit";
 import { SubworkflowUnit } from "./SubworkflowUnit";
 
 export type UnitConfig =
@@ -46,7 +46,6 @@ export type AnySubworkflowUnit =
     | AssignmentUnit
     | ConditionUnit
     | IOUnit
-    | ProcessingUnit
     | AssertionUnit;
 
 export class UnitFactory {
@@ -86,8 +85,6 @@ export class UnitFactory {
                 return new ConditionUnit(config);
             case UnitType.io:
                 return new IOUnit(config);
-            case UnitType.processing:
-                return new ProcessingUnit(config);
             case UnitType.assertion:
                 return new AssertionUnit(config);
             // // TODO-question: why there was no reduce unit in the factory?

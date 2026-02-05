@@ -1,5 +1,5 @@
 import { Application } from "@mat3ra/ade";
-import { ContextAndRenderFieldsMixin, InMemoryEntity } from "@mat3ra/code/dist/js/entity";
+import { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
 import {
     type DefaultableInMemoryEntityConstructor,
     defaultableEntityMixin,
@@ -30,11 +30,6 @@ import { AssignmentUnit, ConditionUnit, SubworkflowUnit, UnitFactory } from "../
 import type { AnySubworkflowUnit } from "../units/factory";
 import { setNextLinks, setUnitsHead } from "../utils";
 import { createConvergenceParameter } from "./convergence/factory";
-
-// class BaseSubworkflow extends mix(NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(
-//     ConvergenceMixin,
-//     ContextAndRenderFieldsMixin,
-// ) {}
 
 type ConvergenceConfig = {
     parameter: "N_k" | "N_k_nonuniform";
@@ -207,17 +202,6 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
         };
     }
 
-    get contextProviders() {
-        const subworkflowContextProviders = this.unitsInstances
-            .filter((u) => u.type === UnitType.execution)
-            .filter((u) => u.allContextProviders.length)
-            .map((u) => u.allContextProviders)
-            .flat()
-            .filter((p) => p.entityName === "subworkflow");
-
-        return _.uniq(subworkflowContextProviders, (p) => p.name);
-    }
-
     private getContextFromAssignmentUnits() {
         return this.unitsInstances
             .filter((u) => u.type === UnitType.assignment)
@@ -229,7 +213,7 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
             }, {} as Record<string, string | number | boolean>);
     }
 
-    render(context = {}) {
+    render(context: Record<string, unknown>) {
         const ctx = {
             ...context,
             application: this.applicationInstance,
@@ -242,7 +226,7 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
 
         this.unitsInstances.forEach((u) => {
             if (u.type === UnitType.execution) {
-                u.render({}, ctx);
+                u.render(ctx);
             }
         });
     }
@@ -250,7 +234,7 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
     /**
      * TODO: reuse workflow function instead
      */
-    addUnit(unit: AnySubworkflowUnit, index = -1) {
+    private addUnit(unit: AnySubworkflowUnit, index = -1) {
         const { unitsInstances } = this;
 
         if (unitsInstances.length === 0) {
@@ -420,29 +404,13 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
         }
 
         // initialize parameter
-        const param = createConvergenceParameter({
+        const convergenceParameter = createConvergenceParameter({
             name: parameter,
             initialValue: parameterInitial,
             increment: parameterIncrement,
         });
 
-        // Replace kgrid to be ready for convergence
-        // TODO: kgrid should be abstracted and selected by user
-        const gridProvider = unitForConvergence.importantSettingsProviders.find((p) => {
-            return ["kgrid", "qgrid"].includes(p.name);
-        });
-
-        let mergedContext = param.unitContext;
-
-        if (gridProvider) {
-            const providerContext = gridProvider.getContextItemData();
-
-            mergedContext = merge(providerContext, param.unitContext);
-            gridProvider.setData(mergedContext);
-            gridProvider.setIsEdited(true);
-        }
-
-        unitForConvergence.updateContext(mergedContext);
+        unitForConvergence.addConvergenceContext(convergenceParameter, {});
 
         const prevResult = "prev_result";
         const iteration = "iteration";
@@ -458,8 +426,8 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
         // Assignment with initial value of convergence parameter
         const paramInit = new AssignmentUnit({
             name: "init parameter",
-            operand: param.name,
-            value: param.initialValue,
+            operand: convergenceParameter.name,
+            value: convergenceParameter.initialValue,
             tags: [UnitTag.hasConvergenceParam],
         });
 
@@ -486,9 +454,9 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
         // Assignment for convergence param increase
         const nextStep = new AssignmentUnit({
             name: "update parameter",
-            input: param.useVariablesFromUnitContext(unitForConvergence.flowchartId),
-            operand: param.name,
-            value: param.increment,
+            input: convergenceParameter.useVariablesFromUnitContext(unitForConvergence.flowchartId),
+            operand: convergenceParameter.name,
+            value: convergenceParameter.increment,
             next: unitForConvergence.flowchartId,
         });
 
@@ -496,8 +464,8 @@ export class Subworkflow extends (InMemoryEntity as Base) implements Subworkflow
         const exit = new AssignmentUnit({
             name: "exit",
             input: [],
-            operand: param.name,
-            value: param.finalValue,
+            operand: convergenceParameter.name,
+            value: convergenceParameter.finalValue,
         });
 
         // Final step of convergence

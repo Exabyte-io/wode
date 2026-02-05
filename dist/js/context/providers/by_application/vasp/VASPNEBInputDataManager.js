@@ -14,10 +14,15 @@ const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaD
 const VASPInputDataManager_1 = __importDefault(require("./VASPInputDataManager"));
 const jsonSchemaId = "context-providers-directory/by-application/vasp-neb-context-provider";
 class VASPNEBInputDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "input");
+        return new VASPNEBInputDataManager(contextItem, externalContext);
+    }
     constructor(config, externalContext) {
         super(config, externalContext);
         this.name = "input";
         this.domain = "executable";
+        this.entityName = "unit";
         this.initMaterialContextMixin(externalContext);
         this.initMaterialsContextMixin(externalContext);
         this.initMaterialsSetContextMixin(externalContext);
@@ -36,6 +41,7 @@ class VASPNEBInputDataManager extends JSONSchemaDataProvider_1.default {
             INTERMEDIATE_IMAGES: VASPContexts.slice(1, VASPContexts.length - 1).map((data) => {
                 return data.POSCAR_WITH_CONSTRAINTS;
             }),
+            contextProviderName: "vasp-neb",
         };
     }
 }

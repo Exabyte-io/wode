@@ -12,10 +12,16 @@ const WorkflowContextMixin_1 = __importDefault(require("../../../mixins/Workflow
 const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaDataProvider"));
 const jsonSchemaId = "context-providers-directory/by-application/nwchem-total-energy-context-provider";
 class NWChemInputDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "input");
+        return new NWChemInputDataManager(contextItem, externalContext);
+    }
     constructor(config, externalContext) {
         super(config, externalContext);
         this.name = "input";
         this.domain = "executable";
+        this.entityName = "unit";
+        this.contextProviderName = "nwchem-total-energy";
         this.initMethodDataContextMixin(externalContext);
         this.initWorkflowContextMixin(externalContext);
         this.initJobContextMixin(externalContext);
@@ -45,6 +51,7 @@ class NWChemInputDataManager extends JSONSchemaDataProvider_1.default {
             ATOMIC_SPECIES,
             FUNCTIONAL: "B3LYP",
             CARTESIAN: basis.toCartesian !== undefined,
+            contextProviderName: this.contextProviderName,
         };
     }
 }

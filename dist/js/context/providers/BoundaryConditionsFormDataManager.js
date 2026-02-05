@@ -8,10 +8,15 @@ const MaterialContextMixin_1 = __importDefault(require("../mixins/MaterialContex
 const JSONSchemaDataProvider_1 = __importDefault(require("./base/JSONSchemaDataProvider"));
 const jsonSchemaId = "context-providers-directory/boundary-conditions-data-provider";
 class BoundaryConditionsFormDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "boundaryConditions");
+        return new BoundaryConditionsFormDataManager(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.name = "boundaryConditions";
         this.domain = "important";
+        this.entityName = "unit";
         this.humanName = "Boundary Conditions";
         this.uiSchema = {
             type: { "ui:disabled": true },

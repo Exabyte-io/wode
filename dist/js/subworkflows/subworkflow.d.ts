@@ -52,13 +52,12 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
     setModel(model: Model): void;
     setUnits(units: AnySubworkflowUnit[]): void;
     toJSON(exclude?: string[]): SubworkflowSchema & AnyObject;
-    get contextProviders(): import("../context/providers/PlanewaveCutoffDataManager").default[];
     private getContextFromAssignmentUnits;
-    render(context?: {}): void;
+    render(context: Record<string, unknown>): void;
     /**
      * TODO: reuse workflow function instead
      */
-    addUnit(unit: AnySubworkflowUnit, index?: number): void;
+    private addUnit;
     removeUnit(flowchartId: string): void;
     get properties(): string[];
     getUnit(flowchartId: string): AnySubworkflowUnit | undefined;
@@ -286,7 +285,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
             hasAdvancedComputeOptions?: boolean;
             isLicensed?: boolean;
         };
-        executable?: {
+        executable: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -308,7 +307,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
             applicationId: string[];
             hasAdvancedComputeOptions?: boolean;
         };
-        flavor?: {
+        flavor: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -355,9 +354,10 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
             rendered: string;
             isManuallyChanged: boolean;
         }[];
-        context?: ({
+        context: ({
             name: "input";
             data: {
+                contextProviderName: "nwchem-total-energy";
                 CHARGE: number;
                 MULT: number;
                 BASIS: string;
@@ -426,6 +426,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                     "if_pos(2)"?: number;
                     "if_pos(3)"?: number;
                 }[][];
+                contextProviderName: "qe-neb";
             } | {
                 IBRAV: number;
                 RESTART_MODE: "from_scratch" | "restart";
@@ -457,16 +458,19 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                     v2?: [number, number, number];
                     v3?: [number, number, number];
                 };
+                contextProviderName: "qe-pwx";
             } | {
                 POSCAR: string;
                 POSCAR_WITH_CONSTRAINTS: string;
+                contextProviderName: "vasp";
             } | {
                 FIRST_IMAGE: string;
                 LAST_IMAGE: string;
                 INTERMEDIATE_IMAGES: string[];
+                contextProviderName: "vasp-neb";
             };
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         } | {
@@ -476,10 +480,11 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 density?: number;
             };
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "kgrid" | "qgrid" | "igrid";
             data: {
-                dimensions: [number, number, number];
+                dimensions: [number, number, number] | [string, string, string];
                 shifts?: [number, number, number];
                 reciprocalVectorRatios?: [number, number, number];
                 gridMetricType: "KPPRA" | "spacing";
@@ -487,7 +492,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 preferGridMetric?: boolean;
             };
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         } | {
@@ -502,7 +507,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 coordinates: number[];
             }[]];
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         } | {
@@ -519,6 +524,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 value?: number;
             }[]];
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "hubbard_u";
             data: {
@@ -527,7 +533,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 hubbardUValue?: number;
             }[];
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         } | {
@@ -550,6 +556,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 hubbardVValue?: number;
             }[]];
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "hubbard_legacy";
             data: [{
@@ -562,12 +569,14 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 hubbardUValue?: number;
             }[]];
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "neb";
             data: {
                 nImages?: number;
             };
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "boundaryConditions";
             data: {
@@ -577,7 +586,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 targetFermiEnergy?: number;
             };
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         } | {
@@ -587,12 +596,14 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 problem_category?: "regression" | "classification" | "clustering";
             };
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "mlTrainTestSplit";
             data: {
                 fraction_held_as_test_set?: number;
             };
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "dynamics";
             data: {
@@ -602,6 +613,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 temperature?: number;
             };
             isEdited: boolean;
+            extraData: {};
         } | {
             name: "collinearMagnetization";
             data: {
@@ -614,7 +626,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 totalMagnetization: number;
             };
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         } | {
@@ -649,7 +661,7 @@ export declare class Subworkflow extends Subworkflow_base implements Subworkflow
                 };
             };
             extraData: {
-                materialHash?: string;
+                materialHash: string;
             };
             isEdited: boolean;
         })[];

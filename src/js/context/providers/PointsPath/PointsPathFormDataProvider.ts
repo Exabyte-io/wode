@@ -1,7 +1,10 @@
 import { math as codeJSMath } from "@mat3ra/code/dist/js/math";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { PointsPathDataProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    PathContextItemSchema,
+    PointsPathDataProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import { type ReciprocalLattice, Made } from "@mat3ra/made";
 import s from "underscore.string";
 
@@ -14,7 +17,6 @@ import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../../mixins/MaterialContextMixin";
-import type { ContextItem } from "../base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "../base/JSONSchemaDataProvider";
 
 const defaultPoint = "Г" as const;
@@ -27,15 +29,16 @@ export type PointsPathFormDataProviderExternalContext = JinjaExternalContext &
 
 type Data = PointsPathFormDataProviderData;
 type DataItem = Data[0];
+type Schema = PathContextItemSchema;
 type ExternalContext = PointsPathFormDataProviderExternalContext;
-type Base = typeof JSONSchemaDataProvider<string, Data> &
+type Base = typeof JSONSchemaDataProvider<Schema> &
     Constructor<MaterialContextMixin> &
     Constructor<ApplicationContextMixin>;
 
 const jsonSchemaId = "context-providers-directory/points-path-data-provider";
 
 abstract class MixinsContextProvider extends (JSONSchemaDataProvider as Base) {
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initMaterialContextMixin(externalContext);
         this.initApplicationContextMixin(externalContext);
@@ -45,10 +48,12 @@ abstract class MixinsContextProvider extends (JSONSchemaDataProvider as Base) {
 materialContextMixin(MixinsContextProvider.prototype);
 applicationContextMixin(MixinsContextProvider.prototype);
 
-abstract class PointsPathFormDataProvider<N extends string> extends MixinsContextProvider {
+abstract class PointsPathFormDataProvider<N extends Schema["name"]> extends MixinsContextProvider {
     abstract name: N;
 
     readonly domain = "important" as const;
+
+    readonly entityName = "unit" as const;
 
     private reciprocalLattice: ReciprocalLattice;
 
@@ -56,7 +61,7 @@ abstract class PointsPathFormDataProvider<N extends string> extends MixinsContex
 
     readonly is2PIBA: boolean = false;
 
-    constructor(config: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(config: Partial<Schema>, externalContext: ExternalContext) {
         super(config, externalContext);
         this.reciprocalLattice = new Made.ReciprocalLattice(this.material.lattice);
         this.useExplicitPath = this.application.name === "vasp";

@@ -11,14 +11,20 @@ const defaultData = {
     fraction_held_as_test_set: 0.2,
 };
 class MLTrainTestSplitDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "mlTrainTestSplit");
+        return new MLTrainTestSplitDataManager(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.name = "mlTrainTestSplit";
         this.domain = "important";
+        this.entityName = "unit";
         this.uiSchema = {
             target_column_name: {},
             problem_category: {},
         };
+        this.extraData = {};
         this.initApplicationContextMixin(externalContext);
         this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
             fraction_held_as_test_set: { default: defaultData.fraction_held_as_test_set },

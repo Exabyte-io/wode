@@ -15,8 +15,6 @@ export default class NonUniformKGridConvergence extends ConvergenceParameter {
             dimensions: [`{{${this.name}[0]}}`, `{{${this.name}[1]}}`, `{{${this.name}[2]}}`],
             shifts: [0, 0, 0],
         },
-        name: "kgrid",
-        isEdited: true,
         isUsingJinjaVariables: true,
     };
 

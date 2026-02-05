@@ -1,41 +1,34 @@
-import { ContextProviderSchema } from "@mat3ra/esse/dist/js/types";
-export interface ContextProviderInstance {
-    constructor: typeof ContextProvider;
-    config: ContextProviderSchema;
-}
-export type ContextProviderConfig<N extends string = string, D extends object = object, ED extends object = object> = {
-    name: N;
-    data?: D;
-    extraData?: ED;
-    domain?: string;
-    entityName?: EntityName;
-    isEdited?: boolean;
-};
-export type ContextItem<D extends object = object, ED extends object = object> = {
+import { type ContextItemSchema } from "@mat3ra/esse/dist/js/types";
+export type UnitContext = ContextItemSchema[];
+export type ContextName = ContextItemSchema["name"];
+export type ContextExtraData = ContextItemSchema["extraData"];
+export type ContextData = ContextItemSchema["data"];
+export type ContextItem<D extends ContextData = ContextData, ED extends ContextExtraData = ContextExtraData> = {
     data?: D;
     extraData?: ED;
     isEdited?: boolean;
-};
-export type ExtendedContextItem<N extends string = string, D extends object = object, ED extends object = object> = ContextItem<D, ED> & {
-    name: N;
-    isEdited: boolean;
 };
 export type Domain = "executable" | "important";
 export type EntityName = "unit" | "subworkflow";
 export type ExternalContext = object;
-declare abstract class ContextProvider<N extends string = string, D extends object = object, ED extends object = object, EC extends ExternalContext = ExternalContext> implements ContextProviderConfig<N, D, ED> {
-    abstract name: N;
+declare abstract class ContextProvider<S extends ContextItemSchema = ContextItemSchema, EC extends ExternalContext = ExternalContext> {
+    abstract name: S["name"];
     abstract readonly domain: Domain;
     abstract readonly entityName: EntityName;
-    protected abstract getDefaultData(): D;
-    data?: D;
-    readonly extraData?: ED;
+    protected abstract getDefaultData(): S["data"];
+    protected data?: S["data"];
+    abstract extraData: S["extraData"];
     readonly externalContext: EC;
     isEdited: boolean;
-    constructor(contextItem: ContextItem<D, ED>, externalContext: EC);
+    constructor(contextItem: Partial<S>, externalContext: EC);
     setIsEdited(isEdited: boolean): void;
-    getData(): D;
-    setData(data?: D): void;
-    getContextItemData(): ExtendedContextItem<N, D, ED>;
+    getData(): S["data"];
+    setData(data?: S["data"]): void;
+    getContextItemData(): S;
+    /**
+     * Helper method to find a context item from a unit context array by name.
+     * Returns a partial schema object that can be safely passed to constructors.
+     */
+    protected static findContextItem<S extends ContextItemSchema>(unitContext: UnitContext, contextName: ContextName): Partial<S>;
 }
 export default ContextProvider;

@@ -1,14 +1,11 @@
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { IonDynamicsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { DynamicsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import type { ContextItem, ExternalContext } from "./base/ContextProvider";
+import type { ExternalContext, UnitContext } from "./base/ContextProvider";
 import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
 
-type Data = IonDynamicsContextProviderSchema;
-type Name = "dynamics";
-export type IonDynamicsContextProviderContextItem = ContextItem<Data>;
-export type IonDynamicsContextProviderExternalContext = ExternalContext;
+type Schema = DynamicsContextItemSchema;
 
 const jsonSchemaId = "context-providers-directory/ion-dynamics-context-provider";
 
@@ -19,21 +16,31 @@ const defaultData = {
     temperature: 300.0,
 };
 
-export default class IonDynamicsContextProvider extends JSONSchemaFormDataProvider<Name, Data> {
+export default class IonDynamicsDataManager extends JSONSchemaFormDataProvider<Schema> {
     readonly name = "dynamics" as const;
 
     readonly domain = "important" as const;
+
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "dynamics");
+
+        return new IonDynamicsDataManager(contextItem, externalContext);
+    }
 
     readonly uiSchema = {
         numberOfSteps: {},
         timeStep: {},
         electronMass: {},
         temperature: {},
-    };
+    } as const;
+
+    readonly extraData = {};
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
 
         this.jsonSchema = JSONSchemasInterface.getPatchedSchemaById(jsonSchemaId, {

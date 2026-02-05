@@ -12,10 +12,15 @@ const WorkflowContextMixin_1 = __importDefault(require("../../../mixins/Workflow
 const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaDataProvider"));
 const jsonSchemaId = "context-providers-directory/by-application/vasp-context-provider";
 class VASPInputDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "input");
+        return new VASPInputDataManager(contextItem, externalContext);
+    }
     constructor(config, externalContext) {
         super(config, externalContext);
         this.name = "input";
         this.domain = "executable";
+        this.entityName = "unit";
         this.initJobContextMixin(externalContext);
         this.initMaterialsContextMixin(externalContext);
         this.initMethodDataContextMixin(externalContext);
@@ -29,6 +34,7 @@ class VASPInputDataManager extends JSONSchemaDataProvider_1.default {
             // TODO: figure out whether we need two separate POSCARS, maybe one is enough
             POSCAR: material.getAsPOSCAR(true, true),
             POSCAR_WITH_CONSTRAINTS: material.getAsPOSCAR(true),
+            contextProviderName: "vasp",
         };
     }
     getDataPerMaterial() {

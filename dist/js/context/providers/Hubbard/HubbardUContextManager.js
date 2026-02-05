@@ -13,9 +13,14 @@ const defaultHubbardConfig = {
 };
 const jsonSchemaId = "context-providers-directory/hubbard-u-context-provider";
 class HubbardUContextManager extends HubbardContextProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "hubbard_u");
+        return new HubbardUContextManager(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.name = "hubbard_u";
+        this.entityName = "unit";
         this.uiSchemaStyled = {
             "ui:options": {
                 addable: true,

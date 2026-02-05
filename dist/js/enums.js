@@ -31,7 +31,6 @@ var UnitType;
     UnitType["assignment"] = "assignment";
     UnitType["condition"] = "condition";
     UnitType["subworkflow"] = "subworkflow";
-    UnitType["processing"] = "processing";
     UnitType["io"] = "io";
     UnitType["assertion"] = "assertion";
 })(UnitType || (exports.UnitType = UnitType = {}));

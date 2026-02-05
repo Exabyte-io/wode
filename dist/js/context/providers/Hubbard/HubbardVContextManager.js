@@ -16,10 +16,15 @@ const defaultHubbardConfig = {
 };
 const jsonSchemaId = "context-providers-directory/hubbard-v-context-provider";
 class HubbardVContextManager extends HubbardContextProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "hubbard_v");
+        return new HubbardVContextManager(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         var _a;
         super(contextItem, externalContext);
         this.name = "hubbard_v";
+        this.entityName = "unit";
         this.uiSchemaStyled = {
             "ui:options": {
                 addable: true,

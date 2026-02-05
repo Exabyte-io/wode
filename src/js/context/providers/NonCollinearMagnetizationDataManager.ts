@@ -1,22 +1,41 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { NonCollinearMagnetizationContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    NonCollinearMagnetizationContextItemSchema,
+    NonCollinearMagnetizationContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../mixins/MaterialContextMixin";
-import type { ContextItem } from "./base/ContextProvider";
+import type { UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 
-type Name = "nonCollinearMagnetization";
 type Data = NonCollinearMagnetizationContextProviderSchema;
-export type NonCollinearMagnetizationDataManagerContextItem = ContextItem<Data>;
-export type NonCollinearMagnetizationDataManagerExternalContext = JinjaExternalContext &
-    MaterialExternalContext;
-type ExternalContext = NonCollinearMagnetizationDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data> & Constructor<MaterialContextMixin>;
+type Schema = NonCollinearMagnetizationContextItemSchema;
+type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
+    Constructor<MaterialContextMixin>;
+
+const defaultData = {
+    isExistingChargeDensity: false,
+    isStartingMagnetization: true,
+    isConstrainedMagnetization: false,
+    isArbitrarySpinAngle: false,
+    isArbitrarySpinDirection: false,
+    isFixedMagnetization: false,
+    lforcet: true,
+    value: 0.0,
+    angle1: 0.0,
+    angle2: 0.0,
+    constrainType: "atomic direction" as const,
+    lambda: 0.0,
+    fixedMagnetizationX: 0.0,
+    fixedMagnetizationY: 0.0,
+    fixedMagnetizationZ: 0.0,
+};
 
 const jsonSchemaId = "context-providers-directory/non-collinear-magnetization-context-provider";
 
@@ -24,6 +43,14 @@ export default class NonCollinearMagnetizationDataManager extends (JSONSchemaDat
     readonly name = "nonCollinearMagnetization" as const;
 
     readonly domain = "important" as const;
+
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "nonCollinearMagnetization");
+
+        return new NonCollinearMagnetizationDataManager(contextItem, externalContext);
+    }
 
     readonly isStartingMagnetization: boolean;
 
@@ -41,7 +68,7 @@ export default class NonCollinearMagnetizationDataManager extends (JSONSchemaDat
 
     private readonly uniqueElementsWithLabels: string[];
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initMaterialContextMixin(externalContext);
 
@@ -59,17 +86,17 @@ export default class NonCollinearMagnetizationDataManager extends (JSONSchemaDat
         ];
 
         this.jsonSchema = JSONSchemasInterface.getPatchedSchemaById(jsonSchemaId, {
-            isExistingChargeDensity: { default: false },
-            isStartingMagnetization: { default: true },
-            isArbitrarySpinAngle: { default: false },
-            isConstrainedMagnetization: { default: false },
-            isFixedMagnetization: { default: true },
+            isExistingChargeDensity: { default: defaultData.isExistingChargeDensity },
+            isStartingMagnetization: { default: defaultData.isStartingMagnetization },
+            isArbitrarySpinAngle: { default: defaultData.isArbitrarySpinAngle },
+            isConstrainedMagnetization: { default: defaultData.isConstrainedMagnetization },
+            isFixedMagnetization: { default: defaultData.isFixedMagnetization },
             startingMagnetization: {
                 minItems: this.uniqueElementsWithLabels.length,
                 maxItems: this.uniqueElementsWithLabels.length,
             },
             "startingMagnetization.items.properties.value": {
-                default: 0.0,
+                default: defaultData.value,
                 minimum: -1.0,
                 maximum: 1.0,
             },
@@ -77,15 +104,15 @@ export default class NonCollinearMagnetizationDataManager extends (JSONSchemaDat
                 minItems: this.uniqueElementsWithLabels.length,
                 maxItems: this.uniqueElementsWithLabels.length,
             },
-            "spinAngles.items.properties.angle1": { default: 0.0 },
-            "spinAngles.items.properties.angle2": { default: 0.0 },
+            "spinAngles.items.properties.angle1": { default: defaultData.angle1 },
+            "spinAngles.items.properties.angle2": { default: defaultData.angle2 },
             "constrainedMagnetization.properties.constrainType": {
-                default: "atomic direction",
+                default: defaultData.constrainType,
             },
-            "constrainedMagnetization.properties.lambda": { default: 0.0 },
-            "fixedMagnetization.properties.x": { default: 0.0 },
-            "fixedMagnetization.properties.y": { default: 0.0 },
-            "fixedMagnetization.properties.z": { default: 0.0 },
+            "constrainedMagnetization.properties.lambda": { default: defaultData.lambda },
+            "fixedMagnetization.properties.x": { default: defaultData.fixedMagnetizationX },
+            "fixedMagnetization.properties.y": { default: defaultData.fixedMagnetizationY },
+            "fixedMagnetization.properties.z": { default: defaultData.fixedMagnetizationZ },
         });
     }
 
@@ -94,7 +121,7 @@ export default class NonCollinearMagnetizationDataManager extends (JSONSchemaDat
             return {
                 index: index + 1,
                 atomicSpecies: element,
-                value: 0.0,
+                value: defaultData.value,
             };
         });
 
@@ -102,29 +129,29 @@ export default class NonCollinearMagnetizationDataManager extends (JSONSchemaDat
             return {
                 index: index + 1,
                 atomicSpecies: element,
-                angle1: 0.0,
-                angle2: 0.0,
+                angle1: defaultData.angle1,
+                angle2: defaultData.angle2,
             };
         });
 
         return {
-            isExistingChargeDensity: false,
-            isStartingMagnetization: true,
-            isConstrainedMagnetization: false,
-            isArbitrarySpinAngle: false,
-            isArbitrarySpinDirection: false,
-            isFixedMagnetization: false,
-            lforcet: true,
+            isExistingChargeDensity: defaultData.isExistingChargeDensity,
+            isStartingMagnetization: defaultData.isStartingMagnetization,
+            isConstrainedMagnetization: defaultData.isConstrainedMagnetization,
+            isArbitrarySpinAngle: defaultData.isArbitrarySpinAngle,
+            isArbitrarySpinDirection: defaultData.isArbitrarySpinDirection,
+            isFixedMagnetization: defaultData.isFixedMagnetization,
+            lforcet: defaultData.lforcet,
             spinAngles,
             startingMagnetization,
             constrainedMagnetization: {
-                lambda: 0.0,
-                constrainType: "atomic direction",
+                lambda: defaultData.lambda,
+                constrainType: defaultData.constrainType,
             },
             fixedMagnetization: {
-                x: 0.0,
-                y: 0.0,
-                z: 0.0,
+                x: defaultData.fixedMagnetizationX,
+                y: defaultData.fixedMagnetizationY,
+                z: defaultData.fixedMagnetizationZ,
             },
         };
     }

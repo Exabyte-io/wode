@@ -1,21 +1,21 @@
-import type { NEBDataProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { NebContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
-import type { ContextItem } from "./base/ContextProvider";
+import type { UnitContext } from "./base/ContextProvider";
 import type { JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
-type Name = "neb";
-type Data = NEBDataProviderSchema;
-export type NEBFormDataManagerContextItem = ContextItem<Data>;
-export type NEBFormDataManagerExternalContext = JinjaExternalContext;
-type ExternalContext = NEBFormDataManagerExternalContext;
-export default class NEBFormDataManager extends JSONSchemaFormDataProvider<Name, Data> {
+type Schema = NebContextItemSchema;
+type ExternalContext = JinjaExternalContext;
+export default class NEBFormDataManager extends JSONSchemaFormDataProvider<Schema> {
     readonly name: "neb";
     readonly domain: "important";
+    readonly entityName: "unit";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext): NEBFormDataManager;
     readonly uiSchema: {
-        nImages: {};
+        readonly nImages: {};
     };
     readonly jsonSchema: JSONSchema7 | undefined;
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext);
+    readonly extraData: {};
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext);
     getDefaultData(): {
         nImages: number;
     };

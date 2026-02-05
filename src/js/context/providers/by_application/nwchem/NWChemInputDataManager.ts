@@ -1,7 +1,10 @@
 import { PERIODIC_TABLE } from "@exabyte-io/periodic-table.js";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { NWChemTotalEnergyContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    InputContextItemSchema,
+    NWChemTotalEnergyContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import jobContextMixin, {
@@ -20,22 +23,19 @@ import workflowContextMixin, {
     type WorkflowContextMixin,
     type WorkflowExternalContext,
 } from "../../../mixins/WorkflowContextMixin";
-import type { ContextItem } from "../../base/ContextProvider";
+import type { UnitContext } from "../../base/ContextProvider";
 import JSONSchemaDataProvider, {
     type JinjaExternalContext,
 } from "../../base/JSONSchemaDataProvider";
 
-type Name = "input";
 type Data = NWChemTotalEnergyContextProviderSchema;
-export type NWChemInputDataManagerContextItem = ContextItem<Data>;
-export type NWChemInputDataManagerExternalContext = JinjaExternalContext &
+type Schema = InputContextItemSchema & { data: Data };
+type ExternalContext = JinjaExternalContext &
     WorkflowExternalContext &
     JobExternalContext &
     MethodDataExternalContext &
     MaterialExternalContext;
-type ExternalContext = NWChemInputDataManagerExternalContext;
-
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
     Constructor<JobContextMixin> &
     Constructor<MaterialContextMixin> &
     Constructor<MethodDataContextMixin> &
@@ -49,9 +49,19 @@ export default class NWChemInputDataManager extends (JSONSchemaDataProvider as B
 
     readonly domain = "executable" as const;
 
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "input");
+
+        return new NWChemInputDataManager(contextItem, externalContext);
+    }
+
+    readonly contextProviderName = "nwchem-total-energy" as const;
+
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(config: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(config: Partial<Schema>, externalContext: ExternalContext) {
         super(config, externalContext);
         this.initMethodDataContextMixin(externalContext);
         this.initWorkflowContextMixin(externalContext);
@@ -87,6 +97,7 @@ export default class NWChemInputDataManager extends (JSONSchemaDataProvider as B
             ATOMIC_SPECIES,
             FUNCTIONAL: "B3LYP",
             CARTESIAN: basis.toCartesian !== undefined,
+            contextProviderName: this.contextProviderName,
         };
     }
 }

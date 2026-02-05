@@ -1,5 +1,6 @@
 import type { JSONSchema } from "@mat3ra/esse/dist/js/esse/utils";
-import type { ContextItem, ExternalContext } from "./ContextProvider";
+import type { ContextItemSchema } from "@mat3ra/esse/dist/js/types";
+import type { ExternalContext } from "./ContextProvider";
 import ContextProvider from "./ContextProvider";
 export interface JinjaExternalContext extends ExternalContext {
     isUsingJinjaVariables?: boolean;
@@ -7,10 +8,10 @@ export interface JinjaExternalContext extends ExternalContext {
 /**
  * @summary Provides jsonSchema only.
  */
-declare abstract class JSONSchemaDataProvider<N extends string = string, D extends object = object, ED extends object = object, EC extends JinjaExternalContext = JinjaExternalContext> extends ContextProvider<N, D, ED, EC> {
+declare abstract class JSONSchemaDataProvider<S extends ContextItemSchema = ContextItemSchema, EC extends JinjaExternalContext = JinjaExternalContext> extends ContextProvider<S, EC> {
     abstract readonly jsonSchema: JSONSchema | undefined;
     readonly entityName: "unit";
     isUsingJinjaVariables: boolean;
-    constructor(contextItem: ContextItem<D, ED>, externalContext: EC);
+    constructor(contextItem: Partial<S>, externalContext: EC);
 }
 export default JSONSchemaDataProvider;

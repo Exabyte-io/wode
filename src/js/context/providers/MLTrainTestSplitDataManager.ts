@@ -1,6 +1,6 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { MLTrainTestSplitContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { MlTrainTestSplitContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import {
@@ -8,18 +8,13 @@ import {
     type ApplicationExternalContext,
     applicationContextMixin,
 } from "../mixins/ApplicationContextMixin";
-import { type ContextItem } from "./base/ContextProvider";
+import { type UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 
-type Name = "mlTrainTestSplit";
-type Data = MLTrainTestSplitContextProviderSchema;
-
-export type MLTrainTestSplitDataManagerContextItem = ContextItem<Data>;
-export type MLTrainTestSplitDataManagerExternalContext = JinjaExternalContext &
-    ApplicationExternalContext;
-
-type ExternalContext = MLTrainTestSplitDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data> & Constructor<ApplicationContextMixin>;
+type Schema = MlTrainTestSplitContextItemSchema;
+type ExternalContext = JinjaExternalContext & ApplicationExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
+    Constructor<ApplicationContextMixin>;
 
 const jsonSchemaId = "context-providers-directory/ml-train-test-split-context-provider";
 
@@ -32,14 +27,24 @@ export default class MLTrainTestSplitDataManager extends (JSONSchemaDataProvider
 
     readonly domain = "important" as const;
 
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "mlTrainTestSplit");
+
+        return new MLTrainTestSplitDataManager(contextItem, externalContext);
+    }
+
     readonly jsonSchema: JSONSchema7 | undefined;
 
     readonly uiSchema = {
         target_column_name: {},
         problem_category: {},
-    };
+    } as const;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    readonly extraData = {};
+
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initApplicationContextMixin(externalContext);
 

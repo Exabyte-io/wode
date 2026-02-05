@@ -8,6 +8,7 @@ const ade_1 = require("@mat3ra/ade");
 const utils_1 = require("@mat3ra/utils");
 const ContextAndRenderFieldsMixin_1 = require("../context/mixins/ContextAndRenderFieldsMixin");
 const ImportantSettingsProviderMixin_1 = require("../context/mixins/ImportantSettingsProviderMixin");
+const providers_1 = require("../context/providers");
 const ExecutionUnitInput_1 = __importDefault(require("../ExecutionUnitInput"));
 const ExecutionUnitSchemaMixin_1 = require("../generated/ExecutionUnitSchemaMixin");
 const BaseUnit_1 = require("./BaseUnit");
@@ -16,7 +17,7 @@ class ExecutionUnit extends BaseUnit_1.BaseUnit {
         var _a;
         super(config);
         this.inputInstances = [];
-        this.renderingContext = [];
+        this.renderingContext = {};
         const { application, executable, flavor } = config;
         const applicationInstance = ade_1.ApplicationRegistry.createApplication(application);
         const executableInstance = ade_1.ApplicationRegistry.getExecutableByConfig(application.name, executable);
@@ -65,32 +66,51 @@ class ExecutionUnit extends BaseUnit_1.BaseUnit {
         const inputs = ade_1.ApplicationRegistry.getInput(this.flavorInstance);
         this.inputInstances = inputs.map(ExecutionUnitInput_1.default.createFromTemplate);
     }
-    get allContextProviders() {
-        return this.inputInstances.map((input) => input.contextProvidersInstances).flat();
-    }
-    get contextProviders() {
-        return this.allContextProviders.filter((p) => p.entityName === "unit");
-    }
-    get importantSettingsProviders() {
-        return this.contextProviders.filter((p) => p.domain === "important");
-    }
-    render(externalContext = {}) {
-        this.renderingContext = this.context;
-        const newInput = [];
-        const newPersistentContext = [];
-        const newRenderingContext = [];
-        this.inputInstances.forEach((input) => {
-            input.setContext(context, externalContext);
-            input.render();
-            const inputJSON = input.toJSON();
-            const fullContext = input.getFullContext();
-            newInput.push(inputJSON);
-            newRenderingContext.push(...fullContext);
-            newPersistentContext.push(...fullContext.filter((c) => c.isEdited));
+    getContextProvidersInstances(externalContext) {
+        const uniqueContextProviderNames = [
+            ...new Set(this.inputInstances
+                .map((input) => {
+                return input.template.contextProviders.map((provider) => {
+                    return provider.name;
+                });
+            })
+                .flat()),
+        ];
+        return uniqueContextProviderNames.map((name) => {
+            return (0, providers_1.createProvider)(name, this.context, externalContext);
         });
-        this.input = newInput;
-        this.renderingContext = newRenderingContext;
-        this.context = newPersistentContext;
+    }
+    addConvergenceContext(parameter, externalContext) {
+        // TODO: kgrid should be abstracted and selected by user
+        const parameterToContextProviderMap = {
+            N_k: "kgrid",
+            N_k_nonuniform: "kgrid",
+        };
+        const contextName = parameterToContextProviderMap[parameter.name];
+        const fullContext = this.getContextProvidersInstances(externalContext).map((contextProvider) => {
+            if (contextProvider.name === contextName) {
+                contextProvider.applyCovergenceParameter(parameter);
+                return contextProvider.getContextItemData();
+            }
+            return contextProvider.getContextItemData();
+        });
+        this.saveContext(fullContext);
+    }
+    render(externalContext) {
+        const fullContext = this.getContextProvidersInstances(externalContext).map((contextProvider) => {
+            return contextProvider.getContextItemData();
+        });
+        this.saveContext(fullContext);
+        this.input = this.inputInstances.map((input) => {
+            return input.render(this.renderingContext).toJSON();
+        });
+    }
+    saveContext(fullContext) {
+        // persistent context
+        this.context = fullContext.filter((c) => c.isEdited);
+        this.renderingContext = Object.fromEntries(fullContext.map((context) => {
+            return [context.name, context.data];
+        }));
     }
     /**
      * @summary Calculates hash on unit-specific fields.

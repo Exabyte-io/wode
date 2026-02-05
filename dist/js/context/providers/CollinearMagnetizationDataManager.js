@@ -6,13 +6,23 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const MaterialContextMixin_1 = __importDefault(require("../mixins/MaterialContextMixin"));
 const JSONSchemaDataProvider_1 = __importDefault(require("./base/JSONSchemaDataProvider"));
+const defaultData = {
+    value: 0.0,
+    isTotalMagnetization: false,
+    totalMagnetization: 0.0,
+};
 const jsonSchemaId = "context-providers-directory/collinear-magnetization-context-provider";
 class CollinearMagnetizationDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "collinearMagnetization");
+        return new CollinearMagnetizationDataManager(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         var _a, _b, _c, _d;
         super(contextItem, externalContext);
         this.name = "collinearMagnetization";
         this.domain = "important";
+        this.entityName = "unit";
         this.initMaterialContextMixin(externalContext);
         this.uniqueElementsWithLabels = [
             ...new Set(((_b = (_a = this.material) === null || _a === void 0 ? void 0 : _a.Basis) === null || _b === void 0 ? void 0 : _b.elementsWithLabelsArray) || []),
@@ -29,13 +39,13 @@ class CollinearMagnetizationDataManager extends JSONSchemaDataProvider_1.default
                 default: this.firstElement,
             },
             "properties.startingMagnetization.items.properties.value": {
-                default: 0.0,
+                default: defaultData.value,
             },
             "properties.isTotalMagnetization": {
-                default: false,
+                default: defaultData.isTotalMagnetization,
             },
             "properties.totalMagnetization": {
-                default: 0.0,
+                default: defaultData.totalMagnetization,
             },
         });
     }
@@ -45,11 +55,11 @@ class CollinearMagnetizationDataManager extends JSONSchemaDataProvider_1.default
                 {
                     index: 1,
                     atomicSpecies: this.firstElement,
-                    value: 0.0,
+                    value: defaultData.value,
                 },
             ],
-            isTotalMagnetization: false,
-            totalMagnetization: 0.0,
+            isTotalMagnetization: defaultData.isTotalMagnetization,
+            totalMagnetization: defaultData.totalMagnetization,
         };
     }
     setData(data) {

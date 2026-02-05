@@ -1,13 +1,14 @@
-import type { HubbardLegacyContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { HubbardLegacyContextItemSchema, HubbardLegacyContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
-import type { ContextItem } from "../base/ContextProvider";
+import type { UnitContext } from "../base/ContextProvider";
 import HubbardContextProvider, { type HubbardExternalContext } from "./HubbardContextProvider";
-type Name = "hubbard_legacy";
+type Schema = HubbardLegacyContextItemSchema;
 type Data = HubbardLegacyContextProviderSchema;
-export type HubbardContextManagerLegacyContextItem = ContextItem<Data>;
-export default class HubbardContextManagerLegacy extends HubbardContextProvider<Name, Data> {
+export default class HubbardContextManagerLegacy extends HubbardContextProvider<Schema> {
     readonly name: "hubbard_legacy";
     readonly domain: "important";
+    readonly entityName: "unit";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: HubbardExternalContext): HubbardContextManagerLegacy;
     readonly jsonSchema: JSONSchema7 | undefined;
     readonly uiSchemaStyled: {
         readonly "ui:options": {
@@ -21,7 +22,7 @@ export default class HubbardContextManagerLegacy extends HubbardContextProvider<
             };
         };
     };
-    constructor(contextItem: ContextItem<Data>, externalContext: HubbardExternalContext);
+    constructor(contextItem: Partial<Schema>, externalContext: HubbardExternalContext);
     getDefaultData(): Data;
     setData(data: Data): void;
 }

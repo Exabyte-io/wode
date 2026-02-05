@@ -1,7 +1,10 @@
 import { PERIODIC_TABLE } from "@exabyte-io/periodic-table.js";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { QEPwxContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    InputContextItemSchema,
+    QEPwxContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { Material } from "@mat3ra/made";
 import type { AtomicElementValue } from "@mat3ra/made/dist/js/basis/elements";
 import type { JSONSchema7 } from "json-schema";
@@ -27,25 +30,20 @@ import workflowContextMixin, {
     type WorkflowContextMixin,
     type WorkflowExternalContext,
 } from "../../../mixins/WorkflowContextMixin";
-import type { ContextItem } from "../../base/ContextProvider";
+import type { UnitContext } from "../../base/ContextProvider";
 import JSONSchemaDataProvider, {
     type JinjaExternalContext,
 } from "../../base/JSONSchemaDataProvider";
 
-type Name = "input";
 type Data = QEPwxContextProviderSchema;
-
-export type QEPWXInputDataManagerContextItem = ContextItem<Data>;
-export type QEPWXInputDataManagerExternalContext = JinjaExternalContext &
+type Schema = InputContextItemSchema & { data: Data };
+type ExternalContext = JinjaExternalContext &
     WorkflowExternalContext &
     MaterialExternalContext &
     JobExternalContext &
     MethodDataExternalContext &
     MaterialsExternalContext;
-
-type ExternalContext = QEPWXInputDataManagerExternalContext;
-
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
     Constructor<JobContextMixin> &
     Constructor<MaterialContextMixin> &
     Constructor<MaterialsContextMixin> &
@@ -59,9 +57,17 @@ export default class QEPWXInputDataManager extends (JSONSchemaDataProvider as Ba
 
     readonly domain = "executable" as const;
 
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "input");
+
+        return new QEPWXInputDataManager(contextItem, externalContext);
+    }
+
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(config: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(config: Partial<Schema>, externalContext: ExternalContext) {
         super(config, externalContext);
         this.initMaterialsContextMixin(externalContext);
         this.initMethodDataContextMixin(externalContext);
@@ -83,8 +89,7 @@ export default class QEPWXInputDataManager extends (JSONSchemaDataProvider as Ba
                 Mass_X: PERIODIC_TABLE[symbol].atomic_mass,
                 PseudoPot_X: pseudo?.filename || path.basename(pseudo?.path || ""),
             };
-            // return s.sprintf("%s %f %s", symbol, el.atomic_mass, filename) || "";
-        }); // .join("\n");
+        });
 
         const uniqueElementsWithLabels = [...new Set(basis.elementsWithLabelsArray)];
 
@@ -132,6 +137,7 @@ export default class QEPWXInputDataManager extends (JSONSchemaDataProvider as Ba
             ATOMIC_POSITIONS,
             ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: basis.atomicPositions.join("\n"),
             CELL_PARAMETERS,
+            contextProviderName: "qe-pwx" as const,
         };
     }
 

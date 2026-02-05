@@ -6,4 +6,4 @@ export type ImportantSettingsProvider = {
     isImportantEdited: boolean | undefined;
 };
 export type ImportantSettingsProviderInMemoryEntityConstructor = Constructor<ImportantSettingsProvider>;
-export declare function importantSettingsProviderMixin<T extends InMemoryEntity & AbstractBase>(item: T): asserts item is T & ImportantSettingsProvider;
+export declare function importantSettingsProviderMixin<T extends InMemoryEntity>(item: T): asserts item is T & ImportantSettingsProvider;

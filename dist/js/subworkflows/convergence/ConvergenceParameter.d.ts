@@ -9,8 +9,6 @@ export type UnitContext = {
         dimensions: [string, string, string];
         shifts: [0, 0, 0];
     };
-    name: "kgrid";
-    isEdited: true;
     isUsingJinjaVariables: true;
 };
 export default abstract class ConvergenceParameter {

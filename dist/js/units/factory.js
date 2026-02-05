@@ -8,7 +8,6 @@ const ConditionUnit_1 = require("./ConditionUnit");
 const ExecutionUnit_1 = require("./ExecutionUnit");
 const IOUnit_1 = require("./IOUnit");
 const MapUnit_1 = require("./MapUnit");
-const ProcessingUnit_1 = require("./ProcessingUnit");
 const SubworkflowUnit_1 = require("./SubworkflowUnit");
 class UnitFactory {
     static createInWorkflow(config) {
@@ -46,8 +45,6 @@ class UnitFactory {
                 return new ConditionUnit_1.ConditionUnit(config);
             case enums_1.UnitType.io:
                 return new IOUnit_1.IOUnit(config);
-            case enums_1.UnitType.processing:
-                return new ProcessingUnit_1.ProcessingUnit(config);
             case enums_1.UnitType.assertion:
                 return new AssertionUnit_1.AssertionUnit(config);
             // // TODO-question: why there was no reduce unit in the factory?

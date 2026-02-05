@@ -11,12 +11,10 @@ export default class UniformKGridConvergence extends ConvergenceParameter {
     readonly finalValue = `${this.name} + 0` as const;
 
     readonly unitContext: UnitContext = {
-        name: "kgrid",
         data: {
             dimensions: [`{{${this.name}}}`, `{{${this.name}}}`, `{{${this.name}}}`],
             shifts: [0, 0, 0],
         },
-        isEdited: true,
         isUsingJinjaVariables: true,
     };
 

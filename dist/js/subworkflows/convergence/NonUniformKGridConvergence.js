@@ -14,8 +14,6 @@ class NonUniformKGridConvergence extends ConvergenceParameter_1.default {
                 dimensions: [`{{${this.name}[0]}}`, `{{${this.name}[1]}}`, `{{${this.name}[2]}}`],
                 shifts: [0, 0, 0],
             },
-            name: "kgrid",
-            isEdited: true,
             isUsingJinjaVariables: true,
         };
         this.increment = `[${this.initialValue}[i] + math.floor(iteration * ${increment || ""} * float(context['kgrid']['reciprocalVectorRatios'][i])) for i in range(3)]`;

@@ -1,6 +1,6 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { MLSettingsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { MlSettingsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import {
@@ -8,18 +8,12 @@ import {
     type ApplicationExternalContext,
     applicationContextMixin,
 } from "../mixins/ApplicationContextMixin";
-import { type ContextItem } from "./base/ContextProvider";
+import { type UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 
-type Name = "mlSettings";
-type Data = MLSettingsContextProviderSchema;
-
-export type MLSettingsDataManagerContextItem = ContextItem<Data>;
-export type MLSettingsDataManagerExternalContext = JinjaExternalContext &
-    ApplicationExternalContext;
-
-type ExternalContext = MLSettingsDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
+type Schema = MlSettingsContextItemSchema;
+type ExternalContext = JinjaExternalContext & ApplicationExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
     Constructor<ApplicationContextMixin>;
 
 const jsonSchemaId = "context-providers-directory/ml-settings-context-provider";
@@ -34,14 +28,24 @@ export default class MLSettingsDataManager extends (JSONSchemaDataProvider as Ba
 
     readonly domain = "important" as const;
 
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "mlSettings");
+
+        return new MLSettingsDataManager(contextItem, externalContext);
+    }
+
     readonly jsonSchema: JSONSchema7 | undefined;
 
     readonly uiSchema = {
         target_column_name: {},
         problem_category: {},
-    };
+    } as const;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    readonly extraData = {};
+
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initApplicationContextMixin(externalContext);
 

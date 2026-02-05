@@ -14,10 +14,15 @@ const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaD
 const QEPWXInputDataManager_1 = __importDefault(require("./QEPWXInputDataManager"));
 const jsonSchemaId = "context-providers-directory/by-application/qe-neb-context-provider";
 class QENEBInputDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "input");
+        return new QENEBInputDataManager(contextItem, externalContext);
+    }
     constructor(config, externalContext) {
         super(config, externalContext);
         this.name = "input";
         this.domain = "executable";
+        this.entityName = "unit";
         this.initJobContextMixin(externalContext);
         this.initMaterialsContextMixin(externalContext);
         this.initMethodDataContextMixin(externalContext);
@@ -40,6 +45,7 @@ class QENEBInputDataManager extends JSONSchemaDataProvider_1.default {
             INTERMEDIATE_IMAGES: PWXContexts.slice(1, PWXContexts.length - 1).map((data) => {
                 return data.ATOMIC_POSITIONS;
             }),
+            contextProviderName: "qe-neb",
         };
     }
 }

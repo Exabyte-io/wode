@@ -1,14 +1,22 @@
-import type { ContextItem } from "../base/ContextProvider";
+import type { PathContextItemSchema } from "@mat3ra/esse/dist/js/types";
+
+import type { UnitContext } from "../base/ContextProvider";
 import PointsPathFormDataProvider, {
-    type PointsPathFormDataProviderData,
     type PointsPathFormDataProviderExternalContext,
 } from "./PointsPathFormDataProvider";
 
 type Name = "ipath";
-
-export type IPathFormDataManagerContextItem = ContextItem<PointsPathFormDataProviderData>;
-export type IPathFormDataManagerExternalContext = PointsPathFormDataProviderExternalContext;
+type Schema = PathContextItemSchema;
 
 export default class IPathFormDataManager extends PointsPathFormDataProvider<Name> {
     readonly name = "ipath" as const;
+
+    static createFromUnitContext(
+        unitContext: UnitContext,
+        externalContext: PointsPathFormDataProviderExternalContext,
+    ) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "ipath");
+
+        return new IPathFormDataManager(contextItem, externalContext);
+    }
 }

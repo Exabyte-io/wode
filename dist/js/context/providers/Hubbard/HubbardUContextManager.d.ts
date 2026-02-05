@@ -1,12 +1,13 @@
-import type { HubbardUContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { HubbardUContextItemSchema, HubbardUContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
-import type { ContextItem } from "../base/ContextProvider";
+import type { UnitContext } from "../base/ContextProvider";
 import HubbardContextProvider, { type HubbardExternalContext } from "./HubbardContextProvider";
-type Name = "hubbard_u";
+type Schema = HubbardUContextItemSchema;
 type Data = HubbardUContextProviderSchema;
-export type HubbardUContextManagerContextItem = ContextItem<Data>;
-export default class HubbardUContextManager extends HubbardContextProvider<Name, Data> {
+export default class HubbardUContextManager extends HubbardContextProvider<Schema> {
     readonly name: "hubbard_u";
+    readonly entityName: "unit";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: HubbardExternalContext): HubbardUContextManager;
     readonly uiSchemaStyled: {
         readonly "ui:options": {
             readonly addable: true;
@@ -15,7 +16,7 @@ export default class HubbardUContextManager extends HubbardContextProvider<Name,
         };
     };
     readonly jsonSchema: JSONSchema7 | undefined;
-    constructor(contextItem: ContextItem<Data>, externalContext: HubbardExternalContext);
+    constructor(contextItem: Partial<Schema>, externalContext: HubbardExternalContext);
     getDefaultData(): Data;
 }
 export {};

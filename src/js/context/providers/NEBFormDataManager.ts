@@ -1,16 +1,13 @@
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { NEBDataProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { NebContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import type { ContextItem } from "./base/ContextProvider";
+import type { UnitContext } from "./base/ContextProvider";
 import type { JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
 
-type Name = "neb";
-type Data = NEBDataProviderSchema;
-export type NEBFormDataManagerContextItem = ContextItem<Data>;
-export type NEBFormDataManagerExternalContext = JinjaExternalContext;
-type ExternalContext = NEBFormDataManagerExternalContext;
+type Schema = NebContextItemSchema;
+type ExternalContext = JinjaExternalContext;
 
 const jsonSchemaId = "context-providers-directory/neb-data-provider";
 
@@ -18,18 +15,28 @@ const defaultData = {
     nImages: 1,
 };
 
-export default class NEBFormDataManager extends JSONSchemaFormDataProvider<Name, Data> {
+export default class NEBFormDataManager extends JSONSchemaFormDataProvider<Schema> {
     readonly name = "neb" as const;
 
     readonly domain = "important" as const;
 
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "neb");
+
+        return new NEBFormDataManager(contextItem, externalContext);
+    }
+
     readonly uiSchema = {
         nImages: {},
-    };
+    } as const;
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    readonly extraData = {};
+
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
 
         this.jsonSchema = JSONSchemasInterface.getPatchedSchemaById(jsonSchemaId, {

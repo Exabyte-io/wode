@@ -14,10 +14,15 @@ const WorkflowContextMixin_1 = __importDefault(require("../../../mixins/Workflow
 const JSONSchemaDataProvider_1 = __importDefault(require("../../base/JSONSchemaDataProvider"));
 const jsonSchemaId = "context-providers-directory/by-application/qe-pwx-context-provider";
 class QEPWXInputDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "input");
+        return new QEPWXInputDataManager(contextItem, externalContext);
+    }
     constructor(config, externalContext) {
         super(config, externalContext);
         this.name = "input";
         this.domain = "executable";
+        this.entityName = "unit";
         this.initMaterialsContextMixin(externalContext);
         this.initMethodDataContextMixin(externalContext);
         this.initWorkflowContextMixin(externalContext);
@@ -36,8 +41,7 @@ class QEPWXInputDataManager extends JSONSchemaDataProvider_1.default {
                 Mass_X: periodic_table_js_1.PERIODIC_TABLE[symbol].atomic_mass,
                 PseudoPot_X: (pseudo === null || pseudo === void 0 ? void 0 : pseudo.filename) || path_1.default.basename((pseudo === null || pseudo === void 0 ? void 0 : pseudo.path) || ""),
             };
-            // return s.sprintf("%s %f %s", symbol, el.atomic_mass, filename) || "";
-        }); // .join("\n");
+        });
         const uniqueElementsWithLabels = [...new Set(basis.elementsWithLabelsArray)];
         const ATOMIC_SPECIES_WITH_LABELS = uniqueElementsWithLabels.map((symbol) => {
             var _a, _b;
@@ -77,6 +81,7 @@ class QEPWXInputDataManager extends JSONSchemaDataProvider_1.default {
             ATOMIC_POSITIONS,
             ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: basis.atomicPositions.join("\n"),
             CELL_PARAMETERS,
+            contextProviderName: "qe-pwx",
         };
     }
     getDataPerMaterial() {

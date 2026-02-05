@@ -1,23 +1,29 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { CollinearMagnetizationContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    CollinearMagnetizationContextItemSchema,
+    CollinearMagnetizationContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../mixins/MaterialContextMixin";
-import type { ContextItem } from "./base/ContextProvider";
+import type { UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 
-type Name = "collinearMagnetization";
 type Data = CollinearMagnetizationContextProviderSchema;
-export type CollinearMagnetizationDataManagerContextItem = ContextItem<Data>;
-export type CollinearMagnetizationDataManagerExternalContext = JinjaExternalContext &
-    MaterialExternalContext;
-type ExternalContext = CollinearMagnetizationDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
+type Schema = CollinearMagnetizationContextItemSchema;
+type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
     Constructor<MaterialContextMixin>;
+
+const defaultData = {
+    value: 0.0,
+    isTotalMagnetization: false,
+    totalMagnetization: 0.0,
+};
 
 const jsonSchemaId = "context-providers-directory/collinear-magnetization-context-provider";
 
@@ -25,6 +31,14 @@ export default class CollinearMagnetizationDataManager extends (JSONSchemaDataPr
     readonly name = "collinearMagnetization" as const;
 
     readonly domain = "important" as const;
+
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "collinearMagnetization");
+
+        return new CollinearMagnetizationDataManager(contextItem, externalContext);
+    }
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
@@ -34,7 +48,7 @@ export default class CollinearMagnetizationDataManager extends (JSONSchemaDataPr
 
     private readonly uniqueElementsWithLabels: string[];
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initMaterialContextMixin(externalContext);
 
@@ -56,13 +70,13 @@ export default class CollinearMagnetizationDataManager extends (JSONSchemaDataPr
                 default: this.firstElement,
             },
             "properties.startingMagnetization.items.properties.value": {
-                default: 0.0,
+                default: defaultData.value,
             },
             "properties.isTotalMagnetization": {
-                default: false,
+                default: defaultData.isTotalMagnetization,
             },
             "properties.totalMagnetization": {
-                default: 0.0,
+                default: defaultData.totalMagnetization,
             },
         });
     }
@@ -73,11 +87,11 @@ export default class CollinearMagnetizationDataManager extends (JSONSchemaDataPr
                 {
                     index: 1,
                     atomicSpecies: this.firstElement,
-                    value: 0.0,
+                    value: defaultData.value,
                 },
             ],
-            isTotalMagnetization: false,
-            totalMagnetization: 0.0,
+            isTotalMagnetization: defaultData.isTotalMagnetization,
+            totalMagnetization: defaultData.totalMagnetization,
         };
     }
 

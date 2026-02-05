@@ -10,10 +10,15 @@ const defaultHubbardConfig = {
 };
 const jsonSchemaId = "context-providers-directory/hubbard-legacy-context-provider";
 class HubbardContextManagerLegacy extends HubbardContextProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "hubbard_legacy");
+        return new HubbardContextManagerLegacy(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.name = "hubbard_legacy";
         this.domain = "important";
+        this.entityName = "unit";
         this.uiSchemaStyled = {
             "ui:options": {
                 addable: true,

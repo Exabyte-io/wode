@@ -30,7 +30,6 @@ export enum UnitType {
     assignment = "assignment",
     condition = "condition",
     subworkflow = "subworkflow",
-    processing = "processing",
     io = "io",
     assertion = "assertion",
 }

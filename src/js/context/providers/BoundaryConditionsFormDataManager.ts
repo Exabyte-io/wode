@@ -1,21 +1,18 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { BoundaryConditionsDataProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { BoundaryConditionsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 
 import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../mixins/MaterialContextMixin";
-import type { ContextItem } from "./base/ContextProvider";
+import type { UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 
-type Name = "boundaryConditions";
-type Data = BoundaryConditionsDataProviderSchema;
-export type BoundaryConditionsFormDataManagerContextItem = ContextItem<Data>;
-export type BoundaryConditionsFormDataManagerExternalContext = JinjaExternalContext &
-    MaterialExternalContext;
-type ExternalContext = BoundaryConditionsFormDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> &
+type Schema = BoundaryConditionsContextItemSchema;
+type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> &
     Constructor<MaterialContextMixin>;
 
 const jsonSchemaId = "context-providers-directory/boundary-conditions-data-provider";
@@ -25,21 +22,29 @@ export default class BoundaryConditionsFormDataManager extends (JSONSchemaDataPr
 
     readonly domain = "important" as const;
 
-    readonly humanName = "Boundary Conditions";
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "boundaryConditions");
+
+        return new BoundaryConditionsFormDataManager(contextItem, externalContext);
+    }
+
+    readonly humanName = "Boundary Conditions" as const;
 
     readonly uiSchema = {
         type: { "ui:disabled": true },
         offset: { "ui:disabled": true },
         electricField: {},
         targetFermiEnergy: {},
-    };
+    } as const;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initMaterialContextMixin(externalContext);
     }
 
-    getDefaultData(): Data {
+    getDefaultData(): Schema["data"] {
         return {
             type: this.material?.metadata?.boundaryConditions?.type || "pbc",
             offset: this.material?.metadata?.boundaryConditions?.offset || 0,

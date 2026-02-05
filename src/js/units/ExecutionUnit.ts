@@ -2,9 +2,9 @@ import { Application, ApplicationRegistry as AdeRegistry, Executable, Flavor } f
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type {
+    ContextItemSchema,
     ExecutableSchema,
-    ExecutionUnitInputItemSchema,
-    ExecutionUnitSchemaBase,
+    ExecutionUnitSchema,
     FlavorSchema,
 } from "@mat3ra/esse/dist/js/types";
 import { Utils } from "@mat3ra/utils";
@@ -14,15 +14,16 @@ import {
     type ImportantSettingsProvider,
     importantSettingsProviderMixin,
 } from "../context/mixins/ImportantSettingsProviderMixin";
-import type { ContextItem } from "../context/providers/base/ContextProvider";
-import ExecutionUnitInput, { type ExecutionUnitInputContext } from "../ExecutionUnitInput";
+import { type ExternalContext, createProvider } from "../context/providers";
+import ExecutionUnitInput from "../ExecutionUnitInput";
 import {
     type ExecutionUnitSchemaMixin,
     executionUnitSchemaMixin,
 } from "../generated/ExecutionUnitSchemaMixin";
+import type ConvergenceParameter from "../subworkflows/convergence/ConvergenceParameter";
 import { BaseUnit } from "./BaseUnit";
 
-type Schema = ExecutionUnitSchemaBase;
+type Schema = ExecutionUnitSchema;
 type Base = typeof BaseUnit &
     Constructor<ExecutionUnitSchemaMixin> &
     Constructor<ImportantSettingsProvider>;
@@ -38,8 +39,6 @@ interface SetExecutableProps {
     flavor?: Flavor | FlavorSchema;
 }
 
-export type ExecutionUnitSchema = Schema;
-
 export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
     applicationInstance!: Application;
 
@@ -49,7 +48,7 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
 
     inputInstances: ExecutionUnitInput[] = [];
 
-    renderingContext: ContextItem[] = [];
+    renderingContext: Record<string, unknown> = {};
 
     declare toJSON: () => Schema & AnyObject;
 
@@ -119,40 +118,69 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
         this.inputInstances = inputs.map(ExecutionUnitInput.createFromTemplate);
     }
 
-    get allContextProviders() {
-        return this.inputInstances.map((input) => input.contextProvidersInstances).flat();
-    }
+    getContextProvidersInstances(externalContext: ExternalContext) {
+        const uniqueContextProviderNames = [
+            ...new Set(
+                this.inputInstances
+                    .map((input) => {
+                        return input.template.contextProviders.map((provider) => {
+                            return provider.name;
+                        });
+                    })
+                    .flat(),
+            ),
+        ];
 
-    get contextProviders() {
-        return this.allContextProviders.filter((p) => p.entityName === "unit");
-    }
-
-    get importantSettingsProviders() {
-        return this.contextProviders.filter((p) => p.domain === "important");
-    }
-
-    render(externalContext: AnyObject = {}) {
-        this.renderingContext = this.context;
-
-        const newInput: ExecutionUnitInputItemSchema[] = [];
-        const newPersistentContext: ContextItem[] = [];
-        const newRenderingContext: ContextItem[] = [];
-
-        this.inputInstances.forEach((input) => {
-            input.setContext(context, externalContext);
-            input.render();
-
-            const inputJSON = input.toJSON();
-            const fullContext = input.getFullContext();
-
-            newInput.push(inputJSON);
-            newRenderingContext.push(...fullContext);
-            newPersistentContext.push(...fullContext.filter((c) => c.isEdited));
+        return uniqueContextProviderNames.map((name) => {
+            return createProvider(name, this.context, externalContext);
         });
+    }
 
-        this.input = newInput;
-        this.renderingContext = newRenderingContext;
-        this.context = newPersistentContext;
+    addConvergenceContext(parameter: ConvergenceParameter, externalContext: ExternalContext) {
+        // TODO: kgrid should be abstracted and selected by user
+        const parameterToContextProviderMap = {
+            N_k: "kgrid",
+            N_k_nonuniform: "kgrid",
+        } as const;
+
+        const contextName = parameterToContextProviderMap[parameter.name];
+
+        const fullContext = this.getContextProvidersInstances(externalContext).map(
+            (contextProvider) => {
+                if (contextProvider.name === contextName) {
+                    contextProvider.applyCovergenceParameter(parameter);
+                    return contextProvider.getContextItemData();
+                }
+                return contextProvider.getContextItemData();
+            },
+        );
+
+        this.saveContext(fullContext);
+    }
+
+    render(externalContext: ExternalContext) {
+        const fullContext = this.getContextProvidersInstances(externalContext).map(
+            (contextProvider) => {
+                return contextProvider.getContextItemData();
+            },
+        );
+
+        this.saveContext(fullContext);
+
+        this.input = this.inputInstances.map((input) => {
+            return input.render(this.renderingContext).toJSON();
+        });
+    }
+
+    private saveContext(fullContext: ContextItemSchema[]) {
+        // persistent context
+        this.context = fullContext.filter((c) => c.isEdited);
+
+        this.renderingContext = Object.fromEntries(
+            fullContext.map((context) => {
+                return [context.name, context.data];
+            }),
+        );
     }
 
     /**

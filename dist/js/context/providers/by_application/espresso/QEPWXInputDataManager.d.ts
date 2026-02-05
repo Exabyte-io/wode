@@ -1,25 +1,27 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
-import type { QEPwxContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { InputContextItemSchema, QEPwxContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 import { type JobContextMixin, type JobExternalContext } from "../../../mixins/JobContextMixin";
 import { type MaterialContextMixin, type MaterialExternalContext } from "../../../mixins/MaterialContextMixin";
 import { type MaterialsContextMixin, type MaterialsExternalContext } from "../../../mixins/MaterialsContextMixin";
 import { type MethodDataContextMixin, type MethodDataExternalContext } from "../../../mixins/MethodDataContextMixin";
 import { type WorkflowContextMixin, type WorkflowExternalContext } from "../../../mixins/WorkflowContextMixin";
-import type { ContextItem } from "../../base/ContextProvider";
+import type { UnitContext } from "../../base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "../../base/JSONSchemaDataProvider";
-type Name = "input";
 type Data = QEPwxContextProviderSchema;
-export type QEPWXInputDataManagerContextItem = ContextItem<Data>;
-export type QEPWXInputDataManagerExternalContext = JinjaExternalContext & WorkflowExternalContext & MaterialExternalContext & JobExternalContext & MethodDataExternalContext & MaterialsExternalContext;
-type ExternalContext = QEPWXInputDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> & Constructor<JobContextMixin> & Constructor<MaterialContextMixin> & Constructor<MaterialsContextMixin> & Constructor<MethodDataContextMixin> & Constructor<WorkflowContextMixin>;
+type Schema = InputContextItemSchema & {
+    data: Data;
+};
+type ExternalContext = JinjaExternalContext & WorkflowExternalContext & MaterialExternalContext & JobExternalContext & MethodDataExternalContext & MaterialsExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> & Constructor<JobContextMixin> & Constructor<MaterialContextMixin> & Constructor<MaterialsContextMixin> & Constructor<MethodDataContextMixin> & Constructor<WorkflowContextMixin>;
 declare const QEPWXInputDataManager_base: Base;
 export default class QEPWXInputDataManager extends QEPWXInputDataManager_base {
     readonly name: "input";
     readonly domain: "executable";
+    readonly entityName: "unit";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext): QEPWXInputDataManager;
     readonly jsonSchema: JSONSchema7 | undefined;
-    constructor(config: ContextItem<Data>, externalContext: ExternalContext);
+    constructor(config: Partial<Schema>, externalContext: ExternalContext);
     private buildQEPWXContext;
     private getDataPerMaterial;
     getDefaultData(): {
@@ -54,6 +56,7 @@ export default class QEPWXInputDataManager extends QEPWXInputDataManager_base {
             v2?: [number, number, number];
             v3?: [number, number, number];
         };
+        contextProviderName: "qe-pwx";
     } | {
         perMaterial: QEPwxContextProviderSchema[];
         IBRAV: number;
@@ -86,6 +89,7 @@ export default class QEPWXInputDataManager extends QEPWXInputDataManager_base {
             v2?: [number, number, number];
             v3?: [number, number, number];
         };
+        contextProviderName: "qe-pwx";
     };
 }
 export {};

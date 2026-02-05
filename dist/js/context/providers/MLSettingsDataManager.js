@@ -12,14 +12,20 @@ const defaultData = {
     problem_category: "regression",
 };
 class MLSettingsDataManager extends JSONSchemaDataProvider_1.default {
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "mlSettings");
+        return new MLSettingsDataManager(contextItem, externalContext);
+    }
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.name = "mlSettings";
         this.domain = "important";
+        this.entityName = "unit";
         this.uiSchema = {
             target_column_name: {},
             problem_category: {},
         };
+        this.extraData = {};
         this.initApplicationContextMixin(externalContext);
         this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
             target_column_name: { default: defaultData.target_column_name },

@@ -125,15 +125,6 @@ class Subworkflow extends entity_1.InMemoryEntity {
             ...(this.compute ? { compute: this.compute } : {}), // {"compute": null } won't pass esse validation
         };
     }
-    get contextProviders() {
-        const subworkflowContextProviders = this.unitsInstances
-            .filter((u) => u.type === enums_1.UnitType.execution)
-            .filter((u) => u.allContextProviders.length)
-            .map((u) => u.allContextProviders)
-            .flat()
-            .filter((p) => p.entityName === "subworkflow");
-        return underscore_1.default.uniq(subworkflowContextProviders, (p) => p.name);
-    }
     getContextFromAssignmentUnits() {
         return this.unitsInstances
             .filter((u) => u.type === enums_1.UnitType.assignment)
@@ -144,7 +135,7 @@ class Subworkflow extends entity_1.InMemoryEntity {
             };
         }, {});
     }
-    render(context = {}) {
+    render(context) {
         const ctx = {
             ...context,
             application: this.applicationInstance,
@@ -156,7 +147,7 @@ class Subworkflow extends entity_1.InMemoryEntity {
         };
         this.unitsInstances.forEach((u) => {
             if (u.type === enums_1.UnitType.execution) {
-                u.render({}, ctx);
+                u.render(ctx);
             }
         });
     }
@@ -296,24 +287,12 @@ class Subworkflow extends entity_1.InMemoryEntity {
             throw new Error(`Subworkflow does not contain unit with '${result}' as extracted property.`);
         }
         // initialize parameter
-        const param = (0, factory_1.createConvergenceParameter)({
+        const convergenceParameter = (0, factory_1.createConvergenceParameter)({
             name: parameter,
             initialValue: parameterInitial,
             increment: parameterIncrement,
         });
-        // Replace kgrid to be ready for convergence
-        // TODO: kgrid should be abstracted and selected by user
-        const gridProvider = unitForConvergence.importantSettingsProviders.find((p) => {
-            return ["kgrid", "qgrid"].includes(p.name);
-        });
-        let mergedContext = param.unitContext;
-        if (gridProvider) {
-            const providerContext = gridProvider.getContextItemData();
-            mergedContext = merge(providerContext, param.unitContext);
-            gridProvider.setData(mergedContext);
-            gridProvider.setIsEdited(true);
-        }
-        unitForConvergence.updateContext(mergedContext);
+        unitForConvergence.addConvergenceContext(convergenceParameter, {});
         const prevResult = "prev_result";
         const iteration = "iteration";
         // Assignment with result's initial value
@@ -326,8 +305,8 @@ class Subworkflow extends entity_1.InMemoryEntity {
         // Assignment with initial value of convergence parameter
         const paramInit = new units_1.AssignmentUnit({
             name: "init parameter",
-            operand: param.name,
-            value: param.initialValue,
+            operand: convergenceParameter.name,
+            value: convergenceParameter.initialValue,
             tags: [enums_1.UnitTag.hasConvergenceParam],
         });
         // Assignment with initial value of iteration counter
@@ -351,17 +330,17 @@ class Subworkflow extends entity_1.InMemoryEntity {
         // Assignment for convergence param increase
         const nextStep = new units_1.AssignmentUnit({
             name: "update parameter",
-            input: param.useVariablesFromUnitContext(unitForConvergence.flowchartId),
-            operand: param.name,
-            value: param.increment,
+            input: convergenceParameter.useVariablesFromUnitContext(unitForConvergence.flowchartId),
+            operand: convergenceParameter.name,
+            value: convergenceParameter.increment,
             next: unitForConvergence.flowchartId,
         });
         // Final step of convergence
         const exit = new units_1.AssignmentUnit({
             name: "exit",
             input: [],
-            operand: param.name,
-            value: param.finalValue,
+            operand: convergenceParameter.name,
+            value: convergenceParameter.finalValue,
         });
         // Final step of convergence
         const storeResult = new units_1.AssignmentUnit({

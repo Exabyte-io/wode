@@ -1,5 +1,5 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
-import type { QENEBContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { InputContextItemSchema, QENEBContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 import { type JobContextMixin, type JobExternalContext } from "../../../mixins/JobContextMixin";
 import { type MaterialContextMixin, type MaterialExternalContext } from "../../../mixins/MaterialContextMixin";
@@ -7,20 +7,22 @@ import { type MaterialsContextMixin, type MaterialsExternalContext } from "../..
 import { type MaterialsSetContextMixin, type MaterialsSetExternalContext } from "../../../mixins/MaterialsSetContextMixin";
 import { type MethodDataContextMixin, type MethodDataExternalContext } from "../../../mixins/MethodDataContextMixin";
 import { type WorkflowContextMixin, type WorkflowExternalContext } from "../../../mixins/WorkflowContextMixin";
-import type { ContextItem } from "../../base/ContextProvider";
+import type { UnitContext } from "../../base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "../../base/JSONSchemaDataProvider";
-type Name = "input";
 type Data = QENEBContextProviderSchema;
-export type QENEBInputDataManagerContextItem = ContextItem<Data>;
-export type QENEBInputDataManagerExternalContext = JinjaExternalContext & WorkflowExternalContext & JobExternalContext & MaterialsExternalContext & MethodDataExternalContext & MaterialsSetExternalContext & MaterialExternalContext;
-type ExternalContext = QENEBInputDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data, object, ExternalContext> & Constructor<JobContextMixin> & Constructor<MaterialContextMixin> & Constructor<MaterialsContextMixin> & Constructor<MaterialsSetContextMixin> & Constructor<WorkflowContextMixin> & Constructor<MethodDataContextMixin>;
+type Schema = InputContextItemSchema & {
+    data: Data;
+};
+type ExternalContext = JinjaExternalContext & WorkflowExternalContext & JobExternalContext & MaterialsExternalContext & MethodDataExternalContext & MaterialsSetExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> & Constructor<JobContextMixin> & Constructor<MaterialContextMixin> & Constructor<MaterialsContextMixin> & Constructor<MaterialsSetContextMixin> & Constructor<WorkflowContextMixin> & Constructor<MethodDataContextMixin>;
 declare const QENEBInputDataManager_base: Base;
 export default class QENEBInputDataManager extends QENEBInputDataManager_base {
     readonly name: "input";
     readonly domain: "executable";
+    readonly entityName: "unit";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext): QENEBInputDataManager;
     readonly jsonSchema: JSONSchema7 | undefined;
-    constructor(config: ContextItem<Data>, externalContext: ExternalContext);
+    constructor(config: Partial<Schema>, externalContext: ExternalContext);
     getDefaultData(): Data;
 }
 export {};

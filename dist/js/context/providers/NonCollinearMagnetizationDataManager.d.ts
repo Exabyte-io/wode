@@ -1,19 +1,19 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
-import type { NonCollinearMagnetizationContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { NonCollinearMagnetizationContextItemSchema, NonCollinearMagnetizationContextProviderSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 import { type MaterialContextMixin, type MaterialExternalContext } from "../mixins/MaterialContextMixin";
-import type { ContextItem } from "./base/ContextProvider";
+import type { UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";
-type Name = "nonCollinearMagnetization";
 type Data = NonCollinearMagnetizationContextProviderSchema;
-export type NonCollinearMagnetizationDataManagerContextItem = ContextItem<Data>;
-export type NonCollinearMagnetizationDataManagerExternalContext = JinjaExternalContext & MaterialExternalContext;
-type ExternalContext = NonCollinearMagnetizationDataManagerExternalContext;
-type Base = typeof JSONSchemaDataProvider<Name, Data> & Constructor<MaterialContextMixin>;
+type Schema = NonCollinearMagnetizationContextItemSchema;
+type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaDataProvider<Schema, ExternalContext> & Constructor<MaterialContextMixin>;
 declare const NonCollinearMagnetizationDataManager_base: Base;
 export default class NonCollinearMagnetizationDataManager extends NonCollinearMagnetizationDataManager_base {
     readonly name: "nonCollinearMagnetization";
     readonly domain: "important";
+    readonly entityName: "unit";
+    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext): NonCollinearMagnetizationDataManager;
     readonly isStartingMagnetization: boolean;
     readonly isConstrainedMagnetization: boolean;
     readonly isExistingChargeDensity: boolean;
@@ -22,7 +22,7 @@ export default class NonCollinearMagnetizationDataManager extends NonCollinearMa
     readonly constrainedMagnetization: Data["constrainedMagnetization"];
     readonly jsonSchema: JSONSchema7 | undefined;
     private readonly uniqueElementsWithLabels;
-    constructor(contextItem: ContextItem<Data>, externalContext: ExternalContext);
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext);
     getDefaultData(): Data;
     get uiSchemaStyled(): {
         isExistingChargeDensity: {};

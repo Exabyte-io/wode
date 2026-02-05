@@ -1,6 +1,6 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { PlanewaveCutoffsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { CutoffsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
 import {
@@ -8,22 +8,28 @@ import {
     type ApplicationExternalContext,
     applicationContextMixin,
 } from "../mixins/ApplicationContextMixin";
-import ContextProvider, { type ContextItem, type ExternalContext } from "./base/ContextProvider";
+import ContextProvider, { type ExternalContext, type UnitContext } from "./base/ContextProvider";
 
 type ApplicationName = "vasp" | "espresso";
 
-type Name = "cutoffs";
-type Data = PlanewaveCutoffsContextProviderSchema;
+type Schema = CutoffsContextItemSchema;
 type PlanewaveExternalContext = ExternalContext & ApplicationExternalContext;
-type Base = typeof ContextProvider<Name, Data> & Constructor<ApplicationContextMixin>;
+type Base = typeof ContextProvider<Schema, ExternalContext> & Constructor<ApplicationContextMixin>;
 
-export type PlanewaveCutoffDataManagerContextItem = ContextItem<Data>;
-export type PlanewaveCutoffDataManagerExternalContext = PlanewaveExternalContext;
+// Type guard to check if a string is a valid ApplicationName
+function isApplicationName(name: string): name is ApplicationName {
+    return name === "vasp" || name === "espresso";
+}
 
 // TODO: create a task to move this handling to standata
 const cutoffConfig: Record<ApplicationName, { wavefunction?: number; density?: number }> = {
     vasp: { wavefunction: undefined, density: undefined },
     espresso: { wavefunction: 40, density: 200 },
+};
+
+const defaultData = {
+    wavefunction: undefined,
+    density: undefined,
 };
 
 const jsonSchemaId = "context-providers-directory/planewave-cutoffs-context-provider";
@@ -40,9 +46,20 @@ export default class PlanewaveCutoffDataManager extends (ContextProvider as Base
     readonly uiSchema = {
         wavefunction: {},
         density: {},
-    };
+    } as const;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: PlanewaveExternalContext) {
+    readonly extraData = {};
+
+    static createFromUnitContext(
+        unitContext: UnitContext,
+        externalContext: PlanewaveExternalContext,
+    ) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "cutoffs");
+
+        return new PlanewaveCutoffDataManager(contextItem, externalContext);
+    }
+
+    constructor(contextItem: Partial<Schema> = {}, externalContext: PlanewaveExternalContext = {}) {
         super(contextItem, externalContext);
         this.initApplicationContextMixin(externalContext);
 
@@ -55,13 +72,26 @@ export default class PlanewaveCutoffDataManager extends (ContextProvider as Base
     }
 
     getDefaultData() {
-        // TODO-QUESTION: what if the application is not in the cutoffConfig?
-        const { wavefunction, density } =
-            cutoffConfig[this.application.name as ApplicationName] || {};
+        const applicationName = this.application.name;
+
+        // Type-safe check: ensure application name is valid and exists in config
+        if (!isApplicationName(applicationName)) {
+            // Fallback to default values if application is not supported
+            return defaultData;
+        }
+
+        const config = cutoffConfig[applicationName];
+
+        if (!config) {
+            // Fallback to default values if application is not in cutoffConfig
+            return defaultData;
+        }
+
+        const { wavefunction, density } = config;
 
         return {
-            wavefunction,
-            density,
+            wavefunction: wavefunction ?? defaultData.wavefunction,
+            density: density ?? defaultData.density,
         };
     }
 }

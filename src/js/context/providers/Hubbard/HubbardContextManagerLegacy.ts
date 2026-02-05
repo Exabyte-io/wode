@@ -1,13 +1,15 @@
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { HubbardLegacyContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    HubbardLegacyContextItemSchema,
+    HubbardLegacyContextProviderSchema,
+} from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import type { ContextItem } from "../base/ContextProvider";
+import type { UnitContext } from "../base/ContextProvider";
 import HubbardContextProvider, { type HubbardExternalContext } from "./HubbardContextProvider";
 
-type Name = "hubbard_legacy";
+type Schema = HubbardLegacyContextItemSchema;
 type Data = HubbardLegacyContextProviderSchema;
-export type HubbardContextManagerLegacyContextItem = ContextItem<Data>;
 
 const defaultHubbardConfig = {
     hubbardUValue: 1.0,
@@ -15,10 +17,21 @@ const defaultHubbardConfig = {
 
 const jsonSchemaId = "context-providers-directory/hubbard-legacy-context-provider";
 
-export default class HubbardContextManagerLegacy extends HubbardContextProvider<Name, Data> {
+export default class HubbardContextManagerLegacy extends HubbardContextProvider<Schema> {
     readonly name = "hubbard_legacy" as const;
 
     readonly domain = "important" as const;
+
+    readonly entityName = "unit" as const;
+
+    static createFromUnitContext(
+        unitContext: UnitContext,
+        externalContext: HubbardExternalContext,
+    ) {
+        const contextItem = this.findContextItem<Schema>(unitContext, "hubbard_legacy");
+
+        return new HubbardContextManagerLegacy(contextItem, externalContext);
+    }
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
@@ -33,7 +46,7 @@ export default class HubbardContextManagerLegacy extends HubbardContextProvider<
         },
     } as const;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: HubbardExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: HubbardExternalContext) {
         super(contextItem, externalContext);
 
         this.jsonSchema = JSONSchemasInterface.getPatchedSchemaById(jsonSchemaId, {

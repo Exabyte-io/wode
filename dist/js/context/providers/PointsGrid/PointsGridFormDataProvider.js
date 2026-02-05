@@ -11,7 +11,6 @@ const lodash_1 = __importDefault(require("lodash"));
 const MaterialContextMixin_1 = __importDefault(require("../../mixins/MaterialContextMixin"));
 const JSONSchemaFormDataProvider_1 = __importDefault(require("../base/JSONSchemaFormDataProvider"));
 const settings_1 = require("../settings");
-// Helper function to create vector schema with defaults
 const vector = (defaultValue, isStringType = false) => {
     const isArray = Array.isArray(defaultValue);
     return {
@@ -32,13 +31,14 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.domain = "important";
+        this.entityName = "unit";
         this.initMaterialContextMixin(externalContext);
         this.initInstanceFields();
         const { jsonSchemaPatchConfig } = this;
         this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, jsonSchemaPatchConfig);
     }
     initInstanceFields() {
-        var _a, _b, _c, _d, _e, _f;
+        var _a, _b, _c, _d, _e;
         this.defaultMetric = {
             type: "KPPRA",
             value: this.getDefaultGridMetricValue("KPPRA"),
@@ -47,12 +47,9 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
         this.gridMetricType = ((_b = this.data) === null || _b === void 0 ? void 0 : _b.gridMetricType) || this.defaultMetric.type;
         this.gridMetricValue = ((_c = this.data) === null || _c === void 0 ? void 0 : _c.gridMetricValue) || this.defaultMetric.value;
         this.preferGridMetric = ((_d = this.data) === null || _d === void 0 ? void 0 : _d.preferGridMetric) || false;
-        this.reciprocalLattice = new made_1.Made.ReciprocalLattice((_e = this.material) === null || _e === void 0 ? void 0 : _e.lattice);
-        this.defaultDimensions = this.calculateDimensions({
-            gridMetricType: this.defaultMetric.type,
-            gridMetricValue: this.defaultMetric.value,
-        });
-        this.dimensions = ((_f = this.data) === null || _f === void 0 ? void 0 : _f.dimensions) || this.defaultDimensions;
+        this.reciprocalLattice = new made_1.Made.ReciprocalLattice(this.material.lattice);
+        this.defaultDimensions = this.calculateDimensions(this.defaultMetric.type, this.defaultMetric.value);
+        this.dimensions = ((_e = this.data) === null || _e === void 0 ? void 0 : _e.dimensions) || this.defaultDimensions;
         this.reciprocalVectorRatios = this.reciprocalLattice.reciprocalVectorRatios.map((r) => Number(math_1.math.numberToPrecision(r, 3)));
     }
     getDefaultGridMetricValue(metric) {
@@ -80,7 +77,7 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
             // if `data` is present and material is updated, prioritize `data` when `preferGridMetric` is not set
             return this.preferGridMetric
                 ? {
-                    dimensions: this.calculateDimensions({ gridMetricType, gridMetricValue }),
+                    dimensions: this.calculateDimensions(gridMetricType, gridMetricValue),
                     shifts: defaultShifts,
                     gridMetricType,
                     gridMetricValue,
@@ -186,7 +183,7 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
             },
         };
     }
-    calculateDimensions({ gridMetricType, gridMetricValue, }) {
+    calculateDimensions(gridMetricType, gridMetricValue) {
         switch (gridMetricType) {
             case "KPPRA": {
                 const nAtoms = this.material ? this.material.Basis.nAtoms : 1;
@@ -198,7 +195,7 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
                 return [1, 1, 1];
         }
     }
-    calculateGridMetric({ gridMetricType, dimensions, }) {
+    calculateGridMetric(gridMetricType, dimensions) {
         switch (gridMetricType) {
             case "KPPRA": {
                 const nAtoms = this.material ? this.material.Basis.nAtoms : 1;
@@ -211,23 +208,23 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
         }
     }
     setData(data) {
-        var _a;
-        const canTransform = ((data === null || data === void 0 ? void 0 : data.preferGridMetric) && (data === null || data === void 0 ? void 0 : data.gridMetricType) && (data === null || data === void 0 ? void 0 : data.gridMetricValue)) ||
-            (!(data === null || data === void 0 ? void 0 : data.preferGridMetric) && ((_a = data === null || data === void 0 ? void 0 : data.dimensions) === null || _a === void 0 ? void 0 : _a.every((d) => typeof d === "number")));
-        if (!data || !canTransform) {
-            return super.setData(data);
+        if (!data) {
+            return;
         }
-        // dimensions are calculated from grid metric or vice versa
-        if (data.preferGridMetric) {
+        const { dimensions, gridMetricType, preferGridMetric, gridMetricValue } = data;
+        if (preferGridMetric && gridMetricType && gridMetricValue) {
             return super.setData({
                 ...data,
-                dimensions: this.calculateDimensions(data),
+                dimensions: this.calculateDimensions(gridMetricType, gridMetricValue),
             });
         }
-        super.setData({
-            ...data,
-            gridMetricValue: this.calculateGridMetric(data),
-        });
+        if (!preferGridMetric && dimensions.every((d) => typeof d === "number")) {
+            super.setData({
+                ...data,
+                gridMetricValue: this.calculateGridMetric(gridMetricType, dimensions),
+            });
+        }
+        return super.setData(data);
     }
 }
 exports.default = PointsGridFormDataProvider;

@@ -10,12 +10,10 @@ class UniformKGridConvergence extends ConvergenceParameter_1.default {
         this.name = "N_k";
         this.finalValue = `${this.name} + 0`;
         this.unitContext = {
-            name: "kgrid",
             data: {
                 dimensions: [`{{${this.name}}}`, `{{${this.name}}}`, `{{${this.name}}}`],
                 shifts: [0, 0, 0],
             },
-            isEdited: true,
             isUsingJinjaVariables: true,
         };
         this.increment = `${this.name} + ${increment || ""}`;

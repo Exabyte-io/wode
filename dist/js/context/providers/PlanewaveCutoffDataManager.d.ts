@@ -1,14 +1,11 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
-import type { PlanewaveCutoffsContextProviderSchema } from "@mat3ra/esse/dist/js/types";
+import type { CutoffsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 import { type ApplicationContextMixin, type ApplicationExternalContext } from "../mixins/ApplicationContextMixin";
-import ContextProvider, { type ContextItem, type ExternalContext } from "./base/ContextProvider";
-type Name = "cutoffs";
-type Data = PlanewaveCutoffsContextProviderSchema;
+import ContextProvider, { type ExternalContext, type UnitContext } from "./base/ContextProvider";
+type Schema = CutoffsContextItemSchema;
 type PlanewaveExternalContext = ExternalContext & ApplicationExternalContext;
-type Base = typeof ContextProvider<Name, Data> & Constructor<ApplicationContextMixin>;
-export type PlanewaveCutoffDataManagerContextItem = ContextItem<Data>;
-export type PlanewaveCutoffDataManagerExternalContext = PlanewaveExternalContext;
+type Base = typeof ContextProvider<Schema, ExternalContext> & Constructor<ApplicationContextMixin>;
 declare const PlanewaveCutoffDataManager_base: Base;
 export default class PlanewaveCutoffDataManager extends PlanewaveCutoffDataManager_base {
     readonly name: "cutoffs";
@@ -16,10 +13,12 @@ export default class PlanewaveCutoffDataManager extends PlanewaveCutoffDataManag
     readonly entityName: "subworkflow";
     readonly jsonSchema: JSONSchema7 | undefined;
     readonly uiSchema: {
-        wavefunction: {};
-        density: {};
+        readonly wavefunction: {};
+        readonly density: {};
     };
-    constructor(contextItem: ContextItem<Data>, externalContext: PlanewaveExternalContext);
+    readonly extraData: {};
+    static createFromUnitContext(unitContext: UnitContext, externalContext: PlanewaveExternalContext): PlanewaveCutoffDataManager;
+    constructor(contextItem?: Partial<Schema>, externalContext?: PlanewaveExternalContext);
     getDefaultData(): {
         wavefunction: number | undefined;
         density: number | undefined;

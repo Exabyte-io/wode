@@ -10,5 +10,9 @@ class IGridFormDataManager extends PointsGridFormDataProvider_1.default {
         this.name = "igrid";
         this.divisor = 0.2;
     }
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "igrid");
+        return new IGridFormDataManager(contextItem, externalContext);
+    }
 }
 exports.default = IGridFormDataManager;

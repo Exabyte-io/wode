@@ -2,7 +2,11 @@ import { Units } from "@mat3ra/code/dist/js/constants";
 import { math as codeJSMath } from "@mat3ra/code/dist/js/math";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface";
-import type { PointsGridDataProviderSchema, Vector3DSchema } from "@mat3ra/esse/dist/js/types";
+import type {
+    GridContextItemSchema,
+    PointsGridDataProviderSchema,
+    Vector3DSchema,
+} from "@mat3ra/esse/dist/js/types";
 import { type ReciprocalLattice, Made } from "@mat3ra/made";
 import type { JSONSchema7 } from "json-schema";
 import lodash from "lodash";
@@ -11,23 +15,18 @@ import materialContextMixin, {
     type MaterialContextMixin,
     type MaterialExternalContext,
 } from "../../mixins/MaterialContextMixin";
-import type { ContextItem } from "../base/ContextProvider";
 import type { JinjaExternalContext } from "../base/JSONSchemaDataProvider";
 import JSONSchemaFormDataProvider from "../base/JSONSchemaFormDataProvider";
 import { globalSettings } from "../settings";
 
-type Name = "qgrid" | "kgrid" | "igrid";
+type Schema = GridContextItemSchema;
 type Data = PointsGridDataProviderSchema;
-type EContext = JinjaExternalContext & MaterialExternalContext;
-type Base = typeof JSONSchemaFormDataProvider<Name, Data, object, EContext> &
+export type ExternalContext = JinjaExternalContext & MaterialExternalContext;
+type Base = typeof JSONSchemaFormDataProvider<Schema, ExternalContext> &
     Constructor<MaterialContextMixin>;
 
 type GridMetricType = Data["gridMetricType"];
 
-export type PointsGridFormDataManagerContextItem = ContextItem<Data>;
-export type PointsGridFormDataManagerExternalContext = EContext;
-
-// Helper function to create vector schema with defaults
 const vector = (
     defaultValue: string | number | readonly number[] | readonly string[],
     isStringType = false,
@@ -51,19 +50,21 @@ const defaultShift = 0;
 const defaultShifts: Vector3DSchema = [defaultShift, defaultShift, defaultShift];
 
 export default abstract class PointsGridFormDataProvider<
-    N extends Name,
+    N extends Schema["name"],
 > extends (JSONSchemaFormDataProvider as Base) {
     abstract readonly name: N;
 
     readonly domain = "important" as const;
 
-    public dimensions!: Vector3DSchema;
+    readonly entityName = "unit" as const;
 
-    public shifts!: Vector3DSchema;
+    public dimensions!: Data["dimensions"];
+
+    public shifts!: Data["shifts"];
 
     private reciprocalLattice!: ReciprocalLattice;
 
-    private gridMetricType!: GridMetricType;
+    private gridMetricType!: Data["gridMetricType"];
 
     private gridMetricValue!: number;
 
@@ -82,7 +83,7 @@ export default abstract class PointsGridFormDataProvider<
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(contextItem: ContextItem<Data>, externalContext: EContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
         super(contextItem, externalContext);
         this.initMaterialContextMixin(externalContext);
         this.initInstanceFields();
@@ -106,11 +107,11 @@ export default abstract class PointsGridFormDataProvider<
         this.gridMetricValue = this.data?.gridMetricValue || this.defaultMetric.value;
         this.preferGridMetric = this.data?.preferGridMetric || false;
 
-        this.reciprocalLattice = new Made.ReciprocalLattice(this.material?.lattice);
-        this.defaultDimensions = this.calculateDimensions({
-            gridMetricType: this.defaultMetric.type,
-            gridMetricValue: this.defaultMetric.value,
-        });
+        this.reciprocalLattice = new Made.ReciprocalLattice(this.material.lattice);
+        this.defaultDimensions = this.calculateDimensions(
+            this.defaultMetric.type,
+            this.defaultMetric.value,
+        );
         this.dimensions = this.data?.dimensions || this.defaultDimensions;
         this.reciprocalVectorRatios = this.reciprocalLattice.reciprocalVectorRatios.map((r) =>
             Number(codeJSMath.numberToPrecision(r, 3)),
@@ -144,7 +145,7 @@ export default abstract class PointsGridFormDataProvider<
             // if `data` is present and material is updated, prioritize `data` when `preferGridMetric` is not set
             return this.preferGridMetric
                 ? {
-                      dimensions: this.calculateDimensions({ gridMetricType, gridMetricValue }),
+                      dimensions: this.calculateDimensions(gridMetricType, gridMetricValue),
                       shifts: defaultShifts,
                       gridMetricType,
                       gridMetricValue,
@@ -228,7 +229,7 @@ export default abstract class PointsGridFormDataProvider<
                     "ui:emptyValue": emptyValue,
                     "ui:label": false,
                 },
-            };
+            } as const;
         };
 
         return {
@@ -258,11 +259,11 @@ export default abstract class PointsGridFormDataProvider<
         };
     }
 
-    private calculateDimensions({
-        gridMetricType,
-        gridMetricValue,
-    }: // units = Units.angstrom,
-    Pick<Data, "gridMetricType" | "gridMetricValue">): Vector3DSchema {
+    private calculateDimensions(
+        gridMetricType: GridMetricType,
+        gridMetricValue: number,
+        // units = Units.angstrom,
+    ): Vector3DSchema {
         switch (gridMetricType) {
             case "KPPRA": {
                 const nAtoms = this.material ? this.material.Basis.nAtoms : 1;
@@ -280,11 +281,11 @@ export default abstract class PointsGridFormDataProvider<
         }
     }
 
-    private calculateGridMetric({
-        gridMetricType,
-        dimensions,
-    }: // units = Units.angstrom,
-    Pick<Data, "gridMetricType" | "dimensions">) {
+    private calculateGridMetric(
+        gridMetricType: GridMetricType,
+        dimensions: Vector3DSchema,
+        // units = Units.angstrom,
+    ) {
         switch (gridMetricType) {
             case "KPPRA": {
                 const nAtoms = this.material ? this.material.Basis.nAtoms : 1;
@@ -301,26 +302,27 @@ export default abstract class PointsGridFormDataProvider<
     }
 
     setData(data?: Data) {
-        const canTransform =
-            (data?.preferGridMetric && data?.gridMetricType && data?.gridMetricValue) ||
-            (!data?.preferGridMetric && data?.dimensions?.every((d) => typeof d === "number"));
-
-        if (!data || !canTransform) {
-            return super.setData(data);
+        if (!data) {
+            return;
         }
 
-        // dimensions are calculated from grid metric or vice versa
-        if (data.preferGridMetric) {
+        const { dimensions, gridMetricType, preferGridMetric, gridMetricValue } = data;
+
+        if (preferGridMetric && gridMetricType && gridMetricValue) {
             return super.setData({
                 ...data,
-                dimensions: this.calculateDimensions(data),
+                dimensions: this.calculateDimensions(gridMetricType, gridMetricValue),
             });
         }
 
-        super.setData({
-            ...data,
-            gridMetricValue: this.calculateGridMetric(data),
-        });
+        if (!preferGridMetric && dimensions.every((d) => typeof d === "number")) {
+            super.setData({
+                ...data,
+                gridMetricValue: this.calculateGridMetric(gridMetricType, dimensions),
+            });
+        }
+
+        return super.setData(data);
     }
 }
 

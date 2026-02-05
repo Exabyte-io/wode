@@ -5,26 +5,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const JSONSchemaFormDataProvider_1 = __importDefault(require("./base/JSONSchemaFormDataProvider"));
-const jsonSchemaId = "context-providers-directory/neb-data-provider";
+const jsonSchemaId = "context-providers-directory/ion-dynamics-context-provider";
 const defaultData = {
-    nImages: 1,
+    numberOfSteps: 100,
+    timeStep: 5.0,
+    electronMass: 100.0,
+    temperature: 300.0,
 };
-class NEBFormDataManager extends JSONSchemaFormDataProvider_1.default {
+class IonDynamicsDataManager extends JSONSchemaFormDataProvider_1.default {
     static createFromUnitContext(unitContext, externalContext) {
-        const contextItem = this.findContextItem(unitContext, "neb");
-        return new NEBFormDataManager(contextItem, externalContext);
+        const contextItem = this.findContextItem(unitContext, "dynamics");
+        return new IonDynamicsDataManager(contextItem, externalContext);
     }
     constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
-        this.name = "neb";
+        this.name = "dynamics";
         this.domain = "important";
         this.entityName = "unit";
         this.uiSchema = {
-            nImages: {},
+            numberOfSteps: {},
+            timeStep: {},
+            electronMass: {},
+            temperature: {},
         };
         this.extraData = {};
         this.jsonSchema = JSONSchemasInterface_1.default.getPatchedSchemaById(jsonSchemaId, {
-            nImages: { default: defaultData.nImages },
+            numberOfSteps: { default: defaultData.numberOfSteps },
+            timeStep: { default: defaultData.timeStep },
+            electronMass: { default: defaultData.electronMass },
+            temperature: { default: defaultData.temperature },
         });
     }
     // eslint-disable-next-line class-methods-use-this
@@ -32,4 +41,4 @@ class NEBFormDataManager extends JSONSchemaFormDataProvider_1.default {
         return defaultData;
     }
 }
-exports.default = NEBFormDataManager;
+exports.default = IonDynamicsDataManager;
