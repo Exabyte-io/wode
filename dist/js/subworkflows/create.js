@@ -228,7 +228,7 @@ function createSubworkflow({
     dynamicSubworkflow = null
   } = subworkflowData;
   unitConfigs.forEach(_config => {
-    if (config.index !== undefined) _config.config = {
+    _config.config = {
       ...(_config.config || {}),
       subworkflowIndex: config.index
     };
