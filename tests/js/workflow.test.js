@@ -6,7 +6,7 @@ import { createWorkflow } from "../../src/js/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
 const EXPECTED_WORKFLOW_ID = "cd826954-8c96-59f7-b2de-f36ce2d86105";
-const EXPECTED_SUBWORKFLOW_ID = "233bb8cf-3b4a-5378-84d9-a6a95a2ab43d";
+const EXPECTED_SUBWORKFLOW_ID = "9f818234-c077-561a-8f48-e690147c9b7a";
 const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
 
 describe("workflows", () => {

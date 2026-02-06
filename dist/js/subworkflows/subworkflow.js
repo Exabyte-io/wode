@@ -79,6 +79,7 @@ class Subworkflow extends BaseSubworkflow {
     const {
       functions,
       attributes,
+      index,
       ...cleanConfig
     } = config;
 
