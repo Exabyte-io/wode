@@ -16,14 +16,18 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 // eslint-disable-next-line max-len
 class BaseUnit extends _entity.NamedDefaultableRepetitionRuntimeItemsImportantSettingsContextAndRenderHashedInMemoryEntity {
   constructor(config) {
-    const nameWithIndex = config.name + (config.subworkflowIndex || "");
+    const {
+      subworkflowIndex,
+      ...cleanConfig
+    } = config;
+    const nameWithIndex = config.name + (subworkflowIndex || "");
     const flowchartId = config.flowchartId || BaseUnit.generateFlowChartId.call(new.target, nameWithIndex);
     super({
-      ...config,
-      status: config.status || _enums.UNIT_STATUSES.idle,
-      statusTrack: config.statusTrack || [],
+      ...cleanConfig,
+      status: cleanConfig.status || _enums.UNIT_STATUSES.idle,
+      statusTrack: cleanConfig.statusTrack || [],
       flowchartId,
-      tags: config.tags || []
+      tags: cleanConfig.tags || []
     });
   }
   static generateFlowChartId(...args) {
