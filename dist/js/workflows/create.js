@@ -4,11 +4,13 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.createWorkflow = createWorkflow;
+var _lodash = _interopRequireDefault(require("lodash"));
 var _create = require("../subworkflows/create");
 var _units = require("../units");
 var _map = require("../units/map");
 var _utils = require("../utils");
 var _workflow = require("./workflow");
+function _interopRequireDefault(e) { return e && e.__esModule ? e : { default: e }; }
 /**
  * @summary Helper for creating Map units for complex workflows
  * @param config {Object} map unit configuration
@@ -94,9 +96,12 @@ function createSubworkflowUnit({
   const {
     [appName]: dataByApp
   } = subworkflows;
-  let {
-    [unitName]: subworkflowData
+  const {
+    [unitName]: originalSubworkflowData
   } = dataByApp;
+
+  // Clone to avoid modifying shared data
+  let subworkflowData = _lodash.default.cloneDeep(originalSubworkflowData);
   subworkflowData.config = {
     ...subworkflowData.config,
     ...config
@@ -107,11 +112,9 @@ function createSubworkflowUnit({
   });
   if (uniqueFlowchartIds && unitIndex !== undefined) {
     subworkflowData.units.forEach(unit => {
-      if (unit.flowchartId) {
-        unit.flowchartId = `${unit.flowchartId}-${unitIndex}`;
+      if (unit.config && unit.config.flowchartId) {
+        unit.config.flowchartId = `${unit.config.flowchartId}-${unitIndex}`;
       }
-    });
-    subworkflowData.units.forEach(unit => {
       if (unit.next) {
         unit.next = `${unit.next}-${unitIndex}`;
       }

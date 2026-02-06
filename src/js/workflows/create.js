@@ -1,3 +1,5 @@
+import lodash from "lodash";
+
 import { createSubworkflow } from "../subworkflows/create";
 import { UnitFactory } from "../units";
 import { defaultMapConfig } from "../units/map";
@@ -49,18 +51,18 @@ function createSubworkflowUnit({ appName, unitData, unitIndex, workflowData, ...
     const { name: unitName, unitConfigs, config, uniqueFlowchartIds } = unitData;
     const { subworkflows } = workflowData;
     const { [appName]: dataByApp } = subworkflows;
-    let { [unitName]: subworkflowData } = dataByApp;
+    const { [unitName]: originalSubworkflowData } = dataByApp;
+
+    // Clone to avoid modifying shared data
+    let subworkflowData = lodash.cloneDeep(originalSubworkflowData);
     subworkflowData.config = { ...subworkflowData.config, ...config };
     if (unitConfigs) subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
 
     if (uniqueFlowchartIds && unitIndex !== undefined) {
         subworkflowData.units.forEach((unit) => {
-            if (unit.flowchartId) {
-                unit.flowchartId = `${unit.flowchartId}-${unitIndex}`;
+            if (unit.config && unit.config.flowchartId) {
+                unit.config.flowchartId = `${unit.config.flowchartId}-${unitIndex}`;
             }
-        });
-
-        subworkflowData.units.forEach((unit) => {
             if (unit.next) {
                 unit.next = `${unit.next}-${unitIndex}`;
             }

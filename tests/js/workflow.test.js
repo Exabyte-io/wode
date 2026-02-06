@@ -201,3 +201,82 @@ describe("Workflow UUIDs", () => {
         expect(workflow1._id).to.equal(workflow2._id);
     });
 });
+
+describe("subworkflow uniqueFlowchartIds", () => {
+    it("should append suffix to flowchart IDs when uniqueFlowchartIds is true", () => {
+        const workflowData = {
+            name: "Test Workflow",
+            units: [
+                {
+                    name: "average_electrostatic_potential_via_band_structure",
+                    type: "subworkflow",
+                    uniqueFlowchartIds: true,
+                },
+            ],
+        };
+
+        const workflow = createWorkflow({
+            appName: "espresso",
+            workflowData,
+            workflowSubworkflowMapByApplication,
+            workflowCls: Workflow,
+            SubworkflowCls: Subworkflow,
+            UnitFactoryCls: UnitFactory,
+            unitBuilders: builders,
+        });
+
+        const subworkflowUnit = workflow.subworkflows[0];
+
+        // Check that explicit flowchart IDs have suffix (units at index 2 and 7)
+        expect(subworkflowUnit.units[2].flowchartId).to.equal(
+            "pw-bands-calculate-band-gap-right-1",
+        );
+        expect(subworkflowUnit.units[7].flowchartId).to.equal(
+            "average-electrostatic-potential-right-1",
+        );
+    });
+
+    it("should use different suffixes for multiple subworkflow instances", () => {
+        const workflowData = {
+            name: "Test Workflow",
+            units: [
+                {
+                    name: "average_electrostatic_potential_via_band_structure",
+                    type: "subworkflow",
+                    uniqueFlowchartIds: true,
+                },
+                {
+                    name: "average_electrostatic_potential_via_band_structure",
+                    type: "subworkflow",
+                    uniqueFlowchartIds: true,
+                },
+            ],
+        };
+
+        const workflow = createWorkflow({
+            appName: "espresso",
+            workflowData,
+            workflowSubworkflowMapByApplication,
+            workflowCls: Workflow,
+            SubworkflowCls: Subworkflow,
+            UnitFactoryCls: UnitFactory,
+            unitBuilders: builders,
+        });
+
+        // First subworkflow should have -1 suffix
+        expect(workflow.subworkflows[0].units[2].flowchartId).to.equal(
+            "pw-bands-calculate-band-gap-right-1",
+        );
+        expect(workflow.subworkflows[0].units[7].flowchartId).to.equal(
+            "average-electrostatic-potential-right-1",
+        );
+
+        // Second subworkflow should have -2 suffix
+        expect(workflow.subworkflows[1].units[2].flowchartId).to.equal(
+            "pw-bands-calculate-band-gap-right-2",
+        );
+        expect(workflow.subworkflows[1].units[7].flowchartId).to.equal(
+            "average-electrostatic-potential-right-2",
+        );
+    });
+});
