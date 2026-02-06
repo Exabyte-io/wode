@@ -6,8 +6,8 @@ import { createWorkflow } from "../../src/js/workflows/create";
 
 // Expected predefined IDs constants - update these after running test to see actual values
 const EXPECTED_WORKFLOW_ID = "cd826954-8c96-59f7-b2de-f36ce2d86105";
-const EXPECTED_SUBWORKFLOW_ID = "9f818234-c077-561a-8f48-e690147c9b7a";
-const EXPECTED_UNIT_ID = "9fc7a088-5533-5f70-bb33-f676ec65f565";
+const EXPECTED_SUBWORKFLOW_ID = "233bb8cf-3b4a-5378-84d9-a6a95a2ab43d";
+const EXPECTED_UNIT_ID = "15b737e8-2ec4-52b7-bb43-a47ba0e9a623";
 
 describe("workflows", () => {
     it("can all be created", () => {
@@ -199,5 +199,42 @@ describe("Workflow UUIDs", () => {
         const workflow2 = createTestWorkflow();
         expect(workflow1._id).to.not.be.equal("");
         expect(workflow1._id).to.equal(workflow2._id);
+    });
+
+    it("generates unique flowchartIds for repeated subworkflows and their units", () => {
+        const workflowData = {
+            name: "test_repeated_subworkflows",
+            units: [
+                { name: "pw_scf", type: "subworkflow" },
+                { name: "pw_scf", type: "subworkflow" },
+                { name: "pw_scf", type: "subworkflow" },
+            ],
+        };
+
+        const workflow = createWorkflow({
+            appName: "espresso",
+            workflowData,
+            workflowSubworkflowMapByApplication,
+        });
+
+        expect(workflow.units).to.have.length(3);
+        const unitFlowchartIds = workflow.units.map((unit) => unit.flowchartId);
+        expect(unitFlowchartIds[0]).to.not.equal(unitFlowchartIds[1]);
+        expect(unitFlowchartIds[1]).to.not.equal(unitFlowchartIds[2]);
+
+        expect(workflow.subworkflows).to.have.length(3);
+        const subworkflowIds = workflow.subworkflows.map((sw) => sw._id);
+        expect(subworkflowIds[0]).to.not.equal(subworkflowIds[1]);
+        expect(subworkflowIds[1]).to.not.equal(subworkflowIds[2]);
+
+        workflow.subworkflows[0].units.forEach((unit, unitIndex) => {
+            const unit1 = workflow.subworkflows[1].units[unitIndex];
+            const unit2 = workflow.subworkflows[2].units[unitIndex];
+            if (unit1 && unit2) {
+                expect(unit.flowchartId).to.not.equal(unit1.flowchartId);
+                expect(unit.flowchartId).to.not.equal(unit2.flowchartId);
+                expect(unit1.flowchartId).to.not.equal(unit2.flowchartId);
+            }
+        });
     });
 });

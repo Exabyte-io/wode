@@ -96,10 +96,16 @@ function createTopLevel({ subworkflowData, modelFactoryCls, methodFactoryCls, Ap
  * @param unitFactoryCls {*} workflow unit class factory
  * @returns {*|{head: boolean, preProcessors: [], postProcessors: [], name: *, flowchartId: *, type: *, results: [], monitors: []}}
  */
-export function createUnit({ config, application, unitBuilders, unitFactoryCls }) {
+export function createUnit({
+    config,
+    application,
+    unitBuilders,
+    unitFactoryCls,
+    subworkflowIndex,
+}) {
     const { type, config: unitConfig } = config;
     if (type === "executionBuilder") {
-        const { name, execName, flavorName, flowchartId, subworkflowIndex } = unitConfig;
+        const { name, execName, flavorName, flowchartId } = unitConfig;
         const uniqueFlowchartId =
             flowchartId ||
             (subworkflowIndex !== undefined
@@ -120,7 +126,7 @@ export function createUnit({ config, application, unitBuilders, unitFactoryCls }
         return unitFactoryCls.create(cfg);
     }
 
-    return unitFactoryCls.create({ type, ...unitConfig });
+    return unitFactoryCls.create({ type, ...unitConfig, subworkflowIndex });
 }
 
 /**
@@ -155,6 +161,7 @@ function createDynamicUnits({
 
 function createSubworkflow({
     subworkflowData,
+    subworkflowIndex,
     AppRegistry = ApplicationRegistry,
     modelFactoryCls = ModelFactory,
     methodFactoryCls = MethodFactory,
@@ -173,8 +180,15 @@ function createSubworkflow({
     const { name, units: unitConfigs, config = {}, dynamicSubworkflow = null } = subworkflowData;
 
     unitConfigs.forEach((_config) => {
-        _config.config = { ...(_config.config || {}), subworkflowIndex: config.index };
-        units.push(createUnit({ config: _config, application, unitBuilders, unitFactoryCls }));
+        units.push(
+            createUnit({
+                config: _config,
+                application,
+                unitBuilders,
+                unitFactoryCls,
+                subworkflowIndex,
+            }),
+        );
     });
     if (dynamicSubworkflow) {
         units = createDynamicUnits({

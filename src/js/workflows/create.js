@@ -44,15 +44,16 @@ function updateUnitConfigs({ subworkflowData, unitConfigs }) {
  * @param swArgs {*} subworkflow classes
  * @returns {*} subworkflow object
  */
-function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
+function createSubworkflowUnit({ appName, unitData, workflowData, subworkflowIndex, ...swArgs }) {
     const { name: unitName, unitConfigs, config } = unitData;
     const { subworkflows } = workflowData;
     const { [appName]: dataByApp } = subworkflows;
     let { [unitName]: subworkflowData } = dataByApp;
-    subworkflowData.config = { ...subworkflowData.config, ...config };
+    subworkflowData.config = { ...subworkflowData.config, ...config, index: subworkflowIndex };
     if (unitConfigs) subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
     return createSubworkflow({
         subworkflowData,
+        subworkflowIndex,
         ...swArgs,
     });
 }
@@ -177,15 +178,11 @@ function createWorkflowUnits({
                 break;
             case "subworkflow": {
                 ({ config } = workflowData);
-                // to use index in subworkflow unit for reference
-                const unitDataWithIndex = {
-                    ...unitData,
-                    config: { ...unitData.config, index },
-                };
                 unit = createSubworkflowUnit({
                     appName,
-                    unitData: unitDataWithIndex,
+                    unitData,
                     workflowData: workflowSubworkflowMapByApplication,
+                    subworkflowIndex: index,
                     ...swArgs,
                 });
                 break;

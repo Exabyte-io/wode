@@ -78,6 +78,7 @@ function createSubworkflowUnit({
   appName,
   unitData,
   workflowData,
+  subworkflowIndex,
   ...swArgs
 }) {
   const {
@@ -96,7 +97,8 @@ function createSubworkflowUnit({
   } = dataByApp;
   subworkflowData.config = {
     ...subworkflowData.config,
-    ...config
+    ...config,
+    index: subworkflowIndex
   };
   if (unitConfigs) subworkflowData = updateUnitConfigs({
     subworkflowData,
@@ -104,6 +106,7 @@ function createSubworkflowUnit({
   });
   return (0, _create.createSubworkflow)({
     subworkflowData,
+    subworkflowIndex,
     ...swArgs
   });
 }
@@ -265,18 +268,11 @@ function createWorkflowUnits({
           ({
             config
           } = workflowData);
-          // to use index in subworkflow unit for reference
-          const unitDataWithIndex = {
-            ...unitData,
-            config: {
-              ...unitData.config,
-              index
-            }
-          };
           unit = createSubworkflowUnit({
             appName,
-            unitData: unitDataWithIndex,
+            unitData,
             workflowData: workflowSubworkflowMapByApplication,
+            subworkflowIndex: index,
             ...swArgs
           });
           break;

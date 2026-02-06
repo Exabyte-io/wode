@@ -132,7 +132,8 @@ function createUnit({
   config,
   application,
   unitBuilders,
-  unitFactoryCls
+  unitFactoryCls,
+  subworkflowIndex
 }) {
   const {
     type,
@@ -143,8 +144,7 @@ function createUnit({
       name,
       execName,
       flavorName,
-      flowchartId,
-      subworkflowIndex
+      flowchartId
     } = unitConfig;
     const uniqueFlowchartId = flowchartId || (subworkflowIndex !== undefined ? unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(name + subworkflowIndex) : undefined);
     const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, uniqueFlowchartId);
@@ -159,7 +159,8 @@ function createUnit({
   }
   return unitFactoryCls.create({
     type,
-    ...unitConfig
+    ...unitConfig,
+    subworkflowIndex
   });
 }
 
@@ -204,6 +205,7 @@ function createDynamicUnits({
 }
 function createSubworkflow({
   subworkflowData,
+  subworkflowIndex,
   AppRegistry = _ade.ApplicationRegistry,
   modelFactoryCls = _mode.ModelFactory,
   methodFactoryCls = _mode.MethodFactory,
@@ -230,15 +232,12 @@ function createSubworkflow({
     dynamicSubworkflow = null
   } = subworkflowData;
   unitConfigs.forEach(_config => {
-    _config.config = {
-      ...(_config.config || {}),
-      subworkflowIndex: config.index
-    };
     units.push(createUnit({
       config: _config,
       application,
       unitBuilders,
-      unitFactoryCls
+      unitFactoryCls,
+      subworkflowIndex
     }));
   });
   if (dynamicSubworkflow) {
