@@ -99,13 +99,18 @@ function createTopLevel({ subworkflowData, modelFactoryCls, methodFactoryCls, Ap
 export function createUnit({ config, application, unitBuilders, unitFactoryCls }) {
     const { type, config: unitConfig } = config;
     if (type === "executionBuilder") {
-        const { name, execName, flavorName, flowchartId } = unitConfig;
+        const { name, execName, flavorName, flowchartId, subworkflowIndex } = unitConfig;
+
+        const uniqueFlowchartId =
+            unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(
+                (flowchartId || name) + subworkflowIndex,
+            ) || flowchartId;
         const builder = new unitBuilders.ExecutionUnitConfigBuilder(
             name,
             application,
             execName,
             flavorName,
-            flowchartId,
+            uniqueFlowchartId,
         );
 
         // config should contain "functions" and "attributes"
