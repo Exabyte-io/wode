@@ -70,6 +70,7 @@ function updateUnitConfigs({
  * @summary Use subworkflow.createSubworkflow to create a Subworkflow unit
  * @param appName {String} application name
  * @param unitData {*} object containing subworkflow configuration data
+ * @param unitIndex {Number} index of the unit in the workflow (1-based)
  * @param workflowData {*} object containing all workflow configuration data
  * @param swArgs {*} subworkflow classes
  * @returns {*} subworkflow object
@@ -77,13 +78,15 @@ function updateUnitConfigs({
 function createSubworkflowUnit({
   appName,
   unitData,
+  unitIndex,
   workflowData,
   ...swArgs
 }) {
   const {
     name: unitName,
     unitConfigs,
-    config
+    config,
+    uniqueFlowchartIds
   } = unitData;
   const {
     subworkflows
@@ -102,6 +105,24 @@ function createSubworkflowUnit({
     subworkflowData,
     unitConfigs
   });
+  if (uniqueFlowchartIds && unitIndex !== undefined) {
+    subworkflowData.units.forEach(unit => {
+      if (unit.flowchartId) {
+        unit.flowchartId = `${unit.flowchartId}-${unitIndex}`;
+      }
+    });
+    subworkflowData.units.forEach(unit => {
+      if (unit.next) {
+        unit.next = `${unit.next}-${unitIndex}`;
+      }
+      if (unit.then) {
+        unit.then = `${unit.then}-${unitIndex}`;
+      }
+      if (unit.else) {
+        unit.else = `${unit.else}-${unitIndex}`;
+      }
+    });
+  }
   return (0, _create.createSubworkflow)({
     subworkflowData,
     ...swArgs
@@ -243,7 +264,7 @@ function createWorkflowUnits({
     units
   } = workflowData;
   let unit, config;
-  units.map(unitData => {
+  units.map((unitData, unitIndex) => {
     const {
       type
     } = unitData;
@@ -267,6 +288,7 @@ function createWorkflowUnits({
         unit = createSubworkflowUnit({
           appName,
           unitData,
+          unitIndex: unitIndex + 1,
           workflowData: workflowSubworkflowMapByApplication,
           ...swArgs
         });
