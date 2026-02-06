@@ -100,7 +100,7 @@ export class Subworkflow extends BaseSubworkflow {
         config = {},
         Cls = Subworkflow,
     ) {
-        const nameForIdGeneration = config.attributes?.name || name + config.index || "";
+        const nameForIdGeneration = (config.attributes?.name || name) + (config.index || "");
         const { functions, attributes, index, ...cleanConfig } = config;
 
         // Set the method on the model so it can be properly serialized

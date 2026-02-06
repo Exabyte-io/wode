@@ -75,7 +75,7 @@ class Subworkflow extends BaseSubworkflow {
    * @summary Used to generate initial application tree, therefore omit setting application.
    */
   static fromArguments(application, model, method, name, units = [], config = {}, Cls = Subworkflow) {
-    const nameForIdGeneration = config.attributes?.name || name + config.index || "";
+    const nameForIdGeneration = (config.attributes?.name || name) + (config.index || "");
     const {
       functions,
       attributes,
