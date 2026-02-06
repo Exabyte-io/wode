@@ -100,11 +100,13 @@ export function createUnit({ config, application, unitBuilders, unitFactoryCls }
     const { type, config: unitConfig } = config;
     if (type === "executionBuilder") {
         const { name, execName, flavorName, flowchartId, subworkflowIndex } = unitConfig;
-
         const uniqueFlowchartId =
-            unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(
-                (flowchartId || name) + subworkflowIndex,
-            ) || flowchartId;
+            flowchartId ||
+            (subworkflowIndex !== undefined
+                ? unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(
+                      name + subworkflowIndex,
+                  )
+                : undefined);
         const builder = new unitBuilders.ExecutionUnitConfigBuilder(
             name,
             application,

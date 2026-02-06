@@ -146,7 +146,7 @@ function createUnit({
       flowchartId,
       subworkflowIndex
     } = unitConfig;
-    const uniqueFlowchartId = unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId((flowchartId || name) + subworkflowIndex) || flowchartId;
+    const uniqueFlowchartId = flowchartId || (subworkflowIndex !== undefined ? unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(name + subworkflowIndex) : undefined);
     const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, uniqueFlowchartId);
 
     // config should contain "functions" and "attributes"
