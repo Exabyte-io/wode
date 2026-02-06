@@ -243,7 +243,7 @@ function createWorkflowUnits({
     units
   } = workflowData;
   let unit, config;
-  units.map(unitData => {
+  units.map((unitData, index) => {
     const {
       type
     } = unitData;
@@ -261,16 +261,26 @@ function createWorkflowUnits({
         });
         break;
       case "subworkflow":
-        ({
-          config
-        } = workflowData);
-        unit = createSubworkflowUnit({
-          appName,
-          unitData,
-          workflowData: workflowSubworkflowMapByApplication,
-          ...swArgs
-        });
-        break;
+        {
+          ({
+            config
+          } = workflowData);
+          // to use index in subworkflow unit for reference
+          const unitDataWithIndex = {
+            ...unitData,
+            config: {
+              ...unitData.config,
+              index
+            }
+          };
+          unit = createSubworkflowUnit({
+            appName,
+            unitData: unitDataWithIndex,
+            workflowData: workflowSubworkflowMapByApplication,
+            ...swArgs
+          });
+          break;
+        }
       default:
         break;
     }

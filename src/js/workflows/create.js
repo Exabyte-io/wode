@@ -175,20 +175,21 @@ function createWorkflowUnits({
                     ...swArgs,
                 });
                 break;
-                case "subworkflow":
-                    ({ config } = workflowData);
-                    // to use index in subworkflow unit for reference
-                    const unitDataWithIndex = {
-                        ...unitData,
-                        config: { ...unitData.config, index }
-                    };
-                    unit = createSubworkflowUnit({
-                        appName,
-                        unitData: unitDataWithIndex,
-                        workflowData: workflowSubworkflowMapByApplication,
-                        ...swArgs,
-                    });
-                    break;
+            case "subworkflow": {
+                ({ config } = workflowData);
+                // to use index in subworkflow unit for reference
+                const unitDataWithIndex = {
+                    ...unitData,
+                    config: { ...unitData.config, index },
+                };
+                unit = createSubworkflowUnit({
+                    appName,
+                    unitData: unitDataWithIndex,
+                    workflowData: workflowSubworkflowMapByApplication,
+                    ...swArgs,
+                });
+                break;
+            }
             default:
                 break;
         }
