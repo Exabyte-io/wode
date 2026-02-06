@@ -164,15 +164,11 @@ function createSubworkflow({
 
     let units = [];
     const { name, units: unitConfigs, config = {}, dynamicSubworkflow = null } = subworkflowData;
+
     unitConfigs.forEach((_config) => {
-        units.push(
-            createUnit({
-                config: _config,
-                application,
-                unitBuilders,
-                unitFactoryCls,
-            }),
-        );
+        if (config.index !== undefined)
+            _config.config = { ...(_config.config || {}), subworkflowIndex: config.index };
+        units.push(createUnit({ config: _config, application, unitBuilders, unitFactoryCls }));
     });
     if (dynamicSubworkflow) {
         units = createDynamicUnits({

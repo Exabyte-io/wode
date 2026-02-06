@@ -10,8 +10,9 @@ export class BaseUnit extends NamedDefaultableRepetitionRuntimeItemsImportantSet
     static usePredefinedIds = false;
 
     constructor(config) {
+        const nameWithIndex = config.name + (config.subworkflowIndex || "");
         const flowchartId =
-            config.flowchartId || BaseUnit.generateFlowChartId.call(new.target, config.name);
+            config.flowchartId || BaseUnit.generateFlowChartId.call(new.target, nameWithIndex);
         super({
             ...config,
             status: config.status || UNIT_STATUSES.idle,
