@@ -10,11 +10,12 @@ var _UnitConfigBuilder = require("./UnitConfigBuilder");
 /* eslint-disable class-methods-use-this */
 
 class ExecutionUnitConfigBuilder extends _UnitConfigBuilder.UnitConfigBuilder {
-  constructor(name, application, execName, flavorName, flowchartId) {
+  constructor(name, application, execName, flavorName, flowchartId, cache = []) {
     super({
       name,
       type: _enums.UNIT_TYPES.execution,
-      flowchartId
+      flowchartId,
+      cache
     });
     try {
       this.initialize(application, execName, flavorName);

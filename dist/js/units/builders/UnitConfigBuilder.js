@@ -26,7 +26,7 @@ class UnitConfigBuilder {
     this._postProcessors = [];
     this.cache = cache;
     this.cache.push(name);
-    this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
+    this._flowchartId = flowchartId || this.generateFlowChartId(name);
   }
   name(str) {
     this._name = str;
@@ -36,12 +36,12 @@ class UnitConfigBuilder {
     this._head = bool;
     return this;
   }
-  static generateFlowChartId(...args) {
+  generateFlowChartId(...args) {
     const seed = args[0];
     const seedCount = this.cache.reduce((count, s) => s === seed ? count + 1 : count, 0);
     const suffix = seedCount > 0 ? `-${seedCount}` : "";
     args[0] = `${seed}${suffix}`;
-    if (this.usePredefinedIds) return _utils.Utils.uuid.getUUIDFromNamespace(...args);
+    if (this.constructor.usePredefinedIds) return _utils.Utils.uuid.getUUIDFromNamespace(...args);
     return _utils.Utils.uuid.getUUID();
   }
   flowchartId(flowchartId) {

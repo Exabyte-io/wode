@@ -14,7 +14,7 @@ export class UnitConfigBuilder {
         this._postProcessors = [];
         this.cache = cache;
         this.cache.push(name);
-        this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
+        this._flowchartId = flowchartId || this.generateFlowChartId(name);
     }
 
     name(str) {
@@ -27,12 +27,12 @@ export class UnitConfigBuilder {
         return this;
     }
 
-    static generateFlowChartId(...args) {
+    generateFlowChartId(...args) {
         const seed = args[0];
         const seedCount = this.cache.reduce((count, s) => (s === seed ? count + 1 : count), 0);
         const suffix = seedCount > 0 ? `-${seedCount}` : "";
         args[0] = `${seed}${suffix}`;
-        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+        if (this.constructor.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }
 
