@@ -4,7 +4,7 @@ import _ from "underscore";
 export class UnitConfigBuilder {
     static usePredefinedIds = false;
 
-    constructor({ name, type, flowchartId }) {
+    constructor({ name, type, flowchartId, cache = [] }) {
         this.type = type;
         this._name = name;
         this._head = false;
@@ -12,6 +12,8 @@ export class UnitConfigBuilder {
         this._monitors = [];
         this._preProcessors = [];
         this._postProcessors = [];
+        this.cache = cache;
+        this.cache.push(name);
         this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
     }
 
@@ -26,6 +28,10 @@ export class UnitConfigBuilder {
     }
 
     static generateFlowChartId(...args) {
+        const seed = args[0];
+        const seedCount = this.cache.reduce((count, s) => (s === seed ? count + 1 : count), 0);
+        const suffix = seedCount > 0 ? `-${seedCount}` : "";
+        args[0] = `${seed}${suffix}`;
         if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
         return Utils.uuid.getUUID();
     }

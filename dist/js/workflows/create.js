@@ -78,6 +78,7 @@ function createSubworkflowUnit({
   appName,
   unitData,
   workflowData,
+  cache,
   ...swArgs
 }) {
   const {
@@ -104,6 +105,7 @@ function createSubworkflowUnit({
   });
   return (0, _create.createSubworkflow)({
     subworkflowData,
+    cache,
     ...swArgs
   });
 }
@@ -236,6 +238,7 @@ function createWorkflowUnits({
   workflowData,
   workflowSubworkflowMapByApplication,
   workflowCls,
+  cache = [],
   ...swArgs
 }) {
   const wfUnits = [];
@@ -268,6 +271,7 @@ function createWorkflowUnits({
           appName,
           unitData,
           workflowData: workflowSubworkflowMapByApplication,
+          cache,
           ...swArgs
         });
         break;
@@ -295,6 +299,7 @@ function createWorkflow({
   workflowCls = _workflow.Workflow,
   ...swArgs
 }) {
+  const cache = [];
   const {
     name
   } = workflowData;
@@ -304,6 +309,7 @@ function createWorkflow({
     workflowData,
     workflowSubworkflowMapByApplication,
     workflowCls,
+    cache,
     ...swArgs
   });
   wf.setName(name);
