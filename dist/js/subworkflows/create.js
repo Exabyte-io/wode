@@ -133,12 +133,15 @@ function createUnit({
   application,
   unitBuilders,
   unitFactoryCls,
-  subworkflowIndex
+  unitCache = {}
 }) {
   const {
     type,
     config: unitConfig
   } = config;
+  const cacheKey = unitConfig.flowchartId || unitConfig.name;
+  const count = unitCache[cacheKey] || 0;
+  unitCache[cacheKey] = count + 1;
   if (type === "executionBuilder") {
     const {
       name,
@@ -146,7 +149,13 @@ function createUnit({
       flavorName,
       flowchartId
     } = unitConfig;
-    const uniqueFlowchartId = flowchartId || (subworkflowIndex !== undefined ? unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(name + subworkflowIndex) : undefined);
+    let uniqueFlowchartId = flowchartId;
+    if (!uniqueFlowchartId) {
+      const seed = name + (count > 0 ? count : "");
+      uniqueFlowchartId = unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(seed);
+    } else if (count > 0) {
+      uniqueFlowchartId = unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(flowchartId + count);
+    }
     const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, uniqueFlowchartId);
 
     // config should contain "functions" and "attributes"
@@ -160,7 +169,7 @@ function createUnit({
   return unitFactoryCls.create({
     type,
     ...unitConfig,
-    subworkflowIndex
+    subworkflowIndex: count > 0 ? count : undefined
   });
 }
 
@@ -205,7 +214,7 @@ function createDynamicUnits({
 }
 function createSubworkflow({
   subworkflowData,
-  subworkflowIndex,
+  unitCache = {},
   AppRegistry = _ade.ApplicationRegistry,
   modelFactoryCls = _mode.ModelFactory,
   methodFactoryCls = _mode.MethodFactory,
@@ -237,7 +246,7 @@ function createSubworkflow({
       application,
       unitBuilders,
       unitFactoryCls,
-      subworkflowIndex
+      unitCache
     }));
   });
   if (dynamicSubworkflow) {
@@ -249,7 +258,11 @@ function createSubworkflow({
       application
     });
   }
-  let subworkflow = subworkflowCls.fromArguments(application, model, method, name, units, config);
+  const subworkflowCacheKey = config.attributes?.name || name;
+  const subworkflowCount = unitCache[subworkflowCacheKey] || 0;
+  unitCache[subworkflowCacheKey] = subworkflowCount + 1;
+  const nameForIdGeneration = subworkflowCount > 0 ? `${subworkflowCacheKey}${subworkflowCount}` : subworkflowCacheKey;
+  let subworkflow = subworkflowCls.fromArguments(application, model, method, nameForIdGeneration, units, config);
   const {
     functions = {},
     attributes = {}

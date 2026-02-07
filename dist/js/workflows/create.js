@@ -78,7 +78,7 @@ function createSubworkflowUnit({
   appName,
   unitData,
   workflowData,
-  subworkflowIndex,
+  unitCache,
   ...swArgs
 }) {
   const {
@@ -97,8 +97,7 @@ function createSubworkflowUnit({
   } = dataByApp;
   subworkflowData.config = {
     ...subworkflowData.config,
-    ...config,
-    index: subworkflowIndex
+    ...config
   };
   if (unitConfigs) subworkflowData = updateUnitConfigs({
     subworkflowData,
@@ -106,7 +105,7 @@ function createSubworkflowUnit({
   });
   return (0, _create.createSubworkflow)({
     subworkflowData,
-    subworkflowIndex,
+    unitCache,
     ...swArgs
   });
 }
@@ -239,6 +238,7 @@ function createWorkflowUnits({
   workflowData,
   workflowSubworkflowMapByApplication,
   workflowCls,
+  unitCache = {},
   ...swArgs
 }) {
   const wfUnits = [];
@@ -246,7 +246,7 @@ function createWorkflowUnits({
     units
   } = workflowData;
   let unit, config;
-  units.map((unitData, index) => {
+  units.map(unitData => {
     const {
       type
     } = unitData;
@@ -272,7 +272,7 @@ function createWorkflowUnits({
             appName,
             unitData,
             workflowData: workflowSubworkflowMapByApplication,
-            subworkflowIndex: index,
+            unitCache,
             ...swArgs
           });
           break;
@@ -310,6 +310,7 @@ function createWorkflow({
     workflowData,
     workflowSubworkflowMapByApplication,
     workflowCls,
+    unitCache: {},
     ...swArgs
   });
   wf.setName(name);

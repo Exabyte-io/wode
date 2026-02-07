@@ -44,16 +44,16 @@ function updateUnitConfigs({ subworkflowData, unitConfigs }) {
  * @param swArgs {*} subworkflow classes
  * @returns {*} subworkflow object
  */
-function createSubworkflowUnit({ appName, unitData, workflowData, subworkflowIndex, ...swArgs }) {
+function createSubworkflowUnit({ appName, unitData, workflowData, unitCache, ...swArgs }) {
     const { name: unitName, unitConfigs, config } = unitData;
     const { subworkflows } = workflowData;
     const { [appName]: dataByApp } = subworkflows;
     let { [unitName]: subworkflowData } = dataByApp;
-    subworkflowData.config = { ...subworkflowData.config, ...config, index: subworkflowIndex };
+    subworkflowData.config = { ...subworkflowData.config, ...config };
     if (unitConfigs) subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
     return createSubworkflow({
         subworkflowData,
-        subworkflowIndex,
+        unitCache,
         ...swArgs,
     });
 }
@@ -158,12 +158,13 @@ function createWorkflowUnits({
     workflowData,
     workflowSubworkflowMapByApplication,
     workflowCls,
+    unitCache = {},
     ...swArgs
 }) {
     const wfUnits = [];
     const { units } = workflowData;
     let unit, config;
-    units.map((unitData, index) => {
+    units.map((unitData) => {
         const { type } = unitData;
         switch (type) {
             case "workflow":
@@ -182,7 +183,7 @@ function createWorkflowUnits({
                     appName,
                     unitData,
                     workflowData: workflowSubworkflowMapByApplication,
-                    subworkflowIndex: index,
+                    unitCache,
                     ...swArgs,
                 });
                 break;
@@ -215,6 +216,7 @@ function createWorkflow({
         workflowData,
         workflowSubworkflowMapByApplication,
         workflowCls,
+        unitCache: {},
         ...swArgs,
     });
     wf.setName(name);

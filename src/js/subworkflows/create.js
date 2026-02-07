@@ -96,23 +96,24 @@ function createTopLevel({ subworkflowData, modelFactoryCls, methodFactoryCls, Ap
  * @param unitFactoryCls {*} workflow unit class factory
  * @returns {*|{head: boolean, preProcessors: [], postProcessors: [], name: *, flowchartId: *, type: *, results: [], monitors: []}}
  */
-export function createUnit({
-    config,
-    application,
-    unitBuilders,
-    unitFactoryCls,
-    subworkflowIndex,
-}) {
+export function createUnit({ config, application, unitBuilders, unitFactoryCls, unitCache = {} }) {
     const { type, config: unitConfig } = config;
+    const cacheKey = unitConfig.flowchartId || unitConfig.name;
+    const count = unitCache[cacheKey] || 0;
+    unitCache[cacheKey] = count + 1;
+
     if (type === "executionBuilder") {
         const { name, execName, flavorName, flowchartId } = unitConfig;
-        const uniqueFlowchartId =
-            flowchartId ||
-            (subworkflowIndex !== undefined
-                ? unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(
-                      name + subworkflowIndex,
-                  )
-                : undefined);
+        let uniqueFlowchartId = flowchartId;
+        if (!uniqueFlowchartId) {
+            const seed = name + (count > 0 ? count : "");
+            uniqueFlowchartId = unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(seed);
+        } else if (count > 0) {
+            uniqueFlowchartId = unitBuilders.ExecutionUnitConfigBuilder.generateFlowChartId(
+                flowchartId + count,
+            );
+        }
+
         const builder = new unitBuilders.ExecutionUnitConfigBuilder(
             name,
             application,
@@ -126,7 +127,11 @@ export function createUnit({
         return unitFactoryCls.create(cfg);
     }
 
-    return unitFactoryCls.create({ type, ...unitConfig, subworkflowIndex });
+    return unitFactoryCls.create({
+        type,
+        ...unitConfig,
+        subworkflowIndex: count > 0 ? count : undefined,
+    });
 }
 
 /**
@@ -161,7 +166,7 @@ function createDynamicUnits({
 
 function createSubworkflow({
     subworkflowData,
-    subworkflowIndex,
+    unitCache = {},
     AppRegistry = ApplicationRegistry,
     modelFactoryCls = ModelFactory,
     methodFactoryCls = MethodFactory,
@@ -186,7 +191,7 @@ function createSubworkflow({
                 application,
                 unitBuilders,
                 unitFactoryCls,
-                subworkflowIndex,
+                unitCache,
             }),
         );
     });
@@ -200,7 +205,20 @@ function createSubworkflow({
         });
     }
 
-    let subworkflow = subworkflowCls.fromArguments(application, model, method, name, units, config);
+    const subworkflowCacheKey = config.attributes?.name || name;
+    const subworkflowCount = unitCache[subworkflowCacheKey] || 0;
+    unitCache[subworkflowCacheKey] = subworkflowCount + 1;
+    const nameForIdGeneration =
+        subworkflowCount > 0 ? `${subworkflowCacheKey}${subworkflowCount}` : subworkflowCacheKey;
+
+    let subworkflow = subworkflowCls.fromArguments(
+        application,
+        model,
+        method,
+        nameForIdGeneration,
+        units,
+        config,
+    );
     const { functions = {}, attributes = {} } = config;
     subworkflow = applyConfig({ obj: subworkflow, config: { functions, attributes } });
     if (setSearchText) subworkflow.model.Method.setSearchText(setSearchText);
