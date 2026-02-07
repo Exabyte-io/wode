@@ -200,4 +200,41 @@ describe("Workflow UUIDs", () => {
         expect(workflow1._id).to.not.be.equal("");
         expect(workflow1._id).to.equal(workflow2._id);
     });
+
+    it("generates unique flowchartIds for repeated subworkflows and their units", () => {
+        const workflowData = {
+            name: "test_repeated_subworkflows",
+            units: [
+                { name: "pw_scf", type: "subworkflow" },
+                { name: "pw_scf", type: "subworkflow" },
+                { name: "pw_scf", type: "subworkflow" },
+            ],
+        };
+
+        const workflow = createWorkflow({
+            appName: "espresso",
+            workflowData,
+            workflowSubworkflowMapByApplication,
+        });
+
+        expect(workflow.units).to.have.length(3);
+        const unitFlowchartIds = workflow.units.map((unit) => unit.flowchartId);
+        expect(unitFlowchartIds[0]).to.not.equal(unitFlowchartIds[1]);
+        expect(unitFlowchartIds[1]).to.not.equal(unitFlowchartIds[2]);
+
+        expect(workflow.subworkflows).to.have.length(3);
+        const subworkflowIds = workflow.subworkflows.map((sw) => sw._id);
+        expect(subworkflowIds[0]).to.not.equal(subworkflowIds[1]);
+        expect(subworkflowIds[1]).to.not.equal(subworkflowIds[2]);
+
+        workflow.subworkflows[0].units.forEach((unit, unitIndex) => {
+            const unit1 = workflow.subworkflows[1].units[unitIndex];
+            const unit2 = workflow.subworkflows[2].units[unitIndex];
+            if (unit1 && unit2) {
+                expect(unit.flowchartId).to.not.equal(unit1.flowchartId);
+                expect(unit.flowchartId).to.not.equal(unit2.flowchartId);
+                expect(unit1.flowchartId).to.not.equal(unit2.flowchartId);
+            }
+        });
+    });
 });
