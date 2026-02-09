@@ -44,7 +44,7 @@ function updateUnitConfigs({ subworkflowData, unitConfigs }) {
  * @param swArgs {*} subworkflow classes
  * @returns {*} subworkflow object
  */
-function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
+function createSubworkflowUnit({ appName, unitData, workflowData, cache, ...swArgs }) {
     const { name: unitName, unitConfigs, config } = unitData;
     const { subworkflows } = workflowData;
     const { [appName]: dataByApp } = subworkflows;
@@ -53,6 +53,7 @@ function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
     if (unitConfigs) subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
     return createSubworkflow({
         subworkflowData,
+        cache,
         ...swArgs,
     });
 }
@@ -157,6 +158,7 @@ function createWorkflowUnits({
     workflowData,
     workflowSubworkflowMapByApplication,
     workflowCls,
+    cache = [],
     ...swArgs
 }) {
     const wfUnits = [];
@@ -181,6 +183,7 @@ function createWorkflowUnits({
                     appName,
                     unitData,
                     workflowData: workflowSubworkflowMapByApplication,
+                    cache,
                     ...swArgs,
                 });
                 break;
@@ -205,6 +208,7 @@ function createWorkflow({
     workflowCls = Workflow,
     ...swArgs
 }) {
+    const cache = [];
     const { name } = workflowData;
     console.log(`wode: creating ${appName} workflow ${name}`);
     const wf = createWorkflowUnits({
@@ -212,6 +216,7 @@ function createWorkflow({
         workflowData,
         workflowSubworkflowMapByApplication,
         workflowCls,
+        cache,
         ...swArgs,
     });
     wf.setName(name);

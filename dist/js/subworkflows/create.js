@@ -132,7 +132,8 @@ function createUnit({
   config,
   application,
   unitBuilders,
-  unitFactoryCls
+  unitFactoryCls,
+  cache = []
 }) {
   const {
     type,
@@ -145,7 +146,7 @@ function createUnit({
       flavorName,
       flowchartId
     } = unitConfig;
-    const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, flowchartId);
+    const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, flowchartId, cache);
 
     // config should contain "functions" and "attributes"
     const cfg = (0, _utils.applyConfig)({
@@ -202,6 +203,7 @@ function createDynamicUnits({
 }
 function createSubworkflow({
   subworkflowData,
+  cache = [],
   AppRegistry = _ade.ApplicationRegistry,
   modelFactoryCls = _mode.ModelFactory,
   methodFactoryCls = _mode.MethodFactory,
@@ -232,7 +234,8 @@ function createSubworkflow({
       config: _config,
       application,
       unitBuilders,
-      unitFactoryCls
+      unitFactoryCls,
+      cache
     }));
   });
   if (dynamicSubworkflow) {

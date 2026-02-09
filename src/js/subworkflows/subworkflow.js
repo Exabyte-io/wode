@@ -15,7 +15,6 @@ import { setNextLinks, setUnitsHead } from "../utils";
 import { ConvergenceMixin } from "./convergence";
 
 /* eslint max-classes-per-file:0 */
-
 class BaseSubworkflow extends mix(NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(
     ConvergenceMixin,
     ContextAndRenderFieldsMixin,
