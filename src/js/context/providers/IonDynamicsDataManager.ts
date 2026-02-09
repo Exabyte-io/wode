@@ -2,7 +2,7 @@ import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface
 import type { DynamicsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import type { ExternalContext, UnitContext } from "./base/ContextProvider";
+import type { BaseExternalContext, UnitContext } from "./base/ContextProvider";
 import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
 
 type Schema = DynamicsContextItemSchema;
@@ -23,7 +23,7 @@ export default class IonDynamicsDataManager extends JSONSchemaFormDataProvider<S
 
     readonly entityName = "unit" as const;
 
-    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext) {
+    static createFromUnitContext(unitContext: UnitContext, externalContext: BaseExternalContext) {
         const contextItem = this.findContextItem<Schema>(unitContext, "dynamics");
 
         return new IonDynamicsDataManager(contextItem, externalContext);
@@ -40,7 +40,7 @@ export default class IonDynamicsDataManager extends JSONSchemaFormDataProvider<S
 
     readonly jsonSchema: JSONSchema7 | undefined;
 
-    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext) {
+    constructor(contextItem: Partial<Schema>, externalContext: BaseExternalContext) {
         super(contextItem, externalContext);
 
         this.jsonSchema = JSONSchemasInterface.getPatchedSchemaById(jsonSchemaId, {

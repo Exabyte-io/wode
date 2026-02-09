@@ -6,12 +6,10 @@ import type {
     PointsPathDataProviderSchema,
 } from "@mat3ra/esse/dist/js/types";
 import { type ReciprocalLattice, Made } from "@mat3ra/made";
-import s from "underscore.string";
 
-import {
+import applicationContextMixin, {
     type ApplicationContextMixin,
     type ApplicationExternalContext,
-    applicationContextMixin,
 } from "../../mixins/ApplicationContextMixin";
 import materialContextMixin, {
     type MaterialContextMixin,
@@ -116,7 +114,7 @@ abstract class PointsPathFormDataProvider<N extends Schema["name"]> extends Mixi
 
             return {
                 ...p,
-                coordinates: coordinates.map((c) => +s.sprintf("%14.9f", c)),
+                coordinates: coordinates.map((c) => Number(c.toFixed(9))),
             };
         }) as Data;
 

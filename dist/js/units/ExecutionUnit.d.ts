@@ -2,14 +2,13 @@ import { Application, Executable, Flavor } from "@mat3ra/ade";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { ExecutableSchema, ExecutionUnitSchema, FlavorSchema } from "@mat3ra/esse/dist/js/types";
-import { type ImportantSettingsProvider } from "../context/mixins/ImportantSettingsProviderMixin";
 import { type ExternalContext } from "../context/providers";
-import ExecutionUnitInput from "../ExecutionUnitInput";
+import type ConvergenceParameter from "../convergence/ConvergenceParameter";
 import { type ExecutionUnitSchemaMixin } from "../generated/ExecutionUnitSchemaMixin";
-import type ConvergenceParameter from "../subworkflows/convergence/ConvergenceParameter";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
+import ExecutionUnitInput from "./ExecutionUnitInput";
 type Schema = ExecutionUnitSchema;
-type Base = typeof BaseUnit & Constructor<ExecutionUnitSchemaMixin> & Constructor<ImportantSettingsProvider>;
+type Base = typeof BaseUnit & Constructor<ExecutionUnitSchemaMixin>;
 interface SetApplicationProps {
     application: Application;
     executable?: Executable | ExecutableSchema;
@@ -20,13 +19,14 @@ interface SetExecutableProps {
     flavor?: Flavor | FlavorSchema;
 }
 declare const ExecutionUnit_base: Base;
-export declare class ExecutionUnit extends ExecutionUnit_base implements Schema {
+declare class ExecutionUnit extends ExecutionUnit_base implements Schema {
     applicationInstance: Application;
     executableInstance: Executable;
     flavorInstance: Flavor;
     inputInstances: ExecutionUnitInput[];
     renderingContext: Record<string, unknown>;
     toJSON: () => Schema & AnyObject;
+    _json: Schema & AnyObject;
     constructor(config: Schema);
     setApplication({ application, executable, flavor }: SetApplicationProps): void;
     setExecutable({ executable, flavor }: SetExecutableProps): void;
@@ -47,4 +47,4 @@ export declare class ExecutionUnit extends ExecutionUnit_base implements Schema 
         input: string;
     };
 }
-export {};
+export default ExecutionUnit;

@@ -4,10 +4,10 @@ type MaterialsSet = {
     _id: string;
 };
 export type MaterialsSetExternalContext = {
-    materialsSet: MaterialsSet;
+    materialsSet?: MaterialsSet;
 };
 export type MaterialsSetContextMixin = {
-    materialsSet: MaterialsSet;
+    materialsSet?: MaterialsSet;
     initMaterialsSetContextMixin(externalContext: MaterialsSetExternalContext): void;
     sortMaterialsByIndexInSet(materials?: OrderedMaterial[]): OrderedMaterial[];
 };

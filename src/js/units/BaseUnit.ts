@@ -1,4 +1,3 @@
-/* eslint-disable class-methods-use-this */
 import { InMemoryEntity } from "@mat3ra/code/dist/js/entity";
 import {
     type Defaultable,
@@ -27,10 +26,13 @@ import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { StatusSchema, WorkflowBaseUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { Utils } from "@mat3ra/utils";
 
-import { UNIT_STATUSES } from "../enums";
+import { UnitStatus } from "../enums";
 import { type BaseUnitSchemaMixin, baseUnitSchemaMixin } from "../generated/BaseUnitSchemaMixin";
 import { type StatusSchemaMixin, statusSchemaMixin } from "../generated/StatusSchemaMixin";
-import { type RuntimeItemsUILogic, runtimeItemsUILogicMixin } from "../RuntimeItemsUILogicMixin";
+import {
+    type RuntimeItemsUILogic,
+    runtimeItemsUILogicMixin,
+} from "./mixins/RuntimeItemsUILogicMixin";
 
 type Base = typeof InMemoryEntity &
     Constructor<NamedEntity> &
@@ -45,8 +47,7 @@ type Base = typeof InMemoryEntity &
 
 type Schema = WorkflowBaseUnitSchema;
 
-// eslint-disable-next-line prettier/prettier
-export class BaseUnit<S extends Schema = Schema> extends (InMemoryEntity as Base) implements Schema {
+class BaseUnit<S extends Schema = Schema> extends (InMemoryEntity as Base) implements Schema {
     static usePredefinedIds = false;
 
     static generateFlowChartId(name: string) {
@@ -79,7 +80,7 @@ export class BaseUnit<S extends Schema = Schema> extends (InMemoryEntity as Base
             preProcessors: [],
             postProcessors: [],
             ...config,
-            status: config.status || UNIT_STATUSES.idle,
+            status: config.status || UnitStatus.idle,
             statusTrack: config.statusTrack || [],
             flowchartId: config.flowchartId || BaseUnit.generateFlowChartId(config.name),
             tags: config.tags || [],
@@ -122,3 +123,5 @@ baseUnitSchemaMixin(BaseUnit.prototype);
 statusSchemaMixin(BaseUnit.prototype);
 namedEntityMixin(BaseUnit.prototype);
 defaultableEntityMixin(BaseUnit);
+
+export default BaseUnit;

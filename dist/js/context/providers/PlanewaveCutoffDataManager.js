@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
-const ApplicationContextMixin_1 = require("../mixins/ApplicationContextMixin");
+const ApplicationContextMixin_1 = __importDefault(require("../mixins/ApplicationContextMixin"));
 const ContextProvider_1 = __importDefault(require("./base/ContextProvider"));
 // Type guard to check if a string is a valid ApplicationName
 function isApplicationName(name) {
@@ -25,7 +25,7 @@ class PlanewaveCutoffDataManager extends ContextProvider_1.default {
         const contextItem = this.findContextItem(unitContext, "cutoffs");
         return new PlanewaveCutoffDataManager(contextItem, externalContext);
     }
-    constructor(contextItem = {}, externalContext = {}) {
+    constructor(contextItem, externalContext) {
         super(contextItem, externalContext);
         this.name = "cutoffs";
         this.domain = "important";
@@ -62,4 +62,4 @@ class PlanewaveCutoffDataManager extends ContextProvider_1.default {
     }
 }
 exports.default = PlanewaveCutoffDataManager;
-(0, ApplicationContextMixin_1.applicationContextMixin)(PlanewaveCutoffDataManager.prototype);
+(0, ApplicationContextMixin_1.default)(PlanewaveCutoffDataManager.prototype);

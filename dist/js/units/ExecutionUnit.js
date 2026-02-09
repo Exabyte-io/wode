@@ -3,16 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ExecutionUnit = void 0;
 const ade_1 = require("@mat3ra/ade");
 const utils_1 = require("@mat3ra/utils");
-const ContextAndRenderFieldsMixin_1 = require("../context/mixins/ContextAndRenderFieldsMixin");
-const ImportantSettingsProviderMixin_1 = require("../context/mixins/ImportantSettingsProviderMixin");
 const providers_1 = require("../context/providers");
-const ExecutionUnitInput_1 = __importDefault(require("../ExecutionUnitInput"));
 const ExecutionUnitSchemaMixin_1 = require("../generated/ExecutionUnitSchemaMixin");
-const BaseUnit_1 = require("./BaseUnit");
-class ExecutionUnit extends BaseUnit_1.BaseUnit {
+const BaseUnit_1 = __importDefault(require("./BaseUnit"));
+const ExecutionUnitInput_1 = __importDefault(require("./ExecutionUnitInput"));
+class ExecutionUnit extends BaseUnit_1.default {
     constructor(config) {
         var _a;
         super(config);
@@ -87,30 +84,31 @@ class ExecutionUnit extends BaseUnit_1.BaseUnit {
             N_k_nonuniform: "kgrid",
         };
         const contextName = parameterToContextProviderMap[parameter.name];
-        const fullContext = this.getContextProvidersInstances(externalContext).map((contextProvider) => {
-            if (contextProvider.name === contextName) {
-                contextProvider.applyCovergenceParameter(parameter);
-                return contextProvider.getContextItemData();
+        const contextProviders = this.getContextProvidersInstances(externalContext);
+        const fullContext = contextProviders.map((provider) => {
+            if (provider.name === contextName) {
+                provider.applyConvergenceParameter(parameter);
+                return provider.getContextItemData();
             }
-            return contextProvider.getContextItemData();
+            return provider.getContextItemData();
         });
-        this.saveContext(fullContext);
+        this.saveContext(fullContext, externalContext);
     }
     render(externalContext) {
-        const fullContext = this.getContextProvidersInstances(externalContext).map((contextProvider) => {
-            return contextProvider.getContextItemData();
-        });
-        this.saveContext(fullContext);
+        const contextProviders = this.getContextProvidersInstances(externalContext);
+        const fullContext = contextProviders.map((provider) => provider.getContextItemData());
+        this.saveContext(fullContext, externalContext);
         this.input = this.inputInstances.map((input) => {
             return input.render(this.renderingContext).toJSON();
         });
     }
-    saveContext(fullContext) {
+    saveContext(fullContext, { subworkflowContext }) {
         // persistent context
         this.context = fullContext.filter((c) => c.isEdited);
-        this.renderingContext = Object.fromEntries(fullContext.map((context) => {
-            return [context.name, context.data];
-        }));
+        this.renderingContext = {
+            ...Object.fromEntries(fullContext.map((context) => [context.name, context.data])),
+            subworkflowContext: { ...subworkflowContext },
+        };
     }
     /**
      * @summary Calculates hash on unit-specific fields.
@@ -130,7 +128,5 @@ class ExecutionUnit extends BaseUnit_1.BaseUnit {
         };
     }
 }
-exports.ExecutionUnit = ExecutionUnit;
 (0, ExecutionUnitSchemaMixin_1.executionUnitSchemaMixin)(ExecutionUnit.prototype);
-(0, ContextAndRenderFieldsMixin_1.contextMixin)(ExecutionUnit.prototype);
-(0, ImportantSettingsProviderMixin_1.importantSettingsProviderMixin)(ExecutionUnit.prototype);
+exports.default = ExecutionUnit;

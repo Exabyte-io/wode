@@ -19,11 +19,12 @@ export type Domain = "executable" | "important";
 
 export type EntityName = "unit" | "subworkflow";
 
-export type ExternalContext = object;
+/** Minimal bound for provider external context; the full contract is ExternalContext in context/providers/index.ts */
+export type BaseExternalContext = object;
 
 abstract class ContextProvider<
     S extends ContextItemSchema = ContextItemSchema,
-    EC extends ExternalContext = ExternalContext,
+    EC extends BaseExternalContext = BaseExternalContext,
 > {
     abstract name: S["name"];
 

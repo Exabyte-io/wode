@@ -1,13 +1,13 @@
 import type { DynamicsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
-import type { ExternalContext, UnitContext } from "./base/ContextProvider";
+import type { BaseExternalContext, UnitContext } from "./base/ContextProvider";
 import JSONSchemaFormDataProvider from "./base/JSONSchemaFormDataProvider";
 type Schema = DynamicsContextItemSchema;
 export default class IonDynamicsDataManager extends JSONSchemaFormDataProvider<Schema> {
     readonly name: "dynamics";
     readonly domain: "important";
     readonly entityName: "unit";
-    static createFromUnitContext(unitContext: UnitContext, externalContext: ExternalContext): IonDynamicsDataManager;
+    static createFromUnitContext(unitContext: UnitContext, externalContext: BaseExternalContext): IonDynamicsDataManager;
     readonly uiSchema: {
         readonly numberOfSteps: {};
         readonly timeStep: {};
@@ -16,7 +16,7 @@ export default class IonDynamicsDataManager extends JSONSchemaFormDataProvider<S
     };
     readonly extraData: {};
     readonly jsonSchema: JSONSchema7 | undefined;
-    constructor(contextItem: Partial<Schema>, externalContext: ExternalContext);
+    constructor(contextItem: Partial<Schema>, externalContext: BaseExternalContext);
     getDefaultData(): {
         numberOfSteps: number;
         timeStep: number;

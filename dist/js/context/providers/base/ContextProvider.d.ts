@@ -10,8 +10,9 @@ export type ContextItem<D extends ContextData = ContextData, ED extends ContextE
 };
 export type Domain = "executable" | "important";
 export type EntityName = "unit" | "subworkflow";
-export type ExternalContext = object;
-declare abstract class ContextProvider<S extends ContextItemSchema = ContextItemSchema, EC extends ExternalContext = ExternalContext> {
+/** Minimal bound for provider external context; the full contract is ExternalContext in context/providers/index.ts */
+export type BaseExternalContext = object;
+declare abstract class ContextProvider<S extends ContextItemSchema = ContextItemSchema, EC extends BaseExternalContext = BaseExternalContext> {
     abstract name: S["name"];
     abstract readonly domain: Domain;
     abstract readonly entityName: EntityName;

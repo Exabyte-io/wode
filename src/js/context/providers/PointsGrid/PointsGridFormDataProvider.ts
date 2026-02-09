@@ -9,7 +9,6 @@ import type {
 } from "@mat3ra/esse/dist/js/types";
 import { type ReciprocalLattice, Made } from "@mat3ra/made";
 import type { JSONSchema7 } from "json-schema";
-import lodash from "lodash";
 
 import materialContextMixin, {
     type MaterialContextMixin,
@@ -292,9 +291,10 @@ export default abstract class PointsGridFormDataProvider<
                 return dimensions.reduce((a, b) => a * b) * nAtoms;
             }
             case "spacing":
-                return lodash.round(
-                    this.reciprocalLattice.getSpacingFromDimensions(dimensions, Units.angstrom),
-                    3,
+                return Number(
+                    this.reciprocalLattice
+                        .getSpacingFromDimensions(dimensions, Units.angstrom)
+                        .toFixed(3),
                 );
             default:
                 return 1;

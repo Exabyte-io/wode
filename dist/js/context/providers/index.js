@@ -101,11 +101,7 @@ function createProvider(name, context, externalContext) {
     if (!ProviderClass) {
         throw new Error(`Unknown provider: ${name}`);
     }
-    // Type assertion is safe here because ExecutionUnitInput's ExternalContext
-    // extends the base ExternalContext and includes all properties needed by providers.
-    // Each provider may expect a more specific ExternalContext type, but at runtime
-    // the ExecutionUnitInput's ExternalContext will have all required properties.
-    // This is a legitimate use of `any` for dynamic dispatch where TypeScript
-    // cannot statically verify the types, but runtime behavior is guaranteed.
+    // The full ExternalContext is a superset of each provider's expected context type,
+    // so passing it to every provider's createFromUnitContext is type-safe (no assertion).
     return ProviderClass.createFromUnitContext(context, externalContext);
 }

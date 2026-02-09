@@ -1,10 +1,3 @@
-/**
- * THIS ENUMS ARE SHARED WITH TESTS.
- * DO NOT IMPORT ANYTHINGS IN THIS MODULE.
- */
-
-export const IO_ID_COLUMN = "exabyteId";
-
 export const UNIT_TYPES = {
     // not currently used
     convergence: "convergence",
@@ -19,7 +12,7 @@ export const UNIT_TYPES = {
     processing: "processing",
     io: "io",
     assertion: "assertion",
-};
+} as const;
 
 export enum UnitType {
     convergence = "convergence",
@@ -34,28 +27,23 @@ export enum UnitType {
     assertion = "assertion",
 }
 
-export const UNIT_STATUSES = {
-    idle: "idle",
-    active: "active",
-    finished: "finished",
-    error: "error",
-    warning: "warning",
-};
-
-export const UNIT_TAGS = {
-    hasConvergenceParam: "hasConvergenceParam",
-    hasConvergenceResult: "hasConvergenceResult",
-};
-
 export enum UnitTag {
     hasConvergenceParam = "hasConvergenceParam",
     hasConvergenceResult = "hasConvergenceResult",
 }
 
+export enum UnitStatus {
+    idle = "idle",
+    active = "active",
+    finished = "finished",
+    error = "error",
+    warning = "warning",
+}
+
 export const WORKFLOW_STATUSES = {
     "up-to-date": "up-to-date",
     outdated: "outdated",
-};
+} as const;
 
 export const TAB_NAVIGATION_CONFIG = {
     overview: {
@@ -78,6 +66,6 @@ export const TAB_NAVIGATION_CONFIG = {
         className: "",
         href: "sw-compute",
     },
-};
+} as const;
 
 export const UNIT_NAME_INVALID_CHARS = "/";

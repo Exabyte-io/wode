@@ -1,10 +1,9 @@
 import type { JSONSchema } from "@mat3ra/esse/dist/js/esse/utils";
 import type { ContextItemSchema } from "@mat3ra/esse/dist/js/types";
 
-import type { ExternalContext } from "./ContextProvider";
 import ContextProvider from "./ContextProvider";
 
-export interface JinjaExternalContext extends ExternalContext {
+export interface JinjaExternalContext {
     isUsingJinjaVariables?: boolean;
 }
 

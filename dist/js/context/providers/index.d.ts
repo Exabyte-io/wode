@@ -1,7 +1,12 @@
-import { type Application } from "@mat3ra/ade";
-import type { JobSchema, WorkflowSchema } from "@mat3ra/esse/dist/js/types";
-import type { OrderedMaterial } from "../mixins/MaterialContextMixin";
+import type { ApplicationExternalContext } from "../mixins/ApplicationContextMixin";
+import type { JobExternalContext } from "../mixins/JobContextMixin";
+import type { MaterialExternalContext } from "../mixins/MaterialContextMixin";
+import type { MaterialsExternalContext } from "../mixins/MaterialsContextMixin";
+import type { MaterialsSetExternalContext } from "../mixins/MaterialsSetContextMixin";
+import type { MethodDataExternalContext } from "../mixins/MethodDataContextMixin";
+import type { WorkflowExternalContext } from "../mixins/WorkflowContextMixin";
 import type { UnitContext } from "./base/ContextProvider";
+import type { JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 import BoundaryConditionsFormDataManager from "./BoundaryConditionsFormDataManager";
 import QENEBInputDataManager from "./by_application/espresso/QENEBInputDataManager";
 import QEPWXInputDataManager from "./by_application/espresso/QEPWXInputDataManager";
@@ -58,21 +63,14 @@ export declare const PROVIDER_REGISTRY: {
     readonly VASPNEBInputDataManager: typeof VASPNEBInputDataManager;
     readonly NWChemInputDataManager: typeof NWChemInputDataManager;
 };
+export type SubworkflowContext = {
+    subworkflowContext: Record<string, string | number | boolean>;
+};
 /**
  * External context type used by ExecutionUnitInput when creating providers.
  * This type is always expected to be present when providers are instantiated.
  */
-export type ExternalContext = {
-    application: Application;
-    material: OrderedMaterial;
-    materials: OrderedMaterial[];
-    workflow: WorkflowSchema;
-    job: JobSchema;
-    isUsingJinjaVariables?: boolean;
-    materialsSet: {
-        _id: string;
-    };
-};
+export type ExternalContext = ApplicationExternalContext & WorkflowExternalContext & JobExternalContext & MaterialsExternalContext & MethodDataExternalContext & MaterialsSetExternalContext & MaterialExternalContext & JinjaExternalContext & SubworkflowContext;
 /**
  * Type for provider names as they appear in templates.
  */

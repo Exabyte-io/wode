@@ -7,12 +7,16 @@ import {
     type AssertionUnitSchemaMixin,
     assertionUnitSchemaMixin,
 } from "../generated/AssertionUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
 
 type Schema = AssertionUnitSchema;
 type Base = typeof BaseUnit<Schema> & Constructor<AssertionUnitSchemaMixin>;
 
-export class AssertionUnit extends (BaseUnit as Base) implements Schema {
+class AssertionUnit extends (BaseUnit as Base) implements Schema {
+    declare toJSON: () => Schema & AnyObject;
+
+    declare _json: Schema & AnyObject;
+
     constructor(config: Partial<Schema>) {
         super({
             name: UnitType.assertion,
@@ -23,11 +27,11 @@ export class AssertionUnit extends (BaseUnit as Base) implements Schema {
         });
     }
 
-    declare toJSON: () => Schema & AnyObject;
-
     getHashObject() {
         return { statement: this.statement, errorMessage: this.errorMessage };
     }
 }
 
 assertionUnitSchemaMixin(AssertionUnit.prototype);
+
+export default AssertionUnit;

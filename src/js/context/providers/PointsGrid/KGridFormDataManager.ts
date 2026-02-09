@@ -1,6 +1,6 @@
 import type { GridContextItemSchema } from "@mat3ra/esse/dist/js/types";
 
-import ConvergenceParameter from "../../../subworkflows/convergence/ConvergenceParameter";
+import ConvergenceParameter from "../../../convergence/ConvergenceParameter";
 import type { UnitContext } from "../base/ContextProvider";
 import PointsGridFormDataProvider, { type ExternalContext } from "./PointsGridFormDataProvider";
 
@@ -18,7 +18,7 @@ export default class KGridFormDataManager extends PointsGridFormDataProvider<Nam
         return new KGridFormDataManager(contextItem, externalContext);
     }
 
-    applyCovergenceParameter(parameter: ConvergenceParameter) {
+    applyConvergenceParameter(parameter: ConvergenceParameter) {
         const unitContext = parameter.unitContext.data;
         const data = this.getData();
 

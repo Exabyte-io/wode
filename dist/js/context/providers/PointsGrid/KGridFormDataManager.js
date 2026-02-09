@@ -14,7 +14,7 @@ class KGridFormDataManager extends PointsGridFormDataProvider_1.default {
         const contextItem = this.findContextItem(unitContext, "kgrid");
         return new KGridFormDataManager(contextItem, externalContext);
     }
-    applyCovergenceParameter(parameter) {
+    applyConvergenceParameter(parameter) {
         const unitContext = parameter.unitContext.data;
         const data = this.getData();
         this.setData({

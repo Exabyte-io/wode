@@ -1,10 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ConditionUnit = void 0;
 const enums_1 = require("../enums");
 const ConditionUnitSchemaMixin_1 = require("../generated/ConditionUnitSchemaMixin");
-const BaseUnit_1 = require("./BaseUnit");
-class ConditionUnit extends BaseUnit_1.BaseUnit {
+const BaseUnit_1 = __importDefault(require("./BaseUnit"));
+class ConditionUnit extends BaseUnit_1.default {
     constructor(config) {
         super({
             name: enums_1.UnitType.condition,
@@ -24,5 +26,5 @@ class ConditionUnit extends BaseUnit_1.BaseUnit {
         return { statement: this.statement, maxOccurrences: this.maxOccurrences };
     }
 }
-exports.ConditionUnit = ConditionUnit;
 (0, ConditionUnitSchemaMixin_1.conditionUnitSchemaMixin)(ConditionUnit.prototype);
+exports.default = ConditionUnit;

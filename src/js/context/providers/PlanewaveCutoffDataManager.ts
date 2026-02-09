@@ -3,18 +3,21 @@ import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface
 import type { CutoffsContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import {
+import applicationContextMixin, {
     type ApplicationContextMixin,
     type ApplicationExternalContext,
-    applicationContextMixin,
 } from "../mixins/ApplicationContextMixin";
-import ContextProvider, { type ExternalContext, type UnitContext } from "./base/ContextProvider";
+import ContextProvider, {
+    type BaseExternalContext,
+    type UnitContext,
+} from "./base/ContextProvider";
 
 type ApplicationName = "vasp" | "espresso";
 
 type Schema = CutoffsContextItemSchema;
-type PlanewaveExternalContext = ExternalContext & ApplicationExternalContext;
-type Base = typeof ContextProvider<Schema, ExternalContext> & Constructor<ApplicationContextMixin>;
+type PlanewaveExternalContext = BaseExternalContext & ApplicationExternalContext;
+type Base = typeof ContextProvider<Schema, PlanewaveExternalContext> &
+    Constructor<ApplicationContextMixin>;
 
 // Type guard to check if a string is a valid ApplicationName
 function isApplicationName(name: string): name is ApplicationName {
@@ -59,7 +62,7 @@ export default class PlanewaveCutoffDataManager extends (ContextProvider as Base
         return new PlanewaveCutoffDataManager(contextItem, externalContext);
     }
 
-    constructor(contextItem: Partial<Schema> = {}, externalContext: PlanewaveExternalContext = {}) {
+    constructor(contextItem: Partial<Schema>, externalContext: PlanewaveExternalContext) {
         super(contextItem, externalContext);
         this.initApplicationContextMixin(externalContext);
 

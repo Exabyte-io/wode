@@ -3,7 +3,7 @@ import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { MapUnitSchema } from "@mat3ra/esse/dist/js/types";
 import { UnitType } from "../enums";
 import { type MapUnitSchemaMixin } from "../generated/MapUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
 type Schema = MapUnitSchema;
 export declare const defaultMapConfig: {
     name: string;
@@ -19,9 +19,10 @@ export declare const defaultMapConfig: {
 };
 type Base = typeof BaseUnit<Schema> & Constructor<MapUnitSchemaMixin>;
 declare const MapUnit_base: Base;
-export declare class MapUnit extends MapUnit_base implements Schema {
-    constructor(config?: Partial<Schema>);
+declare class MapUnit extends MapUnit_base implements Schema {
     toJSON: () => Schema & AnyObject;
+    _json: Schema & AnyObject;
+    constructor(config?: Partial<Schema>);
     setWorkflowId(id: string): void;
 }
-export {};
+export default MapUnit;

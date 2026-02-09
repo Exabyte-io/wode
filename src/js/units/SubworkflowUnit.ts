@@ -7,17 +7,21 @@ import {
     type SubworkflowUnitSchemaMixin,
     subworkflowUnitSchemaMixin,
 } from "../generated/SubworkflowUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
 
 type Schema = SubworkflowUnitSchema;
 type Base = typeof BaseUnit<Schema> & Constructor<SubworkflowUnitSchemaMixin>;
 
-export class SubworkflowUnit extends (BaseUnit as Base) implements Schema {
+class SubworkflowUnit extends (BaseUnit as Base) implements Schema {
+    declare toJSON: () => Schema & AnyObject;
+
+    declare _json: Schema & AnyObject;
+
     constructor(config: Partial<Schema>) {
         super({ name: "New Subworkflow", ...config, type: UnitType.subworkflow });
     }
-
-    declare toJSON: () => Schema & AnyObject;
 }
 
 subworkflowUnitSchemaMixin(SubworkflowUnit.prototype);
+
+export default SubworkflowUnit;

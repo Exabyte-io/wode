@@ -7,7 +7,6 @@ const constants_1 = require("@mat3ra/code/dist/js/constants");
 const math_1 = require("@mat3ra/code/dist/js/math");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const made_1 = require("@mat3ra/made");
-const lodash_1 = __importDefault(require("lodash"));
 const MaterialContextMixin_1 = __importDefault(require("../../mixins/MaterialContextMixin"));
 const JSONSchemaFormDataProvider_1 = __importDefault(require("../base/JSONSchemaFormDataProvider"));
 const settings_1 = require("../settings");
@@ -202,7 +201,9 @@ class PointsGridFormDataProvider extends JSONSchemaFormDataProvider_1.default {
                 return dimensions.reduce((a, b) => a * b) * nAtoms;
             }
             case "spacing":
-                return lodash_1.default.round(this.reciprocalLattice.getSpacingFromDimensions(dimensions, constants_1.Units.angstrom), 3);
+                return Number(this.reciprocalLattice
+                    .getSpacingFromDimensions(dimensions, constants_1.Units.angstrom)
+                    .toFixed(3));
             default:
                 return 1;
         }

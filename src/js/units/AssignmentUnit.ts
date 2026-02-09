@@ -7,12 +7,16 @@ import {
     type AssignmentUnitSchemaMixin,
     assignmentUnitSchemaMixin,
 } from "../generated/AssignmentUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
 
 type Schema = AssignmentUnitSchema;
 type Base = typeof BaseUnit<Schema> & Constructor<AssignmentUnitSchemaMixin>;
 
-export class AssignmentUnit extends (BaseUnit as Base) implements Schema {
+class AssignmentUnit extends (BaseUnit as Base) implements Schema {
+    declare toJSON: () => Schema & AnyObject;
+
+    declare _json: Schema & AnyObject;
+
     constructor(config: Partial<Schema>) {
         super({
             name: UnitType.assignment,
@@ -24,11 +28,11 @@ export class AssignmentUnit extends (BaseUnit as Base) implements Schema {
         });
     }
 
-    declare toJSON: () => Schema & AnyObject;
-
     getHashObject(): object {
         return { input: this.input, operand: this.operand, value: this.value };
     }
 }
 
 assignmentUnitSchemaMixin(AssignmentUnit.prototype);
+
+export default AssignmentUnit;

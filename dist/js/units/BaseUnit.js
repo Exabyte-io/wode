@@ -1,7 +1,5 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BaseUnit = void 0;
-/* eslint-disable class-methods-use-this */
 const entity_1 = require("@mat3ra/code/dist/js/entity");
 const DefaultableMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/DefaultableMixin");
 const HashedEntityMixin_1 = require("@mat3ra/code/dist/js/entity/mixins/HashedEntityMixin");
@@ -13,8 +11,7 @@ const utils_1 = require("@mat3ra/utils");
 const enums_1 = require("../enums");
 const BaseUnitSchemaMixin_1 = require("../generated/BaseUnitSchemaMixin");
 const StatusSchemaMixin_1 = require("../generated/StatusSchemaMixin");
-const RuntimeItemsUILogicMixin_1 = require("../RuntimeItemsUILogicMixin");
-// eslint-disable-next-line prettier/prettier
+const RuntimeItemsUILogicMixin_1 = require("./mixins/RuntimeItemsUILogicMixin");
 class BaseUnit extends entity_1.InMemoryEntity {
     static generateFlowChartId(name) {
         if (this.usePredefinedIds) {
@@ -29,7 +26,7 @@ class BaseUnit extends entity_1.InMemoryEntity {
             preProcessors: [],
             postProcessors: [],
             ...config,
-            status: config.status || enums_1.UNIT_STATUSES.idle,
+            status: config.status || enums_1.UnitStatus.idle,
             statusTrack: config.statusTrack || [],
             flowchartId: config.flowchartId || BaseUnit.generateFlowChartId(config.name),
             tags: config.tags || [],
@@ -62,7 +59,6 @@ class BaseUnit extends entity_1.InMemoryEntity {
         return super.clone(flowchartIDOverrideConfigAsExtraContext);
     }
 }
-exports.BaseUnit = BaseUnit;
 BaseUnit.usePredefinedIds = false;
 (0, TaggableMixin_1.taggableMixin)(BaseUnit.prototype);
 (0, HashedEntityMixin_1.hashedEntityMixin)(BaseUnit.prototype);
@@ -73,3 +69,4 @@ BaseUnit.usePredefinedIds = false;
 (0, StatusSchemaMixin_1.statusSchemaMixin)(BaseUnit.prototype);
 (0, NamedEntityMixin_1.namedEntityMixin)(BaseUnit.prototype);
 (0, DefaultableMixin_1.defaultableEntityMixin)(BaseUnit);
+exports.default = BaseUnit;

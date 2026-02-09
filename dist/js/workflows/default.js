@@ -20,6 +20,7 @@ const defaultWorkflowConfig = {
                 },
                 subtype: "gga",
                 type: "dft",
+                functional: "other",
             },
             name: "New Subworkflow",
             properties: [],

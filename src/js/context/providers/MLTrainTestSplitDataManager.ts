@@ -3,10 +3,9 @@ import JSONSchemasInterface from "@mat3ra/esse/dist/js/esse/JSONSchemasInterface
 import type { MlTrainTestSplitContextItemSchema } from "@mat3ra/esse/dist/js/types";
 import type { JSONSchema7 } from "json-schema";
 
-import {
+import applicationContextMixin, {
     type ApplicationContextMixin,
     type ApplicationExternalContext,
-    applicationContextMixin,
 } from "../mixins/ApplicationContextMixin";
 import { type UnitContext } from "./base/ContextProvider";
 import JSONSchemaDataProvider, { type JinjaExternalContext } from "./base/JSONSchemaDataProvider";

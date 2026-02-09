@@ -4,7 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
-const ApplicationContextMixin_1 = require("../mixins/ApplicationContextMixin");
+const ApplicationContextMixin_1 = __importDefault(require("../mixins/ApplicationContextMixin"));
 const JSONSchemaDataProvider_1 = __importDefault(require("./base/JSONSchemaDataProvider"));
 const jsonSchemaId = "context-providers-directory/ml-settings-context-provider";
 const defaultData = {
@@ -38,4 +38,4 @@ class MLSettingsDataManager extends JSONSchemaDataProvider_1.default {
     }
 }
 exports.default = MLSettingsDataManager;
-(0, ApplicationContextMixin_1.applicationContextMixin)(MLSettingsDataManager.prototype);
+(0, ApplicationContextMixin_1.default)(MLSettingsDataManager.prototype);

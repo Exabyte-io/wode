@@ -9,24 +9,17 @@ import type {
 } from "@mat3ra/esse/dist/js/types";
 import { Utils } from "@mat3ra/utils";
 
-import { contextMixin } from "../context/mixins/ContextAndRenderFieldsMixin";
-import {
-    type ImportantSettingsProvider,
-    importantSettingsProviderMixin,
-} from "../context/mixins/ImportantSettingsProviderMixin";
 import { type ExternalContext, createProvider } from "../context/providers";
-import ExecutionUnitInput from "../ExecutionUnitInput";
+import type ConvergenceParameter from "../convergence/ConvergenceParameter";
 import {
     type ExecutionUnitSchemaMixin,
     executionUnitSchemaMixin,
 } from "../generated/ExecutionUnitSchemaMixin";
-import type ConvergenceParameter from "../subworkflows/convergence/ConvergenceParameter";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
+import ExecutionUnitInput from "./ExecutionUnitInput";
 
 type Schema = ExecutionUnitSchema;
-type Base = typeof BaseUnit &
-    Constructor<ExecutionUnitSchemaMixin> &
-    Constructor<ImportantSettingsProvider>;
+type Base = typeof BaseUnit & Constructor<ExecutionUnitSchemaMixin>;
 
 interface SetApplicationProps {
     application: Application;
@@ -39,7 +32,7 @@ interface SetExecutableProps {
     flavor?: Flavor | FlavorSchema;
 }
 
-export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
+class ExecutionUnit extends (BaseUnit as Base) implements Schema {
     applicationInstance!: Application;
 
     executableInstance!: Executable;
@@ -51,6 +44,8 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
     renderingContext: Record<string, unknown> = {};
 
     declare toJSON: () => Schema & AnyObject;
+
+    declare _json: Schema & AnyObject;
 
     constructor(config: Schema) {
         super(config);
@@ -144,43 +139,38 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
         } as const;
 
         const contextName = parameterToContextProviderMap[parameter.name];
+        const contextProviders = this.getContextProvidersInstances(externalContext);
 
-        const fullContext = this.getContextProvidersInstances(externalContext).map(
-            (contextProvider) => {
-                if (contextProvider.name === contextName) {
-                    contextProvider.applyCovergenceParameter(parameter);
-                    return contextProvider.getContextItemData();
-                }
-                return contextProvider.getContextItemData();
-            },
-        );
+        const fullContext = contextProviders.map((provider) => {
+            if (provider.name === contextName) {
+                provider.applyConvergenceParameter(parameter);
+                return provider.getContextItemData();
+            }
+            return provider.getContextItemData();
+        });
 
-        this.saveContext(fullContext);
+        this.saveContext(fullContext, externalContext);
     }
 
     render(externalContext: ExternalContext) {
-        const fullContext = this.getContextProvidersInstances(externalContext).map(
-            (contextProvider) => {
-                return contextProvider.getContextItemData();
-            },
-        );
+        const contextProviders = this.getContextProvidersInstances(externalContext);
+        const fullContext = contextProviders.map((provider) => provider.getContextItemData());
 
-        this.saveContext(fullContext);
+        this.saveContext(fullContext, externalContext);
 
         this.input = this.inputInstances.map((input) => {
             return input.render(this.renderingContext).toJSON();
         });
     }
 
-    private saveContext(fullContext: ContextItemSchema[]) {
+    private saveContext(fullContext: ContextItemSchema[], { subworkflowContext }: ExternalContext) {
         // persistent context
         this.context = fullContext.filter((c) => c.isEdited);
 
-        this.renderingContext = Object.fromEntries(
-            fullContext.map((context) => {
-                return [context.name, context.data];
-            }),
-        );
+        this.renderingContext = {
+            ...Object.fromEntries(fullContext.map((context) => [context.name, context.data])),
+            subworkflowContext: { ...subworkflowContext },
+        };
     }
 
     /**
@@ -208,27 +198,8 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
             ),
         };
     }
-
-    // toJSON() {
-    //     const json = super.toJSON() as ExecutionUnitSchemaBase & AnyObject;
-
-    //     // Remove results from executable; TODO: why do we need this?
-    //     if (json.executable) {
-    //         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //         const { results: _, ...executable } = json.executable;
-
-    //         return {
-    //             ...json,
-    //             executable: {
-    //                 ...executable,
-    //             },
-    //         };
-    //     }
-
-    //     return json;
-    // }
 }
 
 executionUnitSchemaMixin(ExecutionUnit.prototype);
-contextMixin(ExecutionUnit.prototype);
-importantSettingsProviderMixin(ExecutionUnit.prototype);
+
+export default ExecutionUnit;

@@ -1,8 +1,12 @@
-import { type Application } from "@mat3ra/ade";
-import type { JobSchema, WorkflowSchema } from "@mat3ra/esse/dist/js/types";
-
-import type { OrderedMaterial } from "../mixins/MaterialContextMixin";
+import type { ApplicationExternalContext } from "../mixins/ApplicationContextMixin";
+import type { JobExternalContext } from "../mixins/JobContextMixin";
+import type { MaterialExternalContext } from "../mixins/MaterialContextMixin";
+import type { MaterialsExternalContext } from "../mixins/MaterialsContextMixin";
+import type { MaterialsSetExternalContext } from "../mixins/MaterialsSetContextMixin";
+import type { MethodDataExternalContext } from "../mixins/MethodDataContextMixin";
+import type { WorkflowExternalContext } from "../mixins/WorkflowContextMixin";
 import type { UnitContext } from "./base/ContextProvider";
+import type { JinjaExternalContext } from "./base/JSONSchemaDataProvider";
 import BoundaryConditionsFormDataManager from "./BoundaryConditionsFormDataManager";
 import QENEBInputDataManager from "./by_application/espresso/QENEBInputDataManager";
 import QEPWXInputDataManager from "./by_application/espresso/QEPWXInputDataManager";
@@ -61,19 +65,23 @@ export const PROVIDER_REGISTRY = {
     NWChemInputDataManager,
 } as const;
 
+export type SubworkflowContext = {
+    subworkflowContext: Record<string, string | number | boolean>;
+};
+
 /**
  * External context type used by ExecutionUnitInput when creating providers.
  * This type is always expected to be present when providers are instantiated.
  */
-export type ExternalContext = {
-    application: Application;
-    material: OrderedMaterial;
-    materials: OrderedMaterial[];
-    workflow: WorkflowSchema;
-    job: JobSchema;
-    isUsingJinjaVariables?: boolean;
-    materialsSet: { _id: string };
-};
+export type ExternalContext = ApplicationExternalContext &
+    WorkflowExternalContext &
+    JobExternalContext &
+    MaterialsExternalContext &
+    MethodDataExternalContext &
+    MaterialsSetExternalContext &
+    MaterialExternalContext &
+    JinjaExternalContext &
+    SubworkflowContext;
 
 /**
  * Type for provider names as they appear in templates.
@@ -104,12 +112,8 @@ export function createProvider(
     if (!ProviderClass) {
         throw new Error(`Unknown provider: ${name}`);
     }
-    // Type assertion is safe here because ExecutionUnitInput's ExternalContext
-    // extends the base ExternalContext and includes all properties needed by providers.
-    // Each provider may expect a more specific ExternalContext type, but at runtime
-    // the ExecutionUnitInput's ExternalContext will have all required properties.
-    // This is a legitimate use of `any` for dynamic dispatch where TypeScript
-    // cannot statically verify the types, but runtime behavior is guaranteed.
+    // The full ExternalContext is a superset of each provider's expected context type,
+    // so passing it to every provider's createFromUnitContext is type-safe (no assertion).
     return ProviderClass.createFromUnitContext(context, externalContext);
 }
 
