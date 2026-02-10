@@ -14,7 +14,8 @@ class UnitConfigBuilder {
   constructor({
     name,
     type,
-    flowchartId
+    flowchartId,
+    cache = []
   }) {
     this.type = type;
     this._name = name;
@@ -23,7 +24,10 @@ class UnitConfigBuilder {
     this._monitors = [];
     this._preProcessors = [];
     this._postProcessors = [];
-    this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
+    this.cache = cache;
+    const countInCache = this.cache.filter(s => s === name).length;
+    this.cache.push(name);
+    this._flowchartId = flowchartId || this.generateFlowChartId(name, countInCache);
   }
   name(str) {
     this._name = str;
@@ -33,8 +37,10 @@ class UnitConfigBuilder {
     this._head = bool;
     return this;
   }
-  static generateFlowChartId(...args) {
-    if (this.usePredefinedIds) return _utils.Utils.uuid.getUUIDFromNamespace(...args);
+  generateFlowChartId(seed, countInCache = 0) {
+    const suffix = countInCache > 0 ? `-${countInCache}` : "";
+    const seedWithSuffix = `${seed}${suffix}`;
+    if (this.constructor.usePredefinedIds) return _utils.Utils.uuid.getUUIDFromNamespace(seedWithSuffix);
     return _utils.Utils.uuid.getUUID();
   }
   flowchartId(flowchartId) {

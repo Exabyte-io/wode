@@ -5,8 +5,8 @@ import { UNIT_TYPES } from "../../enums";
 import { UnitConfigBuilder } from "./UnitConfigBuilder";
 
 export class ExecutionUnitConfigBuilder extends UnitConfigBuilder {
-    constructor(name, application, execName, flavorName, flowchartId) {
-        super({ name, type: UNIT_TYPES.execution, flowchartId });
+    constructor(name, application, execName, flavorName, flowchartId, cache = []) {
+        super({ name, type: UNIT_TYPES.execution, flowchartId, cache });
 
         try {
             this.initialize(application, execName, flavorName);
