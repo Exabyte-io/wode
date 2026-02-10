@@ -22,7 +22,14 @@ export declare class Subworkflow extends Subworkflow_base {
         _id: any;
         name: string;
         application: import("node_modules/@mat3ra/ade/dist/js/applicationMixin").DefaultApplicationConfig;
-        model: import("@mat3ra/mode/dist/js/types").ModelConfig;
+        model: {
+            method: {
+                readonly type: "pseudopotential";
+                readonly subtype: "us";
+            };
+            type: "dft";
+            subtype: "gga";
+        };
         properties: never[];
         units: never[];
     };
@@ -61,7 +68,7 @@ export declare class Subworkflow extends Subworkflow_base {
             }[];
             excludeFilesPattern?: string;
         } | undefined;
-        model: Record<string, unknown>;
+        model: import("@mat3ra/esse/dist/js/types").AnyModelSchema & import("@mat3ra/esse/dist/js/esse/types").AnyObject;
         units: import("@mat3ra/esse/dist/js/esse/types").AnyObject[];
     };
     get contextProviders(): any[];
@@ -169,43 +176,6 @@ export declare class Subworkflow extends Subworkflow_base {
             repetition?: number;
         }[];
         isDraft?: boolean;
-        type: "reduce";
-        head?: boolean;
-        flowchartId: string;
-        next?: string;
-        enableRender?: boolean;
-        mapFlowchartId: string;
-        input: {
-            operation: string;
-            arguments: string[];
-        }[];
-    } | {
-        _id?: string;
-        slug?: string;
-        systemName?: string;
-        schemaVersion?: string;
-        name: string;
-        isDefault?: boolean;
-        preProcessors: {
-            name: string;
-        }[];
-        postProcessors: {
-            name: string;
-        }[];
-        monitors: {
-            name: string;
-        }[];
-        results: {
-            name: string;
-        }[];
-        tags?: string[];
-        status?: "idle" | "active" | "warning" | "error" | "finished";
-        statusTrack?: {
-            trackedAt: number;
-            status: string;
-            repetition?: number;
-        }[];
-        isDraft?: boolean;
         type: "condition";
         head?: boolean;
         flowchartId: string;
@@ -300,7 +270,7 @@ export declare class Subworkflow extends Subworkflow_base {
             hasAdvancedComputeOptions?: boolean;
             isLicensed?: boolean;
         };
-        executable?: {
+        executable: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -322,7 +292,7 @@ export declare class Subworkflow extends Subworkflow_base {
             applicationId: string[];
             hasAdvancedComputeOptions?: boolean;
         };
-        flavor?: {
+        flavor: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -362,19 +332,324 @@ export declare class Subworkflow extends Subworkflow_base {
                 applicationVersion?: string;
                 executableName: string;
                 contextProviders: {
-                    name: string;
+                    name: import("@mat3ra/esse/dist/js/types").ContextProviderNameEnum;
                 }[];
                 content: string;
             };
             rendered: string;
             isManuallyChanged: boolean;
         }[];
-        context?: {
-            name: import("@mat3ra/esse/dist/js/types").ContextProviderNameEnum;
+        context: ({
+            name: "input";
+            data: {
+                contextProviderName: "nwchem-total-energy";
+                CHARGE: number;
+                MULT: number;
+                BASIS: string;
+                NAT: number;
+                NTYP: number;
+                ATOMIC_POSITIONS: string;
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+                ATOMIC_SPECIES: string;
+                FUNCTIONAL: string;
+                CARTESIAN: boolean;
+            } | {
+                IBRAV: number;
+                RESTART_MODE: "from_scratch" | "restart";
+                ATOMIC_SPECIES: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                ATOMIC_SPECIES_WITH_LABELS: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                NAT: number;
+                NTYP: number;
+                NTYP_WITH_LABELS: number;
+                ATOMIC_POSITIONS?: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS?: string;
+                CELL_PARAMETERS: {
+                    v1?: [number, number, number];
+                    v2?: [number, number, number];
+                    v3?: [number, number, number];
+                };
+                FIRST_IMAGE: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                LAST_IMAGE: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                INTERMEDIATE_IMAGES: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[][];
+                contextProviderName: "qe-neb";
+            } | {
+                IBRAV: number;
+                RESTART_MODE: "from_scratch" | "restart";
+                ATOMIC_SPECIES: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                ATOMIC_SPECIES_WITH_LABELS: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                NAT: number;
+                NTYP: number;
+                NTYP_WITH_LABELS: number;
+                ATOMIC_POSITIONS: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+                CELL_PARAMETERS: {
+                    v1?: [number, number, number];
+                    v2?: [number, number, number];
+                    v3?: [number, number, number];
+                };
+                contextProviderName: "qe-pwx";
+            } | {
+                POSCAR: string;
+                POSCAR_WITH_CONSTRAINTS: string;
+                contextProviderName: "vasp";
+            } | {
+                FIRST_IMAGE: string;
+                LAST_IMAGE: string;
+                INTERMEDIATE_IMAGES: string[];
+                contextProviderName: "vasp-neb";
+            };
+            extraData: {
+                materialHash: string;
+            };
             isEdited: boolean;
-            data: {};
-            extraData?: {};
-        }[];
+        } | {
+            name: "cutoffs";
+            data: {
+                wavefunction?: number;
+                density?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "kgrid" | "qgrid" | "igrid";
+            data: {
+                dimensions: [number, number, number] | [string, string, string];
+                shifts?: [number, number, number];
+                reciprocalVectorRatios?: [number, number, number];
+                gridMetricType: "KPPRA" | "spacing";
+                gridMetricValue: number;
+                preferGridMetric?: boolean;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "qpath" | "ipath" | "kpath" | "explicitKPath" | "explicitKPath2PIBA";
+            data: [{
+                point?: string;
+                steps: number;
+                coordinates: number[];
+            }, ...{
+                point?: string;
+                steps: number;
+                coordinates: number[];
+            }[]];
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "hubbard_j";
+            data: [{
+                paramType?: "U" | "J" | "B" | "E2" | "E3";
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                value?: number;
+            }, ...{
+                paramType?: "U" | "J" | "B" | "E2" | "E3";
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                value?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "hubbard_u";
+            data: {
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                hubbardUValue?: number;
+            }[];
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "hubbard_v";
+            data: [{
+                atomicSpecies?: string;
+                siteIndex?: number;
+                atomicOrbital?: string;
+                atomicSpecies2?: string;
+                siteIndex2?: number;
+                atomicOrbital2?: string;
+                hubbardVValue?: number;
+            }, ...{
+                atomicSpecies?: string;
+                siteIndex?: number;
+                atomicOrbital?: string;
+                atomicSpecies2?: string;
+                siteIndex2?: number;
+                atomicOrbital2?: string;
+                hubbardVValue?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "hubbard_legacy";
+            data: [{
+                atomicSpecies?: string;
+                atomicSpeciesIndex?: number;
+                hubbardUValue?: number;
+            }, ...{
+                atomicSpecies?: string;
+                atomicSpeciesIndex?: number;
+                hubbardUValue?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "neb";
+            data: {
+                nImages?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "boundaryConditions";
+            data: {
+                type?: "pbc" | "bc1" | "bc2" | "bc3";
+                offset?: number;
+                electricField?: number;
+                targetFermiEnergy?: number;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "mlSettings";
+            data: {
+                target_column_name?: string;
+                problem_category?: "regression" | "classification" | "clustering";
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "mlTrainTestSplit";
+            data: {
+                fraction_held_as_test_set?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "dynamics";
+            data: {
+                numberOfSteps?: number;
+                timeStep?: number;
+                electronMass?: number;
+                temperature?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "collinearMagnetization";
+            data: {
+                startingMagnetization: {
+                    atomicSpecies: string;
+                    value: number;
+                    index: number;
+                }[];
+                isTotalMagnetization: boolean;
+                totalMagnetization: number;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "nonCollinearMagnetization";
+            data: {
+                isExistingChargeDensity?: boolean;
+                isStartingMagnetization?: boolean;
+                startingMagnetization?: {
+                    index?: number;
+                    atomicSpecies?: string;
+                    value?: number;
+                }[];
+                isArbitrarySpinAngle?: boolean;
+                isArbitrarySpinDirection?: boolean;
+                lforcet?: boolean;
+                spinAngles?: {
+                    index?: number;
+                    atomicSpecies?: string;
+                    angle1?: number;
+                    angle2?: number;
+                }[];
+                isConstrainedMagnetization?: boolean;
+                constrainedMagnetization?: {
+                    constrainType?: "none" | "total" | "atomic" | "total direction" | "atomic direction";
+                    lambda?: number;
+                };
+                isFixedMagnetization?: boolean;
+                fixedMagnetization?: {
+                    x?: number;
+                    y?: number;
+                    z?: number;
+                };
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        })[];
     } | {
         _id?: string;
         slug?: string;
@@ -414,43 +689,6 @@ export declare class Subworkflow extends Subworkflow_base {
         }[];
         operand: string;
         value: string | boolean | number;
-    } | {
-        _id?: string;
-        slug?: string;
-        systemName?: string;
-        schemaVersion?: string;
-        name: string;
-        isDefault?: boolean;
-        preProcessors: {
-            name: string;
-        }[];
-        postProcessors: {
-            name: string;
-        }[];
-        monitors: {
-            name: string;
-        }[];
-        results: {
-            name: string;
-        }[];
-        tags?: string[];
-        status?: "idle" | "active" | "warning" | "error" | "finished";
-        statusTrack?: {
-            trackedAt: number;
-            status: string;
-            repetition?: number;
-        }[];
-        isDraft?: boolean;
-        type: "processing";
-        head?: boolean;
-        flowchartId: string;
-        next?: string;
-        enableRender?: boolean;
-        operation: string;
-        operationType: string;
-        inputData: {
-            [k: string]: unknown;
-        };
     } | undefined;
     unitIndex(flowchartId: string): number;
     replaceUnit(index: number, unit: BaseUnit): void;
@@ -549,43 +787,6 @@ export declare class Subworkflow extends Subworkflow_base {
             repetition?: number;
         }[];
         isDraft?: boolean;
-        type: "reduce";
-        head?: boolean;
-        flowchartId: string;
-        next?: string;
-        enableRender?: boolean;
-        mapFlowchartId: string;
-        input: {
-            operation: string;
-            arguments: string[];
-        }[];
-    } | {
-        _id?: string;
-        slug?: string;
-        systemName?: string;
-        schemaVersion?: string;
-        name: string;
-        isDefault?: boolean;
-        preProcessors: {
-            name: string;
-        }[];
-        postProcessors: {
-            name: string;
-        }[];
-        monitors: {
-            name: string;
-        }[];
-        results: {
-            name: string;
-        }[];
-        tags?: string[];
-        status?: "idle" | "active" | "warning" | "error" | "finished";
-        statusTrack?: {
-            trackedAt: number;
-            status: string;
-            repetition?: number;
-        }[];
-        isDraft?: boolean;
         type: "condition";
         head?: boolean;
         flowchartId: string;
@@ -680,7 +881,7 @@ export declare class Subworkflow extends Subworkflow_base {
             hasAdvancedComputeOptions?: boolean;
             isLicensed?: boolean;
         };
-        executable?: {
+        executable: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -702,7 +903,7 @@ export declare class Subworkflow extends Subworkflow_base {
             applicationId: string[];
             hasAdvancedComputeOptions?: boolean;
         };
-        flavor?: {
+        flavor: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -742,19 +943,324 @@ export declare class Subworkflow extends Subworkflow_base {
                 applicationVersion?: string;
                 executableName: string;
                 contextProviders: {
-                    name: string;
+                    name: import("@mat3ra/esse/dist/js/types").ContextProviderNameEnum;
                 }[];
                 content: string;
             };
             rendered: string;
             isManuallyChanged: boolean;
         }[];
-        context?: {
-            name: import("@mat3ra/esse/dist/js/types").ContextProviderNameEnum;
+        context: ({
+            name: "input";
+            data: {
+                contextProviderName: "nwchem-total-energy";
+                CHARGE: number;
+                MULT: number;
+                BASIS: string;
+                NAT: number;
+                NTYP: number;
+                ATOMIC_POSITIONS: string;
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+                ATOMIC_SPECIES: string;
+                FUNCTIONAL: string;
+                CARTESIAN: boolean;
+            } | {
+                IBRAV: number;
+                RESTART_MODE: "from_scratch" | "restart";
+                ATOMIC_SPECIES: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                ATOMIC_SPECIES_WITH_LABELS: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                NAT: number;
+                NTYP: number;
+                NTYP_WITH_LABELS: number;
+                ATOMIC_POSITIONS?: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS?: string;
+                CELL_PARAMETERS: {
+                    v1?: [number, number, number];
+                    v2?: [number, number, number];
+                    v3?: [number, number, number];
+                };
+                FIRST_IMAGE: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                LAST_IMAGE: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                INTERMEDIATE_IMAGES: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[][];
+                contextProviderName: "qe-neb";
+            } | {
+                IBRAV: number;
+                RESTART_MODE: "from_scratch" | "restart";
+                ATOMIC_SPECIES: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                ATOMIC_SPECIES_WITH_LABELS: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                NAT: number;
+                NTYP: number;
+                NTYP_WITH_LABELS: number;
+                ATOMIC_POSITIONS: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+                CELL_PARAMETERS: {
+                    v1?: [number, number, number];
+                    v2?: [number, number, number];
+                    v3?: [number, number, number];
+                };
+                contextProviderName: "qe-pwx";
+            } | {
+                POSCAR: string;
+                POSCAR_WITH_CONSTRAINTS: string;
+                contextProviderName: "vasp";
+            } | {
+                FIRST_IMAGE: string;
+                LAST_IMAGE: string;
+                INTERMEDIATE_IMAGES: string[];
+                contextProviderName: "vasp-neb";
+            };
+            extraData: {
+                materialHash: string;
+            };
             isEdited: boolean;
-            data: {};
-            extraData?: {};
-        }[];
+        } | {
+            name: "cutoffs";
+            data: {
+                wavefunction?: number;
+                density?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "kgrid" | "qgrid" | "igrid";
+            data: {
+                dimensions: [number, number, number] | [string, string, string];
+                shifts?: [number, number, number];
+                reciprocalVectorRatios?: [number, number, number];
+                gridMetricType: "KPPRA" | "spacing";
+                gridMetricValue: number;
+                preferGridMetric?: boolean;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "qpath" | "ipath" | "kpath" | "explicitKPath" | "explicitKPath2PIBA";
+            data: [{
+                point?: string;
+                steps: number;
+                coordinates: number[];
+            }, ...{
+                point?: string;
+                steps: number;
+                coordinates: number[];
+            }[]];
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "hubbard_j";
+            data: [{
+                paramType?: "U" | "J" | "B" | "E2" | "E3";
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                value?: number;
+            }, ...{
+                paramType?: "U" | "J" | "B" | "E2" | "E3";
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                value?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "hubbard_u";
+            data: {
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                hubbardUValue?: number;
+            }[];
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "hubbard_v";
+            data: [{
+                atomicSpecies?: string;
+                siteIndex?: number;
+                atomicOrbital?: string;
+                atomicSpecies2?: string;
+                siteIndex2?: number;
+                atomicOrbital2?: string;
+                hubbardVValue?: number;
+            }, ...{
+                atomicSpecies?: string;
+                siteIndex?: number;
+                atomicOrbital?: string;
+                atomicSpecies2?: string;
+                siteIndex2?: number;
+                atomicOrbital2?: string;
+                hubbardVValue?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "hubbard_legacy";
+            data: [{
+                atomicSpecies?: string;
+                atomicSpeciesIndex?: number;
+                hubbardUValue?: number;
+            }, ...{
+                atomicSpecies?: string;
+                atomicSpeciesIndex?: number;
+                hubbardUValue?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "neb";
+            data: {
+                nImages?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "boundaryConditions";
+            data: {
+                type?: "pbc" | "bc1" | "bc2" | "bc3";
+                offset?: number;
+                electricField?: number;
+                targetFermiEnergy?: number;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "mlSettings";
+            data: {
+                target_column_name?: string;
+                problem_category?: "regression" | "classification" | "clustering";
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "mlTrainTestSplit";
+            data: {
+                fraction_held_as_test_set?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "dynamics";
+            data: {
+                numberOfSteps?: number;
+                timeStep?: number;
+                electronMass?: number;
+                temperature?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "collinearMagnetization";
+            data: {
+                startingMagnetization: {
+                    atomicSpecies: string;
+                    value: number;
+                    index: number;
+                }[];
+                isTotalMagnetization: boolean;
+                totalMagnetization: number;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "nonCollinearMagnetization";
+            data: {
+                isExistingChargeDensity?: boolean;
+                isStartingMagnetization?: boolean;
+                startingMagnetization?: {
+                    index?: number;
+                    atomicSpecies?: string;
+                    value?: number;
+                }[];
+                isArbitrarySpinAngle?: boolean;
+                isArbitrarySpinDirection?: boolean;
+                lforcet?: boolean;
+                spinAngles?: {
+                    index?: number;
+                    atomicSpecies?: string;
+                    angle1?: number;
+                    angle2?: number;
+                }[];
+                isConstrainedMagnetization?: boolean;
+                constrainedMagnetization?: {
+                    constrainType?: "none" | "total" | "atomic" | "total direction" | "atomic direction";
+                    lambda?: number;
+                };
+                isFixedMagnetization?: boolean;
+                fixedMagnetization?: {
+                    x?: number;
+                    y?: number;
+                    z?: number;
+                };
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        })[];
     } | {
         _id?: string;
         slug?: string;
@@ -794,43 +1300,6 @@ export declare class Subworkflow extends Subworkflow_base {
         }[];
         operand: string;
         value: string | boolean | number;
-    } | {
-        _id?: string;
-        slug?: string;
-        systemName?: string;
-        schemaVersion?: string;
-        name: string;
-        isDefault?: boolean;
-        preProcessors: {
-            name: string;
-        }[];
-        postProcessors: {
-            name: string;
-        }[];
-        monitors: {
-            name: string;
-        }[];
-        results: {
-            name: string;
-        }[];
-        tags?: string[];
-        status?: "idle" | "active" | "warning" | "error" | "finished";
-        statusTrack?: {
-            trackedAt: number;
-            status: string;
-            repetition?: number;
-        }[];
-        isDraft?: boolean;
-        type: "processing";
-        head?: boolean;
-        flowchartId: string;
-        next?: string;
-        enableRender?: boolean;
-        operation: string;
-        operationType: string;
-        inputData: {
-            [k: string]: unknown;
-        };
     } | undefined;
     findUnitKeyById(id: string): string;
     findUnitWithTag(tag: string): {
@@ -916,43 +1385,6 @@ export declare class Subworkflow extends Subworkflow_base {
             repetition?: number;
         }[];
         isDraft?: boolean;
-        type: "reduce";
-        head?: boolean;
-        flowchartId: string;
-        next?: string;
-        enableRender?: boolean;
-        mapFlowchartId: string;
-        input: {
-            operation: string;
-            arguments: string[];
-        }[];
-    } | {
-        _id?: string;
-        slug?: string;
-        systemName?: string;
-        schemaVersion?: string;
-        name: string;
-        isDefault?: boolean;
-        preProcessors: {
-            name: string;
-        }[];
-        postProcessors: {
-            name: string;
-        }[];
-        monitors: {
-            name: string;
-        }[];
-        results: {
-            name: string;
-        }[];
-        tags?: string[];
-        status?: "idle" | "active" | "warning" | "error" | "finished";
-        statusTrack?: {
-            trackedAt: number;
-            status: string;
-            repetition?: number;
-        }[];
-        isDraft?: boolean;
         type: "condition";
         head?: boolean;
         flowchartId: string;
@@ -1047,7 +1479,7 @@ export declare class Subworkflow extends Subworkflow_base {
             hasAdvancedComputeOptions?: boolean;
             isLicensed?: boolean;
         };
-        executable?: {
+        executable: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -1069,7 +1501,7 @@ export declare class Subworkflow extends Subworkflow_base {
             applicationId: string[];
             hasAdvancedComputeOptions?: boolean;
         };
-        flavor?: {
+        flavor: {
             _id?: string;
             slug?: string;
             systemName?: string;
@@ -1109,19 +1541,324 @@ export declare class Subworkflow extends Subworkflow_base {
                 applicationVersion?: string;
                 executableName: string;
                 contextProviders: {
-                    name: string;
+                    name: import("@mat3ra/esse/dist/js/types").ContextProviderNameEnum;
                 }[];
                 content: string;
             };
             rendered: string;
             isManuallyChanged: boolean;
         }[];
-        context?: {
-            name: import("@mat3ra/esse/dist/js/types").ContextProviderNameEnum;
+        context: ({
+            name: "input";
+            data: {
+                contextProviderName: "nwchem-total-energy";
+                CHARGE: number;
+                MULT: number;
+                BASIS: string;
+                NAT: number;
+                NTYP: number;
+                ATOMIC_POSITIONS: string;
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+                ATOMIC_SPECIES: string;
+                FUNCTIONAL: string;
+                CARTESIAN: boolean;
+            } | {
+                IBRAV: number;
+                RESTART_MODE: "from_scratch" | "restart";
+                ATOMIC_SPECIES: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                ATOMIC_SPECIES_WITH_LABELS: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                NAT: number;
+                NTYP: number;
+                NTYP_WITH_LABELS: number;
+                ATOMIC_POSITIONS?: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS?: string;
+                CELL_PARAMETERS: {
+                    v1?: [number, number, number];
+                    v2?: [number, number, number];
+                    v3?: [number, number, number];
+                };
+                FIRST_IMAGE: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                LAST_IMAGE: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                INTERMEDIATE_IMAGES: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[][];
+                contextProviderName: "qe-neb";
+            } | {
+                IBRAV: number;
+                RESTART_MODE: "from_scratch" | "restart";
+                ATOMIC_SPECIES: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                ATOMIC_SPECIES_WITH_LABELS: {
+                    X: string;
+                    Mass_X: number;
+                    PseudoPot_X: string;
+                }[];
+                NAT: number;
+                NTYP: number;
+                NTYP_WITH_LABELS: number;
+                ATOMIC_POSITIONS: {
+                    X?: string;
+                    x: number;
+                    y: number;
+                    z: number;
+                    "if_pos(1)"?: number;
+                    "if_pos(2)"?: number;
+                    "if_pos(3)"?: number;
+                }[];
+                ATOMIC_POSITIONS_WITHOUT_CONSTRAINTS: string;
+                CELL_PARAMETERS: {
+                    v1?: [number, number, number];
+                    v2?: [number, number, number];
+                    v3?: [number, number, number];
+                };
+                contextProviderName: "qe-pwx";
+            } | {
+                POSCAR: string;
+                POSCAR_WITH_CONSTRAINTS: string;
+                contextProviderName: "vasp";
+            } | {
+                FIRST_IMAGE: string;
+                LAST_IMAGE: string;
+                INTERMEDIATE_IMAGES: string[];
+                contextProviderName: "vasp-neb";
+            };
+            extraData: {
+                materialHash: string;
+            };
             isEdited: boolean;
-            data: {};
-            extraData?: {};
-        }[];
+        } | {
+            name: "cutoffs";
+            data: {
+                wavefunction?: number;
+                density?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "kgrid" | "qgrid" | "igrid";
+            data: {
+                dimensions: [number, number, number] | [string, string, string];
+                shifts?: [number, number, number];
+                reciprocalVectorRatios?: [number, number, number];
+                gridMetricType: "KPPRA" | "spacing";
+                gridMetricValue: number;
+                preferGridMetric?: boolean;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "qpath" | "ipath" | "kpath" | "explicitKPath" | "explicitKPath2PIBA";
+            data: [{
+                point?: string;
+                steps: number;
+                coordinates: number[];
+            }, ...{
+                point?: string;
+                steps: number;
+                coordinates: number[];
+            }[]];
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "hubbard_j";
+            data: [{
+                paramType?: "U" | "J" | "B" | "E2" | "E3";
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                value?: number;
+            }, ...{
+                paramType?: "U" | "J" | "B" | "E2" | "E3";
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                value?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "hubbard_u";
+            data: {
+                atomicSpecies?: string;
+                atomicOrbital?: string;
+                hubbardUValue?: number;
+            }[];
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "hubbard_v";
+            data: [{
+                atomicSpecies?: string;
+                siteIndex?: number;
+                atomicOrbital?: string;
+                atomicSpecies2?: string;
+                siteIndex2?: number;
+                atomicOrbital2?: string;
+                hubbardVValue?: number;
+            }, ...{
+                atomicSpecies?: string;
+                siteIndex?: number;
+                atomicOrbital?: string;
+                atomicSpecies2?: string;
+                siteIndex2?: number;
+                atomicOrbital2?: string;
+                hubbardVValue?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "hubbard_legacy";
+            data: [{
+                atomicSpecies?: string;
+                atomicSpeciesIndex?: number;
+                hubbardUValue?: number;
+            }, ...{
+                atomicSpecies?: string;
+                atomicSpeciesIndex?: number;
+                hubbardUValue?: number;
+            }[]];
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "neb";
+            data: {
+                nImages?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "boundaryConditions";
+            data: {
+                type?: "pbc" | "bc1" | "bc2" | "bc3";
+                offset?: number;
+                electricField?: number;
+                targetFermiEnergy?: number;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "mlSettings";
+            data: {
+                target_column_name?: string;
+                problem_category?: "regression" | "classification" | "clustering";
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "mlTrainTestSplit";
+            data: {
+                fraction_held_as_test_set?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "dynamics";
+            data: {
+                numberOfSteps?: number;
+                timeStep?: number;
+                electronMass?: number;
+                temperature?: number;
+            };
+            isEdited: boolean;
+            extraData: {};
+        } | {
+            name: "collinearMagnetization";
+            data: {
+                startingMagnetization: {
+                    atomicSpecies: string;
+                    value: number;
+                    index: number;
+                }[];
+                isTotalMagnetization: boolean;
+                totalMagnetization: number;
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        } | {
+            name: "nonCollinearMagnetization";
+            data: {
+                isExistingChargeDensity?: boolean;
+                isStartingMagnetization?: boolean;
+                startingMagnetization?: {
+                    index?: number;
+                    atomicSpecies?: string;
+                    value?: number;
+                }[];
+                isArbitrarySpinAngle?: boolean;
+                isArbitrarySpinDirection?: boolean;
+                lforcet?: boolean;
+                spinAngles?: {
+                    index?: number;
+                    atomicSpecies?: string;
+                    angle1?: number;
+                    angle2?: number;
+                }[];
+                isConstrainedMagnetization?: boolean;
+                constrainedMagnetization?: {
+                    constrainType?: "none" | "total" | "atomic" | "total direction" | "atomic direction";
+                    lambda?: number;
+                };
+                isFixedMagnetization?: boolean;
+                fixedMagnetization?: {
+                    x?: number;
+                    y?: number;
+                    z?: number;
+                };
+            };
+            extraData: {
+                materialHash: string;
+            };
+            isEdited: boolean;
+        })[];
     } | {
         _id?: string;
         slug?: string;
@@ -1161,43 +1898,6 @@ export declare class Subworkflow extends Subworkflow_base {
         }[];
         operand: string;
         value: string | boolean | number;
-    } | {
-        _id?: string;
-        slug?: string;
-        systemName?: string;
-        schemaVersion?: string;
-        name: string;
-        isDefault?: boolean;
-        preProcessors: {
-            name: string;
-        }[];
-        postProcessors: {
-            name: string;
-        }[];
-        monitors: {
-            name: string;
-        }[];
-        results: {
-            name: string;
-        }[];
-        tags?: string[];
-        status?: "idle" | "active" | "warning" | "error" | "finished";
-        statusTrack?: {
-            trackedAt: number;
-            status: string;
-            repetition?: number;
-        }[];
-        isDraft?: boolean;
-        type: "processing";
-        head?: boolean;
-        flowchartId: string;
-        next?: string;
-        enableRender?: boolean;
-        operation: string;
-        operationType: string;
-        inputData: {
-            [k: string]: unknown;
-        };
     } | undefined;
     get hasConvergence(): boolean;
 }

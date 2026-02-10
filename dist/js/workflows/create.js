@@ -44,7 +44,7 @@ function updateUnitConfigs({ subworkflowData, unitConfigs }) {
  * @param swArgs {*} subworkflow classes
  * @returns {*} subworkflow object
  */
-function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
+function createSubworkflowUnit({ appName, unitData, workflowData, cache, ...swArgs }) {
     const { name: unitName, unitConfigs, config } = unitData;
     const { subworkflows } = workflowData;
     const { [appName]: dataByApp } = subworkflows;
@@ -54,6 +54,7 @@ function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
         subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
     return (0, create_1.createSubworkflow)({
         subworkflowData,
+        cache,
         ...swArgs,
     });
 }
@@ -152,7 +153,7 @@ function createFromWorkflowUnits({ wfUnits, workflowCls, unitFactoryCls }) {
  * @param swArgs
  * @returns {*[]}
  */
-function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByApplication, workflowCls, ...swArgs }) {
+function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByApplication, workflowCls, cache = [], ...swArgs }) {
     const wfUnits = [];
     const { units } = workflowData;
     let unit, config;
@@ -175,6 +176,7 @@ function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByAp
                     appName,
                     unitData,
                     workflowData: workflowSubworkflowMapByApplication,
+                    cache,
                     ...swArgs,
                 });
                 break;
@@ -192,6 +194,7 @@ function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByAp
     });
 }
 function createWorkflow({ appName, workflowData, workflowSubworkflowMapByApplication, workflowCls = workflow_1.Workflow, ...swArgs }) {
+    const cache = [];
     const { name } = workflowData;
     console.log(`wode: creating ${appName} workflow ${name}`);
     const wf = createWorkflowUnits({
@@ -199,6 +202,7 @@ function createWorkflow({ appName, workflowData, workflowSubworkflowMapByApplica
         workflowData,
         workflowSubworkflowMapByApplication,
         workflowCls,
+        cache,
         ...swArgs,
     });
     wf.setName(name);

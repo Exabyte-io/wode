@@ -25,14 +25,14 @@ export default class QEPWXContextProvider extends QEPWXContextProvider_base {
         IBRAV: number;
         RESTART_MODE: "from_scratch" | "restart";
         ATOMIC_SPECIES: {
-            X?: string;
-            Mass_X?: number;
-            PseudoPot_X?: string;
+            X: string;
+            Mass_X: number;
+            PseudoPot_X: string;
         }[];
         ATOMIC_SPECIES_WITH_LABELS: {
-            X?: string;
-            Mass_X?: number;
-            PseudoPot_X?: string;
+            X: string;
+            Mass_X: number;
+            PseudoPot_X: string;
         }[];
         NAT: number;
         NTYP: number;
@@ -52,19 +52,20 @@ export default class QEPWXContextProvider extends QEPWXContextProvider_base {
             v2?: [number, number, number];
             v3?: [number, number, number];
         };
+        contextProviderName: "qe-pwx";
     } | {
         perMaterial: QEPwxContextProviderSchema[];
         IBRAV: number;
         RESTART_MODE: "from_scratch" | "restart";
         ATOMIC_SPECIES: {
-            X?: string;
-            Mass_X?: number;
-            PseudoPot_X?: string;
+            X: string;
+            Mass_X: number;
+            PseudoPot_X: string;
         }[];
         ATOMIC_SPECIES_WITH_LABELS: {
-            X?: string;
-            Mass_X?: number;
-            PseudoPot_X?: string;
+            X: string;
+            Mass_X: number;
+            PseudoPot_X: string;
         }[];
         NAT: number;
         NTYP: number;
@@ -84,6 +85,7 @@ export default class QEPWXContextProvider extends QEPWXContextProvider_base {
             v2?: [number, number, number];
             v3?: [number, number, number];
         };
+        contextProviderName: "qe-pwx";
     };
 }
 export {};

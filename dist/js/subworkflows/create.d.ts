@@ -8,7 +8,7 @@
  * @param unitFactoryCls {*} workflow unit class factory
  * @returns {*|{head: boolean, preProcessors: [], postProcessors: [], name: *, flowchartId: *, type: *, results: [], monitors: []}}
  */
-export function createUnit({ config, application, unitBuilders, unitFactoryCls }: Object): any | {
+export function createUnit({ config, application, unitBuilders, unitFactoryCls, cache }: Object): any | {
     head: boolean;
     preProcessors: [];
     postProcessors: [];
@@ -18,8 +18,9 @@ export function createUnit({ config, application, unitBuilders, unitFactoryCls }
     results: [];
     monitors: [];
 };
-export function createSubworkflow({ subworkflowData, AppRegistry, modelFactoryCls, methodFactoryCls, subworkflowCls, unitFactoryCls, unitBuilders, }: {
+export function createSubworkflow({ subworkflowData, cache, AppRegistry, modelFactoryCls, methodFactoryCls, subworkflowCls, unitFactoryCls, unitBuilders, }: {
     subworkflowData: any;
+    cache?: never[] | undefined;
     AppRegistry?: typeof ApplicationRegistry | undefined;
     modelFactoryCls?: typeof ModelFactory | undefined;
     methodFactoryCls?: typeof MethodFactory | undefined;

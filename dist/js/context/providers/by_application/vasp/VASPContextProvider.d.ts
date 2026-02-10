@@ -24,10 +24,12 @@ export default class VASPContextProvider extends VASPContextProvider_base {
         perMaterial?: undefined;
         POSCAR: string;
         POSCAR_WITH_CONSTRAINTS: string;
+        contextProviderName: "vasp";
     } | {
         perMaterial: VASPContextProviderSchema[];
         POSCAR: string;
         POSCAR_WITH_CONSTRAINTS: string;
+        contextProviderName: "vasp";
     };
 }
 export {};

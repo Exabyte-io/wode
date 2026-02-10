@@ -7,7 +7,7 @@ exports.UnitConfigBuilder = void 0;
 const utils_1 = require("@mat3ra/utils");
 const underscore_1 = __importDefault(require("underscore"));
 class UnitConfigBuilder {
-    constructor({ name, type, flowchartId }) {
+    constructor({ name, type, flowchartId, cache = [] }) {
         this.type = type;
         this._name = name;
         this._head = false;
@@ -15,7 +15,10 @@ class UnitConfigBuilder {
         this._monitors = [];
         this._preProcessors = [];
         this._postProcessors = [];
-        this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
+        this.cache = cache;
+        const countInCache = this.cache.filter((s) => s === name).length;
+        this.cache.push(name);
+        this._flowchartId = flowchartId || this.generateFlowChartId(name, countInCache);
     }
     name(str) {
         this._name = str;
@@ -25,9 +28,11 @@ class UnitConfigBuilder {
         this._head = bool;
         return this;
     }
-    static generateFlowChartId(...args) {
-        if (this.usePredefinedIds)
-            return utils_1.Utils.uuid.getUUIDFromNamespace(...args);
+    generateFlowChartId(seed, countInCache = 0) {
+        const suffix = countInCache > 0 ? `-${countInCache}` : "";
+        const seedWithSuffix = `${seed}${suffix}`;
+        if (this.constructor.usePredefinedIds)
+            return utils_1.Utils.uuid.getUUIDFromNamespace(seedWithSuffix);
         return utils_1.Utils.uuid.getUUID();
     }
     flowchartId(flowchartId) {
