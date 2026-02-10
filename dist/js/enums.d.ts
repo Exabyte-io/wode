@@ -7,7 +7,6 @@ export declare const UNIT_TYPES: {
     readonly assignment: "assignment";
     readonly condition: "condition";
     readonly subworkflow: "subworkflow";
-    readonly processing: "processing";
     readonly io: "io";
     readonly assertion: "assertion";
 };
