@@ -9,7 +9,6 @@ export const UNIT_TYPES = {
     assignment: "assignment",
     condition: "condition",
     subworkflow: "subworkflow",
-    processing: "processing",
     io: "io",
     assertion: "assertion",
 } as const;
