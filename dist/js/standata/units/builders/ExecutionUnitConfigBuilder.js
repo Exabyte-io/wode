@@ -6,8 +6,8 @@ const ade_1 = require("@mat3ra/ade");
 const enums_1 = require("../../../enums");
 const UnitConfigBuilder_1 = require("./UnitConfigBuilder");
 class ExecutionUnitConfigBuilder extends UnitConfigBuilder_1.UnitConfigBuilder {
-    constructor(name, application, execName, flavorName, flowchartId) {
-        super({ name, type: enums_1.UNIT_TYPES.execution, flowchartId });
+    constructor(name, application, execName, flavorName, flowchartId, cache = []) {
+        super({ name, type: enums_1.UNIT_TYPES.execution, flowchartId, cache });
         try {
             this.initialize(application, execName, flavorName);
         }

@@ -56,12 +56,10 @@ export declare function findUnit({ subworkflowData, index, type, }: {
     subtype: "input" | "output" | "dataFrame";
     source: "api" | "db" | "object_storage";
     input: ({
-        type: "db_ids";
-        ids: string[];
-    } | {
-        type: "db_collection";
-        collection: string;
-        draft: boolean;
+        type: "api";
+        endpoint: string;
+        endpoint_options: {};
+        name?: string;
     } | {
         type: "object_storage";
         objectData: {
@@ -217,7 +215,6 @@ export declare function findUnit({ subworkflowData, index, type, }: {
         results: {
             name: string;
         }[];
-        applicationId: string[];
         hasAdvancedComputeOptions?: boolean;
     };
     flavor: {
@@ -239,7 +236,6 @@ export declare function findUnit({ subworkflowData, index, type, }: {
         results: {
             name: string;
         }[];
-        executableId: string;
         executableName?: string;
         applicationName?: string;
         input: {

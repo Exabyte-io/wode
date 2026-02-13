@@ -113,12 +113,10 @@ export default class Subworkflow extends Subworkflow_base implements Subworkflow
         subtype: "input" | "output" | "dataFrame";
         source: "api" | "db" | "object_storage";
         input: ({
-            type: "db_ids";
-            ids: string[];
-        } | {
-            type: "db_collection";
-            collection: string;
-            draft: boolean;
+            type: "api";
+            endpoint: string;
+            endpoint_options: {};
+            name?: string;
         } | {
             type: "object_storage";
             objectData: {
@@ -274,7 +272,6 @@ export default class Subworkflow extends Subworkflow_base implements Subworkflow
             results: {
                 name: string;
             }[];
-            applicationId: string[];
             hasAdvancedComputeOptions?: boolean;
         };
         flavor: {
@@ -296,7 +293,6 @@ export default class Subworkflow extends Subworkflow_base implements Subworkflow
             results: {
                 name: string;
             }[];
-            executableId: string;
             executableName?: string;
             applicationName?: string;
             input: {

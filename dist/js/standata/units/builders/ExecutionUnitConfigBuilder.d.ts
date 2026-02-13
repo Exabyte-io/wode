@@ -1,5 +1,5 @@
 export class ExecutionUnitConfigBuilder extends UnitConfigBuilder {
-    constructor(name: any, application: any, execName: any, flavorName: any, flowchartId: any);
+    constructor(name: any, application: any, execName: any, flavorName: any, flowchartId: any, cache?: any[]);
     _results: any;
     _monitors: any;
     _preProcessors: any;

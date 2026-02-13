@@ -5,7 +5,7 @@ import _ from "underscore";
 export class UnitConfigBuilder {
     static usePredefinedIds = false;
 
-    constructor({ name, type, flowchartId }) {
+    constructor({ name, type, flowchartId, cache = [] }) {
         this.type = type;
         this._name = name;
         this._head = false;
@@ -13,7 +13,10 @@ export class UnitConfigBuilder {
         this._monitors = [];
         this._preProcessors = [];
         this._postProcessors = [];
-        this._flowchartId = flowchartId || this.constructor.generateFlowChartId(name);
+        this.cache = cache;
+        const countInCache = this.cache.filter((s) => s === name).length;
+        this.cache.push(name);
+        this._flowchartId = flowchartId || this.generateFlowChartId(name, countInCache);
     }
 
     name(str) {
@@ -26,8 +29,11 @@ export class UnitConfigBuilder {
         return this;
     }
 
-    static generateFlowChartId(...args) {
-        if (this.usePredefinedIds) return Utils.uuid.getUUIDFromNamespace(...args);
+    generateFlowChartId(seed, countInCache = 0) {
+        const suffix = countInCache > 0 ? `-${countInCache}` : "";
+        const seedWithSuffix = `${seed}${suffix}`;
+        if (this.constructor.usePredefinedIds)
+            return Utils.uuid.getUUIDFromNamespace(seedWithSuffix);
         return Utils.uuid.getUUID();
     }
 

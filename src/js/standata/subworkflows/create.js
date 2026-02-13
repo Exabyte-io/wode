@@ -97,7 +97,7 @@ function createTopLevel({ subworkflowData, modelFactoryCls, methodFactoryCls, Ap
  * @param unitFactoryCls {*} workflow unit class factory
  * @returns {*|{head: boolean, preProcessors: [], postProcessors: [], name: *, flowchartId: *, type: *, results: [], monitors: []}}
  */
-export function createUnit({ config, application, unitBuilders, unitFactoryCls }) {
+export function createUnit({ config, application, unitBuilders, unitFactoryCls, cache = [] }) {
     const { type, config: unitConfig } = config;
     if (type === "executionBuilder") {
         const { name, execName, flavorName, flowchartId } = unitConfig;
@@ -107,6 +107,7 @@ export function createUnit({ config, application, unitBuilders, unitFactoryCls }
             execName,
             flavorName,
             flowchartId,
+            cache,
         );
 
         // config should contain "functions" and "attributes"
@@ -149,6 +150,7 @@ function createDynamicUnits({
 
 function createSubworkflow({
     subworkflowData,
+    cache = [],
     AppRegistry = ApplicationRegistry,
     modelFactoryCls = ModelFactory,
     methodFactoryCls = MethodFactory,
@@ -172,6 +174,7 @@ function createSubworkflow({
                 application,
                 unitBuilders,
                 unitFactoryCls,
+                cache,
             }),
         );
     });

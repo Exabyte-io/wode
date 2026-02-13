@@ -14,6 +14,58 @@ const create_1 = require("../subworkflows/create");
 // Running this to set schemas for validation, removing the redundant data from application-flavors tree: `flavors`
 JSONSchemasInterface_1.default.setSchemas(schemas_json_1.default);
 /**
+ * @summary Helper for creating Map units for complex workflows
+ * @param config {Object} map unit configuration
+ * @param unitFactoryCls {*} class factory for map unit
+ * @returns {*} map unit
+ */
+function createMapUnit({ config, unitFactoryCls = units_1.UnitFactory }) {
+    let { input: defaultInput } = MapUnit_1.defaultMapConfig;
+    if (config.input) {
+        defaultInput = { ...defaultInput, ...config.input };
+    }
+    const unit = unitFactoryCls.create({ ...MapUnit_1.defaultMapConfig, input: defaultInput });
+    return unit;
+}
+/**
+ * @summary Update subworkflow units with patch configuration defined in the workflow config
+ * @param subworkflowData {Object} subworkflow data
+ * @param unitConfigs {Array<Object>} array of patch configs for subworkflow units
+ * @returns subworkflowData {Object} subworkflowData with patches applied to units
+ */
+function updateUnitConfigs({ subworkflowData, unitConfigs }) {
+    unitConfigs.forEach((config) => {
+        const { index, type, config: unitConfig } = config; // unitConfig should contain 'attributes' key
+        const unit = (0, utils_1.findUnit)({ subworkflowData, index, type });
+        console.log(`  patching ${type} unit ${index} of subworkflow ${subworkflowData.name}`);
+        unit.config = (0, utils_1.applyConfig)({ obj: unit.config, config: unitConfig });
+        return null;
+    });
+    return subworkflowData;
+}
+/**
+ * @summary Use subworkflow.createSubworkflow to create a Subworkflow unit
+ * @param appName {String} application name
+ * @param unitData {*} object containing subworkflow configuration data
+ * @param workflowData {*} object containing all workflow configuration data
+ * @param swArgs {*} subworkflow classes
+ * @returns {*} subworkflow object
+ */
+function createSubworkflowUnit({ appName, unitData, workflowData, cache, ...swArgs }) {
+    const { name: unitName, unitConfigs, config } = unitData;
+    const { subworkflows } = workflowData;
+    const { [appName]: dataByApp } = subworkflows;
+    let { [unitName]: subworkflowData } = dataByApp;
+    subworkflowData.config = { ...subworkflowData.config, ...config };
+    if (unitConfigs)
+        subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
+    return (0, create_1.createSubworkflow)({
+        subworkflowData,
+        cache,
+        ...swArgs,
+    });
+}
+/**
  * @summary Create the first workflow object specified in a workflow configuration
  * @param workflow {*|null} the workflow (if already initialized, no-op)
  * @param unit {*} workflow unit object
@@ -36,20 +88,6 @@ function createWorkflowHead({ workflow, unit, type, workflowCls }) {
             throw new Error(`workflow type=${type} not understood.`);
     }
     return wf;
-}
-/**
- * @summary Helper for creating Map units for complex workflows
- * @param config {Object} map unit configuration
- * @param unitFactoryCls {*} class factory for map unit
- * @returns {*} map unit
- */
-function createMapUnit({ config, unitFactoryCls = units_1.UnitFactory }) {
-    let { input: defaultInput } = MapUnit_1.defaultMapConfig;
-    if (config.input) {
-        defaultInput = { ...defaultInput, ...config.input };
-    }
-    const unit = unitFactoryCls.create({ ...MapUnit_1.defaultMapConfig, input: defaultInput });
-    return unit;
 }
 /**
  * @summary Combine workflow units together
@@ -115,43 +153,6 @@ function createFromWorkflowUnits({ wfUnits, workflowCls, unitFactoryCls }) {
     return (0, utils_1.applyConfig)({ obj: workflow, config });
 }
 /**
- * @summary Update subworkflow units with patch configuration defined in the workflow config
- * @param subworkflowData {Object} subworkflow data
- * @param unitConfigs {Array<Object>} array of patch configs for subworkflow units
- * @returns subworkflowData {Object} subworkflowData with patches applied to units
- */
-function updateUnitConfigs({ subworkflowData, unitConfigs }) {
-    unitConfigs.forEach((config) => {
-        const { index, type, config: unitConfig } = config; // unitConfig should contain 'attributes' key
-        const unit = (0, utils_1.findUnit)({ subworkflowData, index, type });
-        console.log(`  patching ${type} unit ${index} of subworkflow ${subworkflowData.name}`);
-        unit.config = (0, utils_1.applyConfig)({ obj: unit.config, config: unitConfig });
-        return null;
-    });
-    return subworkflowData;
-}
-/**
- * @summary Use subworkflow.createSubworkflow to create a Subworkflow unit
- * @param appName {String} application name
- * @param unitData {*} object containing subworkflow configuration data
- * @param workflowData {*} object containing all workflow configuration data
- * @param swArgs {*} subworkflow classes
- * @returns {*} subworkflow object
- */
-function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
-    const { name: unitName, unitConfigs, config } = unitData;
-    const { subworkflows } = workflowData;
-    const { [appName]: dataByApp } = subworkflows;
-    let { [unitName]: subworkflowData } = dataByApp;
-    subworkflowData.config = { ...subworkflowData.config, ...config };
-    if (unitConfigs)
-        subworkflowData = updateUnitConfigs({ subworkflowData, unitConfigs });
-    return (0, create_1.createSubworkflow)({
-        subworkflowData,
-        ...swArgs,
-    });
-}
-/**
  * @summary Creates a flattened array of workflow units from nested workflow/subworkflow
  * configuration data comprising a simple or complex workflow
  * @param appName
@@ -159,7 +160,7 @@ function createSubworkflowUnit({ appName, unitData, workflowData, ...swArgs }) {
  * @param swArgs
  * @returns {*[]}
  */
-function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByApplication, workflowCls, ...swArgs }) {
+function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByApplication, workflowCls, cache = [], ...swArgs }) {
     const wfUnits = [];
     const { units } = workflowData;
     let unit, config;
@@ -182,6 +183,7 @@ function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByAp
                     appName,
                     unitData,
                     workflowData: workflowSubworkflowMapByApplication,
+                    cache,
                     ...swArgs,
                 });
                 break;
@@ -199,6 +201,7 @@ function createWorkflowUnits({ appName, workflowData, workflowSubworkflowMapByAp
     });
 }
 function createWorkflow({ appName, workflowData, workflowSubworkflowMapByApplication, workflowCls = Workflow_1.Workflow, ...swArgs }) {
+    const cache = [];
     const { name } = workflowData;
     console.log(`wode: creating ${appName} workflow ${name}`);
     const wf = createWorkflowUnits({
@@ -206,6 +209,7 @@ function createWorkflow({ appName, workflowData, workflowSubworkflowMapByApplica
         workflowData,
         workflowSubworkflowMapByApplication,
         workflowCls,
+        cache,
         ...swArgs,
     });
     wf.setName(name);

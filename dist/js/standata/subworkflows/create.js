@@ -91,11 +91,11 @@ function createTopLevel({ subworkflowData, modelFactoryCls, methodFactoryCls, Ap
  * @param unitFactoryCls {*} workflow unit class factory
  * @returns {*|{head: boolean, preProcessors: [], postProcessors: [], name: *, flowchartId: *, type: *, results: [], monitors: []}}
  */
-function createUnit({ config, application, unitBuilders, unitFactoryCls }) {
+function createUnit({ config, application, unitBuilders, unitFactoryCls, cache = [] }) {
     const { type, config: unitConfig } = config;
     if (type === "executionBuilder") {
         const { name, execName, flavorName, flowchartId } = unitConfig;
-        const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, flowchartId);
+        const builder = new unitBuilders.ExecutionUnitConfigBuilder(name, application, execName, flavorName, flowchartId, cache);
         // config should contain "functions" and "attributes"
         const cfg = (0, utils_1.applyConfig)({ obj: builder, config, callBuild: true });
         return unitFactoryCls.create(cfg);
@@ -125,7 +125,7 @@ function createDynamicUnits({ dynamicSubworkflow, units, unitBuilders, unitFacto
             throw new Error(`dynamicSubworkflow=${name} not recognized`);
     }
 }
-function createSubworkflow({ subworkflowData, AppRegistry = ade_1.ApplicationRegistry, modelFactoryCls = mode_1.ModelFactory, methodFactoryCls = mode_1.MethodFactory, subworkflowCls = Subworkflow_1.Subworkflow, unitFactoryCls = units_1.UnitFactory, unitBuilders = builders_1.builders, }) {
+function createSubworkflow({ subworkflowData, cache = [], AppRegistry = ade_1.ApplicationRegistry, modelFactoryCls = mode_1.ModelFactory, methodFactoryCls = mode_1.MethodFactory, subworkflowCls = Subworkflow_1.Subworkflow, unitFactoryCls = units_1.UnitFactory, unitBuilders = builders_1.builders, }) {
     const { application, model, method, setSearchText } = createTopLevel({
         subworkflowData,
         AppRegistry,
@@ -140,6 +140,7 @@ function createSubworkflow({ subworkflowData, AppRegistry = ade_1.ApplicationReg
             application,
             unitBuilders,
             unitFactoryCls,
+            cache,
         }));
     });
     if (dynamicSubworkflow) {
