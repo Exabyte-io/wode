@@ -1,13 +1,15 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReduceUnit = void 0;
 const enums_1 = require("../enums");
 const ReduceUnitSchemaMixin_1 = require("../generated/ReduceUnitSchemaMixin");
-const BaseUnit_1 = require("./BaseUnit");
-class ReduceUnit extends BaseUnit_1.BaseUnit {
-    constructor(unitName, mapUnit, input) {
-        super({ type: enums_1.UnitType.reduce, name: unitName, mapFlowchartId: mapUnit, input });
+const BaseUnit_1 = __importDefault(require("./BaseUnit"));
+class ReduceUnit extends BaseUnit_1.default {
+    constructor(config) {
+        super({ ...config, type: enums_1.UnitType.reduce });
     }
 }
-exports.ReduceUnit = ReduceUnit;
 (0, ReduceUnitSchemaMixin_1.reduceUnitSchemaMixin)(ReduceUnit.prototype);
+exports.default = ReduceUnit;

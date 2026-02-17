@@ -1,10 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AssignmentUnit = void 0;
 const enums_1 = require("../enums");
 const AssignmentUnitSchemaMixin_1 = require("../generated/AssignmentUnitSchemaMixin");
-const BaseUnit_1 = require("./BaseUnit");
-class AssignmentUnit extends BaseUnit_1.BaseUnit {
+const BaseUnit_1 = __importDefault(require("./BaseUnit"));
+class AssignmentUnit extends BaseUnit_1.default {
     constructor(config) {
         super({
             name: enums_1.UnitType.assignment,
@@ -19,5 +21,5 @@ class AssignmentUnit extends BaseUnit_1.BaseUnit {
         return { input: this.input, operand: this.operand, value: this.value };
     }
 }
-exports.AssignmentUnit = AssignmentUnit;
 (0, AssignmentUnitSchemaMixin_1.assignmentUnitSchemaMixin)(AssignmentUnit.prototype);
+exports.default = AssignmentUnit;

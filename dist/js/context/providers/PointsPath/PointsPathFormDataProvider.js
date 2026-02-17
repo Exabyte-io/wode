@@ -6,8 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const math_1 = require("@mat3ra/code/dist/js/math");
 const JSONSchemasInterface_1 = __importDefault(require("@mat3ra/esse/dist/js/esse/JSONSchemasInterface"));
 const made_1 = require("@mat3ra/made");
-const underscore_string_1 = __importDefault(require("underscore.string"));
-const ApplicationContextMixin_1 = require("../../mixins/ApplicationContextMixin");
+const ApplicationContextMixin_1 = __importDefault(require("../../mixins/ApplicationContextMixin"));
 const MaterialContextMixin_1 = __importDefault(require("../../mixins/MaterialContextMixin"));
 const JSONSchemaDataProvider_1 = __importDefault(require("../base/JSONSchemaDataProvider"));
 const defaultPoint = "Г";
@@ -21,11 +20,12 @@ class MixinsContextProvider extends JSONSchemaDataProvider_1.default {
     }
 }
 (0, MaterialContextMixin_1.default)(MixinsContextProvider.prototype);
-(0, ApplicationContextMixin_1.applicationContextMixin)(MixinsContextProvider.prototype);
+(0, ApplicationContextMixin_1.default)(MixinsContextProvider.prototype);
 class PointsPathFormDataProvider extends MixinsContextProvider {
     constructor(config, externalContext) {
         super(config, externalContext);
         this.domain = "important";
+        this.entityName = "unit";
         this.is2PIBA = false;
         this.reciprocalLattice = new made_1.Made.ReciprocalLattice(this.material.lattice);
         this.useExplicitPath = this.application.name === "vasp";
@@ -72,7 +72,7 @@ class PointsPathFormDataProvider extends MixinsContextProvider {
                 : p.coordinates;
             return {
                 ...p,
-                coordinates: coordinates.map((c) => +underscore_string_1.default.sprintf("%14.9f", c)),
+                coordinates: coordinates.map((c) => Number(c.toFixed(9))),
             };
         });
         super.setData(newData);
@@ -88,7 +88,6 @@ class PointsPathFormDataProvider extends MixinsContextProvider {
             }
             const middlePoints = math_1.math.calculateSegmentsBetweenPoints3D(startPoint.coordinates, nextPoint.coordinates, startPoint.steps);
             const steps = 1;
-            // TODO-QUESTION: confirm that "point" property should be present after transformation; point was missing in original implementation
             acc.push({
                 steps,
                 coordinates: startPoint.coordinates,
@@ -96,8 +95,8 @@ class PointsPathFormDataProvider extends MixinsContextProvider {
             }, ...middlePoints.map((coordinates) => ({
                 steps,
                 coordinates,
-                // TODO-QUESTION: is this correct?
-                point: startPoint.point,
+                // TODO: make point optional
+                // point: startPoint.point,
             })));
             // nextPoint is the last point in the path
             if (path.length - 2 === index) {

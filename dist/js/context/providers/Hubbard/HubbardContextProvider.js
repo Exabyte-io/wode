@@ -10,6 +10,7 @@ class HubbardContextProvider extends JSONSchemaDataProvider_1.default {
         var _a, _b, _c;
         super(contextItem, externalContext);
         this.domain = "important";
+        this.entityName = "unit";
         this.orbitalList = [
             "2p",
             "3s",

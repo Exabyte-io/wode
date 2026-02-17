@@ -1,14 +1,14 @@
 import { Application, Executable, Flavor } from "@mat3ra/ade";
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
-import type { ExecutableSchema, ExecutionUnitSchemaBase, FlavorSchema } from "@mat3ra/esse/dist/js/types";
-import { type ImportantSettingsProvider } from "../context/mixins/ImportantSettingsProviderMixin";
-import type { ContextItem } from "../context/providers/base/ContextProvider";
-import ExecutionUnitInput from "../ExecutionUnitInput";
+import type { ExecutableSchema, ExecutionUnitSchema, FlavorSchema } from "@mat3ra/esse/dist/js/types";
+import { type ExternalContext } from "../context/providers";
+import type ConvergenceParameter from "../convergence/ConvergenceParameter";
 import { type ExecutionUnitSchemaMixin } from "../generated/ExecutionUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
-type Schema = ExecutionUnitSchemaBase;
-type Base = typeof BaseUnit & Constructor<ExecutionUnitSchemaMixin> & Constructor<ImportantSettingsProvider>;
+import BaseUnit from "./BaseUnit";
+import ExecutionUnitInput from "./ExecutionUnitInput";
+type Schema = ExecutionUnitSchema;
+type Base = typeof BaseUnit & Constructor<ExecutionUnitSchemaMixin>;
 interface SetApplicationProps {
     application: Application;
     executable?: Executable | ExecutableSchema;
@@ -18,25 +18,24 @@ interface SetExecutableProps {
     executable?: Executable | ExecutableSchema;
     flavor?: Flavor | FlavorSchema;
 }
-export type ExecutionUnitSchema = Schema;
 declare const ExecutionUnit_base: Base;
-export declare class ExecutionUnit extends ExecutionUnit_base implements Schema {
+declare class ExecutionUnit extends ExecutionUnit_base implements Schema {
     applicationInstance: Application;
     executableInstance: Executable;
     flavorInstance: Flavor;
     inputInstances: ExecutionUnitInput[];
-    renderingContext: ContextItem[];
+    renderingContext: Record<string, unknown>;
+    toJSON: () => Schema & AnyObject;
+    _json: Schema & AnyObject;
     constructor(config: Schema);
     setApplication({ application, executable, flavor }: SetApplicationProps): void;
     setExecutable({ executable, flavor }: SetExecutableProps): void;
     setFlavor(flavor?: Flavor | FlavorSchema): void;
     setDefaultInput(): void;
-    get allContextProviders(): import("../context/providers/base/ContextProvider").default<string, object, object, object>[];
-    get contextProviders(): import("../context/providers/base/ContextProvider").default<string, object, object, object>[];
-    /** Update rendering context and persistent context
-     * Note: this function is sometimes being called without passing a context!
-     */
-    render(context?: AnyObject): void;
+    getContextProvidersInstances(externalContext: ExternalContext): import("../context/providers").AnyContextProvider[];
+    addConvergenceContext(parameter: ConvergenceParameter, externalContext: ExternalContext): void;
+    render(externalContext: ExternalContext): void;
+    private saveContext;
     /**
      * @summary Calculates hash on unit-specific fields.
      * The meaningful fields of processing unit are operation, flavor and input at the moment.
@@ -48,4 +47,4 @@ export declare class ExecutionUnit extends ExecutionUnit_base implements Schema 
         input: string;
     };
 }
-export {};
+export default ExecutionUnit;

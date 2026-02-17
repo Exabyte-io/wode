@@ -8,6 +8,20 @@ class KGridFormDataManager extends PointsGridFormDataProvider_1.default {
     constructor() {
         super(...arguments);
         this.name = "kgrid";
+        this.divisor = 1;
+    }
+    static createFromUnitContext(unitContext, externalContext) {
+        const contextItem = this.findContextItem(unitContext, "kgrid");
+        return new KGridFormDataManager(contextItem, externalContext);
+    }
+    applyConvergenceParameter(parameter) {
+        const unitContext = parameter.unitContext.data;
+        const data = this.getData();
+        this.setData({
+            ...data,
+            ...unitContext,
+        });
+        this.setIsEdited(true);
     }
 }
 exports.default = KGridFormDataManager;

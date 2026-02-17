@@ -1,4 +1,5 @@
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
+import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type { AssignmentUnitSchema } from "@mat3ra/esse/dist/js/types";
 
 import { UnitType } from "../enums";
@@ -6,12 +7,16 @@ import {
     type AssignmentUnitSchemaMixin,
     assignmentUnitSchemaMixin,
 } from "../generated/AssignmentUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
 
 type Schema = AssignmentUnitSchema;
 type Base = typeof BaseUnit<Schema> & Constructor<AssignmentUnitSchemaMixin>;
 
-export class AssignmentUnit extends (BaseUnit as Base) implements Schema {
+class AssignmentUnit extends (BaseUnit as Base) implements Schema {
+    declare toJSON: () => Schema & AnyObject;
+
+    declare _json: Schema & AnyObject;
+
     constructor(config: Partial<Schema>) {
         super({
             name: UnitType.assignment,
@@ -29,3 +34,5 @@ export class AssignmentUnit extends (BaseUnit as Base) implements Schema {
 }
 
 assignmentUnitSchemaMixin(AssignmentUnit.prototype);
+
+export default AssignmentUnit;

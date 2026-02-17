@@ -2,30 +2,24 @@ import { Application, ApplicationRegistry as AdeRegistry, Executable, Flavor } f
 import type { Constructor } from "@mat3ra/code/dist/js/utils/types";
 import type { AnyObject } from "@mat3ra/esse/dist/js/esse/types";
 import type {
+    ContextItemSchema,
     ExecutableSchema,
-    ExecutionUnitInputItemSchema,
-    ExecutionUnitSchemaBase,
+    ExecutionUnitSchema,
     FlavorSchema,
 } from "@mat3ra/esse/dist/js/types";
 import { Utils } from "@mat3ra/utils";
 
-import { contextMixin } from "../context/mixins/ContextAndRenderFieldsMixin";
-import {
-    type ImportantSettingsProvider,
-    importantSettingsProviderMixin,
-} from "../context/mixins/ImportantSettingsProviderMixin";
-import type { ContextItem } from "../context/providers/base/ContextProvider";
-import ExecutionUnitInput from "../ExecutionUnitInput";
+import { type ExternalContext, createProvider } from "../context/providers";
+import type ConvergenceParameter from "../convergence/ConvergenceParameter";
 import {
     type ExecutionUnitSchemaMixin,
     executionUnitSchemaMixin,
 } from "../generated/ExecutionUnitSchemaMixin";
-import { BaseUnit } from "./BaseUnit";
+import BaseUnit from "./BaseUnit";
+import ExecutionUnitInput from "./ExecutionUnitInput";
 
-type Schema = ExecutionUnitSchemaBase;
-type Base = typeof BaseUnit &
-    Constructor<ExecutionUnitSchemaMixin> &
-    Constructor<ImportantSettingsProvider>;
+type Schema = ExecutionUnitSchema;
+type Base = typeof BaseUnit & Constructor<ExecutionUnitSchemaMixin>;
 
 interface SetApplicationProps {
     application: Application;
@@ -38,9 +32,7 @@ interface SetExecutableProps {
     flavor?: Flavor | FlavorSchema;
 }
 
-export type ExecutionUnitSchema = Schema;
-
-export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
+class ExecutionUnit extends (BaseUnit as Base) implements Schema {
     applicationInstance!: Application;
 
     executableInstance!: Executable;
@@ -49,7 +41,11 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
 
     inputInstances: ExecutionUnitInput[] = [];
 
-    renderingContext: ContextItem[] = [];
+    renderingContext: Record<string, unknown> = {};
+
+    declare toJSON: () => Schema & AnyObject;
+
+    declare _json: Schema & AnyObject;
 
     constructor(config: Schema) {
         super(config);
@@ -117,39 +113,64 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
         this.inputInstances = inputs.map(ExecutionUnitInput.createFromTemplate);
     }
 
-    get allContextProviders() {
-        return this.inputInstances.map((input) => input.contextProvidersInstances).flat();
+    getContextProvidersInstances(externalContext: ExternalContext) {
+        const uniqueContextProviderNames = [
+            ...new Set(
+                this.inputInstances
+                    .map((input) => {
+                        return input.template.contextProviders.map((provider) => {
+                            return provider.name;
+                        });
+                    })
+                    .flat(),
+            ),
+        ];
+
+        return uniqueContextProviderNames.map((name) => {
+            return createProvider(name, this.context, externalContext);
+        });
     }
 
-    get contextProviders() {
-        return this.allContextProviders.filter((p) => p.entityName === "unit");
-    }
+    addConvergenceContext(parameter: ConvergenceParameter, externalContext: ExternalContext) {
+        // TODO: kgrid should be abstracted and selected by user
+        const parameterToContextProviderMap = {
+            N_k: "kgrid",
+            N_k_nonuniform: "kgrid",
+        } as const;
 
-    /** Update rendering context and persistent context
-     * Note: this function is sometimes being called without passing a context!
-     */
-    render(context: AnyObject = {}) {
-        this.renderingContext = { ...this.renderingContext, ...context };
+        const contextName = parameterToContextProviderMap[parameter.name];
+        const contextProviders = this.getContextProvidersInstances(externalContext);
 
-        const newInput: ExecutionUnitInputItemSchema[] = [];
-        const newPersistentContext: ContextItem[] = [];
-        const newRenderingContext: ContextItem[] = [];
-
-        this.inputInstances.forEach((input) => {
-            input.setContext(this.renderingContext);
-            input.render();
-
-            const inputJSON = input.toJSON();
-            const context = input.getFullContext();
-
-            newInput.push(inputJSON);
-            newRenderingContext.push(...context);
-            newPersistentContext.push(...context.filter((c) => c.isEdited));
+        const fullContext = contextProviders.map((provider) => {
+            if (provider.name === contextName) {
+                provider.applyConvergenceParameter(parameter);
+                return provider.getContextItemData();
+            }
+            return provider.getContextItemData();
         });
 
-        this.input = newInput;
-        this.renderingContext = newRenderingContext;
-        this.context = newPersistentContext;
+        this.saveContext(fullContext, externalContext);
+    }
+
+    render(externalContext: ExternalContext) {
+        const contextProviders = this.getContextProvidersInstances(externalContext);
+        const fullContext = contextProviders.map((provider) => provider.getContextItemData());
+
+        this.saveContext(fullContext, externalContext);
+
+        this.input = this.inputInstances.map((input) => {
+            return input.render(this.renderingContext).toJSON();
+        });
+    }
+
+    private saveContext(fullContext: ContextItemSchema[], { subworkflowContext }: ExternalContext) {
+        // persistent context
+        this.context = fullContext.filter((c) => c.isEdited);
+
+        this.renderingContext = {
+            ...Object.fromEntries(fullContext.map((context) => [context.name, context.data])),
+            subworkflowContext: { ...subworkflowContext },
+        };
     }
 
     /**
@@ -177,27 +198,8 @@ export class ExecutionUnit extends (BaseUnit as Base) implements Schema {
             ),
         };
     }
-
-    // toJSON() {
-    //     const json = super.toJSON() as ExecutionUnitSchemaBase & AnyObject;
-
-    //     // Remove results from executable; TODO: why do we need this?
-    //     if (json.executable) {
-    //         // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    //         const { results: _, ...executable } = json.executable;
-
-    //         return {
-    //             ...json,
-    //             executable: {
-    //                 ...executable,
-    //             },
-    //         };
-    //     }
-
-    //     return json;
-    // }
 }
 
 executionUnitSchemaMixin(ExecutionUnit.prototype);
-contextMixin(ExecutionUnit.prototype);
-importantSettingsProviderMixin(ExecutionUnit.prototype);
+
+export default ExecutionUnit;

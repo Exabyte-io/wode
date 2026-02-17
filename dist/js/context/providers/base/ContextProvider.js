@@ -4,7 +4,6 @@ const utils_1 = require("@mat3ra/utils");
 class ContextProvider {
     constructor(contextItem, externalContext) {
         this.externalContext = externalContext;
-        this.extraData = contextItem.extraData;
         this.isEdited = contextItem.isEdited || false;
         this.setData(contextItem.data);
     }
@@ -17,13 +16,21 @@ class ContextProvider {
     setData(data) {
         this.data = data ? utils_1.Utils.clone.deepClone(data) : undefined;
     }
-    getContextItem() {
+    getContextItemData() {
         return {
             name: this.name,
             isEdited: this.isEdited,
             data: this.getData(),
             extraData: this.extraData,
         };
+    }
+    /**
+     * Helper method to find a context item from a unit context array by name.
+     * Returns a partial schema object that can be safely passed to constructors.
+     */
+    static findContextItem(unitContext, contextName) {
+        const item = unitContext.find((item) => item.name === contextName);
+        return item || {};
     }
 }
 exports.default = ContextProvider;

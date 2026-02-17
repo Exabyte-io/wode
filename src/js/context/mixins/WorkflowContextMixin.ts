@@ -1,10 +1,5 @@
-import type { WorkflowSchema } from "@mat3ra/esse/dist/js/types";
-
+import type { Workflow } from "../../Workflow";
 import type ContextProvider from "../providers/base/ContextProvider";
-
-type Workflow = WorkflowSchema & {
-    hasRelaxation?: boolean;
-};
 
 export type WorkflowContextMixin = {
     isEdited: boolean;
