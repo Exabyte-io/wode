@@ -54,7 +54,7 @@ export declare function findUnit({ subworkflowData, index, type, }: {
     next?: string;
     enableRender?: boolean;
     subtype: "input" | "output" | "dataFrame";
-    source: "api" | "db" | "object_storage";
+    source: "api" | "object_storage";
     input: ({
         type: "api";
         endpoint: string;

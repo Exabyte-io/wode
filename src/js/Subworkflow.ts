@@ -191,6 +191,7 @@ export default class Subworkflow extends (InMemoryEntity as Base) implements Sub
         }
 
         this.application = application.toJSON();
+
         // set model to the default one for the application selected
         this.setModel(
             this.ModelFactory.createFromApplication({

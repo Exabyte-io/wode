@@ -71,7 +71,10 @@ export default class Subworkflow extends Subworkflow_base implements Subworkflow
     unitIndex(flowchartId: string): number;
     replaceUnit(index: number, unit: AnySubworkflowUnit): void;
     setIsDraft(bool: boolean): void;
-    get methodData(): {} | undefined;
+    get methodData(): {
+        [k: string]: unknown;
+        searchText?: string;
+    } | undefined;
     /**
      * @summary Calculates hash of the subworkflow. Meaningful fields are units, app and model.
      * units must be sorted topologically before hashing (already sorted).
@@ -111,7 +114,7 @@ export default class Subworkflow extends Subworkflow_base implements Subworkflow
         next?: string;
         enableRender?: boolean;
         subtype: "input" | "output" | "dataFrame";
-        source: "api" | "db" | "object_storage";
+        source: "api" | "object_storage";
         input: ({
             type: "api";
             endpoint: string;

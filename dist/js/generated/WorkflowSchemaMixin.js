@@ -28,6 +28,12 @@ function workflowSchemaMixin(item) {
         set units(value) {
             this.setProp("units", value);
         },
+        get isMultiMaterial() {
+            return this.prop("isMultiMaterial");
+        },
+        set isMultiMaterial(value) {
+            this.setProp("isMultiMaterial", value);
+        },
     };
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));
 }

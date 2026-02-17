@@ -40,6 +40,12 @@ export function subworkflowSchemaMixin<T extends InMemoryEntity>(
         set application(value: SubworkflowMixinSchema["application"]) {
             this.setProp("application", value);
         },
+        get isMultiMaterial() {
+            return this.prop<SubworkflowMixinSchema["isMultiMaterial"]>("isMultiMaterial");
+        },
+        set isMultiMaterial(value: SubworkflowMixinSchema["isMultiMaterial"]) {
+            this.setProp("isMultiMaterial", value);
+        },
         get isDraft() {
             return this.prop<SubworkflowMixinSchema["isDraft"]>("isDraft");
         },

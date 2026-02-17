@@ -34,6 +34,12 @@ export function workflowSchemaMixin<T extends InMemoryEntity>(
         set units(value: BaseWorkflowSchema["units"]) {
             this.setProp("units", value);
         },
+        get isMultiMaterial() {
+            return this.prop<BaseWorkflowSchema["isMultiMaterial"]>("isMultiMaterial");
+        },
+        set isMultiMaterial(value: BaseWorkflowSchema["isMultiMaterial"]) {
+            this.setProp("isMultiMaterial", value);
+        },
     };
 
     Object.defineProperties(item, Object.getOwnPropertyDescriptors(properties));

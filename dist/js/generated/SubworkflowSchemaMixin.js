@@ -34,6 +34,12 @@ function subworkflowSchemaMixin(item) {
         set application(value) {
             this.setProp("application", value);
         },
+        get isMultiMaterial() {
+            return this.prop("isMultiMaterial");
+        },
+        set isMultiMaterial(value) {
+            this.setProp("isMultiMaterial", value);
+        },
         get isDraft() {
             return this.prop("isDraft");
         },
