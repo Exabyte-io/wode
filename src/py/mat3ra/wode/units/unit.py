@@ -2,7 +2,12 @@ from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
-from mat3ra.utils import calculate_hash_from_object
+from mat3ra.utils import (
+    calculate_hash_from_object,
+    remove_comments_from_source_code,
+    remove_empty_lines_from_string,
+    remove_timestampable_keys,
+)
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
@@ -31,12 +36,36 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
 
 
     def get_hash_object(self) -> Dict[str, Any]:
-        return {
+        hash_object: Dict[str, Any] = {
             "results": self.results or [],
             "preProcessors": self.preProcessors or [],
             "postProcessors": self.postProcessors or [],
             "type": self.type,
         }
+        if self.type == "execution":
+            application = getattr(self, "application", None) or {}
+            executable = getattr(self, "executable", None) or {}
+            flavor = getattr(self, "flavor", None) or {}
+            unit_input = getattr(self, "input", None) or []
+
+            hash_object["application"] = remove_timestampable_keys(
+                application.to_dict() if callable(getattr(application, "to_dict", None)) else application
+            )
+            hash_object["executable"] = remove_timestampable_keys(
+                executable.to_dict() if callable(getattr(executable, "to_dict", None)) else executable
+            )
+            hash_object["flavor"] = remove_timestampable_keys(
+                flavor.to_dict() if callable(getattr(flavor, "to_dict", None)) else flavor
+            )
+
+            object_for_hashing = [
+                remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
+                for i in unit_input
+                if isinstance(i, dict)
+            ]
+            hash_object["input"] = calculate_hash_from_object(object_for_hashing)
+
+        return hash_object
 
     def calculate_hash(self) -> str:
         return calculate_hash_from_object(self.get_hash_object())
