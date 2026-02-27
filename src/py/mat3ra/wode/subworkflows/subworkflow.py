@@ -2,6 +2,7 @@ from typing import List, Optional
 
 from mat3ra.ade.application import Application
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.code.utils import calculate_hash_from_object, remove_timestampable_keys
 from mat3ra.esse.models.workflow.subworkflow import Subworkflow as SubworkflowSchema
 from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
@@ -52,6 +53,21 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
     @property
     def method_data(self):
         return self.model.method.data
+
+    def _calculate_model_hash(self) -> str:
+        model_dict = self.model.to_dict()
+        if getattr(self.model.method, "omit_in_hash_calculation", False):
+            model_dict.get("method", {}).pop("data", None)
+        return calculate_hash_from_object(model_dict)
+
+    def calculate_hash(self) -> str:
+        app_dict = self.application.to_dict() if self.application else {}
+        meaningful_fields = {
+            "application": remove_timestampable_keys(app_dict),
+            "model": self._calculate_model_hash(),
+            "units": ",".join(u.calculate_hash() for u in self.units),
+        }
+        return calculate_hash_from_object(meaningful_fields)
 
     def get_as_unit(self) -> Unit:
         return Unit(type="subworkflow", id=self.id, name=self.name)

@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.code.utils import calculate_hash_from_object
 from mat3ra.esse.models.workflow import WorkflowSchema
 from mat3ra.standata.subworkflows import SubworkflowStandata
 from mat3ra.utils.uuid import get_uuid
@@ -81,6 +82,19 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
         relaxation_definition = self.relaxation_subworkflow
         if relaxation_definition is not None:
             self.add_subworkflow(relaxation_definition, head=True)
+
+    def calculate_hash(self) -> str:
+        nested_workflows = getattr(self, "workflows", []) or []
+        meaningful_fields = {
+            "units": ",".join(u.calculate_hash() for u in self.units),
+            "subworkflows": ",".join(sw.calculate_hash() for sw in self.subworkflows),
+            "workflows": ",".join(w.calculate_hash() for w in nested_workflows),
+        }
+        return calculate_hash_from_object(meaningful_fields)
+
+    @property
+    def hash(self) -> str:
+        return self.calculate_hash()
 
     def remove_relaxation(self) -> None:
         existing = self._find_relaxation_subworkflow()

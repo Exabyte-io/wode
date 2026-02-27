@@ -1,6 +1,7 @@
 from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.code.utils import calculate_hash_from_object
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
@@ -28,6 +29,17 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     results: List[Any] = Field(default_factory=list)
     context: Dict[str, Any] = Field(default_factory=dict)
 
+
+    def get_hash_object(self) -> Dict[str, Any]:
+        return {
+            "results": self.results or [],
+            "preProcessors": self.preProcessors or [],
+            "postProcessors": self.postProcessors or [],
+            "type": self.type,
+        }
+
+    def calculate_hash(self) -> str:
+        return calculate_hash_from_object(self.get_hash_object())
 
     def is_in_status(self, status: str) -> bool:
         return self.status == status
