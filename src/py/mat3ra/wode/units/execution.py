@@ -22,7 +22,7 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
     @property
     def hash_from_array_input_content(self) -> str:
         object_for_hashing = [
-            remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
+            remove_empty_lines_from_string(remove_comments_from_source_code(i.get("rendered") or i.get("content", "")))
             for i in self.input
         ]
         return calculate_hash_from_object(object_for_hashing)

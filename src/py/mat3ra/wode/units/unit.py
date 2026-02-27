@@ -59,7 +59,9 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
             )
 
             object_for_hashing = [
-                remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
+                remove_empty_lines_from_string(
+                    remove_comments_from_source_code(i.get("rendered") or i.get("content", ""))
+                )
                 for i in unit_input
                 if isinstance(i, dict)
             ]

@@ -67,7 +67,7 @@ class ExecutionUnit extends _base.BaseUnit {
    */
   get hashFromArrayInputContent() {
     const objectForHashing = this.prop("input", []).map(i => {
-      return _utils.Utils.str.removeEmptyLinesFromString(_utils.Utils.str.removeCommentsFromSourceCode(i.content));
+      return _utils.Utils.str.removeEmptyLinesFromString(_utils.Utils.str.removeCommentsFromSourceCode(i.rendered || i.content));
     });
     return _utils.Utils.hash.calculateHashFromObject(objectForHashing);
   }

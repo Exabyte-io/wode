@@ -82,7 +82,7 @@ export class ExecutionUnit extends BaseUnit {
     get hashFromArrayInputContent() {
         const objectForHashing = this.prop("input", []).map((i) => {
             return Utils.str.removeEmptyLinesFromString(
-                Utils.str.removeCommentsFromSourceCode(i.content),
+                Utils.str.removeCommentsFromSourceCode(i.rendered || i.content),
             );
         });
         return Utils.hash.calculateHashFromObject(objectForHashing);
