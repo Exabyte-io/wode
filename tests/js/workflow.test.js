@@ -180,11 +180,12 @@ describe("relaxation logic", () => {
 });
 
 describe("Workflow hashing", () => {
-    const fixtureFiles = ["band_gap_espresso.json"];
+    const fixtureFiles = ["band_gap"];
 
     fixtureFiles.forEach((fixtureFile) => {
         it(`calculateHash matches stored hash for ${fixtureFile}`, function () {
-            const fixture = WorkflowStandata().get;
+            const standata = new WorkflowStandata();
+            const [fixture] = standata.findEntitiesByTags("espresso", fixtureFile);
             if (!fixture.hash) {
                 const wf = new Workflow(fixture);
                 console.log(`Hash for ${fixtureFile}: ${wf.calculateHash()}`);
