@@ -1,5 +1,7 @@
 import { WorkflowStandata, workflowSubworkflowMapByApplication } from "@mat3ra/standata";
 import { expect } from "chai";
+import fs from "fs";
+import path from "path";
 
 import { builders, createWorkflows, Subworkflow, UnitFactory, Workflow } from "../../src/js";
 import { createWorkflow } from "../../src/js/workflows/create";
@@ -180,19 +182,22 @@ describe("relaxation logic", () => {
 });
 
 describe("Workflow hashing", () => {
+    const hashesPath = path.resolve("tests/fixtures/workflow_hashes.json");
+    const expectedHashes = JSON.parse(fs.readFileSync(hashesPath, "utf-8"));
     const fixtureFiles = ["band_gap"];
 
     fixtureFiles.forEach((fixtureFile) => {
         it(`calculateHash matches stored hash for ${fixtureFile}`, function () {
             const standata = new WorkflowStandata();
             const [fixture] = standata.findEntitiesByTags("espresso", fixtureFile);
-            if (!fixture.hash) {
-                const wf = new Workflow(fixture);
-                console.log(`Hash for ${fixtureFile}: ${wf.calculateHash()}`);
+            const wf = new Workflow(fixture);
+            const expectedHash = expectedHashes?.espresso?.[fixtureFile];
+            if (!expectedHash) {
+                // eslint-disable-next-line no-console
+                console.log(`Hash for espresso/${fixtureFile}: ${wf.calculateHash()}`);
                 this.skip();
             }
-            const wf = new Workflow(fixture);
-            expect(wf.calculateHash()).to.equal(fixture.hash);
+            expect(wf.calculateHash()).to.equal(expectedHash);
         });
     });
 });
