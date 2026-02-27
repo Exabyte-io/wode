@@ -1,13 +1,13 @@
 from typing import Any, Dict, List
 
 from mat3ra.ade import Application, Executable, Flavor
-from mat3ra.code.utils import (
+from mat3ra.esse.models.workflow.unit.execution import ExecutionUnitSchemaBase
+from mat3ra.utils import (
     calculate_hash_from_object,
     remove_comments_from_source_code,
     remove_empty_lines_from_string,
     remove_timestampable_keys,
 )
-from mat3ra.esse.models.workflow.unit.execution import ExecutionUnitSchemaBase
 from pydantic import Field
 
 from .unit import Unit

@@ -1,8 +1,8 @@
 from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
-from mat3ra.code.utils import calculate_hash_from_object
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
+from mat3ra.utils import calculate_hash_from_object
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
