@@ -177,3 +177,12 @@ def test_set_unit(method):
     assert "another_key" in updated_unit.context
     assert updated_unit.context["test_key"] == "test_value"
     assert updated_unit.context["another_key"] == 42
+
+
+@pytest.mark.parametrize("fixture_file", ["band_gap_espresso.json"])
+def test_calculate_hash(fixture_file):
+    fixture = WorkflowStandata.get_by_name_and_categories("band_gap", "espresso")
+    if not fixture.get("hash"):
+        pytest.skip(f"hash not yet computed from JS for {fixture_file} — run JS tests to populate")
+    wf = Workflow(**{k: v for k, v in fixture.items() if k != "hash"})
+    assert wf.hash == fixture["hash"]

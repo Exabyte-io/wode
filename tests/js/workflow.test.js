@@ -179,6 +179,23 @@ describe("relaxation logic", () => {
     });
 });
 
+describe("Workflow hashing", () => {
+    const fixtureFiles = ["band_gap_espresso.json"];
+
+    fixtureFiles.forEach((fixtureFile) => {
+        it(`calculateHash matches stored hash for ${fixtureFile}`, function () {
+            const fixture = WorkflowStandata().get;
+            if (!fixture.hash) {
+                const wf = new Workflow(fixture);
+                console.log(`Hash for ${fixtureFile}: ${wf.calculateHash()}`);
+                this.skip();
+            }
+            const wf = new Workflow(fixture);
+            expect(wf.calculateHash()).to.equal(fixture.hash);
+        });
+    });
+});
+
 describe("Workflow UUIDs", () => {
     afterEach(() => {
         Workflow.usePredefinedIds = false;
