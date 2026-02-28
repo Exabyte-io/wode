@@ -80,9 +80,9 @@ export class ExecutionUnit extends BaseUnit {
      * @summary expects an array with elements containing field [{content: "..."}]
      */
     get hashFromArrayInputContent() {
-        const objectForHashing = this.prop("input", []).map((i) => {
+        const objectForHashing = this._getInput().map((i) => {
             return Utils.str.removeEmptyLinesFromString(
-                Utils.str.removeCommentsFromSourceCode(i.rendered || i.content),
+                Utils.str.removeCommentsFromSourceCode(i.content),
             );
         });
         return Utils.hash.calculateHashFromObject(objectForHashing);
@@ -238,9 +238,11 @@ export class ExecutionUnit extends BaseUnit {
     getHashObject() {
         return {
             ...super.getHashObject(),
-            application: Utils.specific.removeTimestampableKeysFromConfig(this.prop("application")),
-            executable: Utils.specific.removeTimestampableKeysFromConfig(this.prop("executable")),
-            flavor: Utils.specific.removeTimestampableKeysFromConfig(this.prop("flavor")),
+            application: Utils.specific.removeTimestampableKeysFromConfig(
+                this.application.toJSON(),
+            ),
+            executable: Utils.specific.removeTimestampableKeysFromConfig(this.executable.toJSON()),
+            flavor: Utils.specific.removeTimestampableKeysFromConfig(this.flavor.toJSON()),
             input: this.hashFromArrayInputContent,
         };
     }
