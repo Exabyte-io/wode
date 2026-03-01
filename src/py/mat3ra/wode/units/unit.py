@@ -34,6 +34,31 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     results: List[Any] = Field(default_factory=list)
     context: Dict[str, Any] = Field(default_factory=dict)
 
+    @staticmethod
+    def _compact_dict(obj: Dict[str, Any]) -> Dict[str, Any]:
+        return {k: v for k, v in obj.items() if v is not None}
+
+    @staticmethod
+    def _to_plain_dict(obj: Any) -> Dict[str, Any]:
+        if callable(getattr(obj, "to_dict", None)):
+            return obj.to_dict()
+        if isinstance(obj, dict):
+            return obj
+        return {}
+
+    @staticmethod
+    def _pick(obj: Dict[str, Any], *keys: str) -> Dict[str, Any]:
+        return Unit._compact_dict({k: obj.get(k) for k in keys})
+
+    @staticmethod
+    def _hash_input_content(input_items: Any) -> str:
+        items = input_items if isinstance(input_items, list) else []
+        object_for_hashing = [
+            remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
+            for i in items
+            if isinstance(i, dict)
+        ]
+        return calculate_hash_from_object(object_for_hashing)
 
     def get_hash_object(self) -> Dict[str, Any]:
         hash_object: Dict[str, Any] = {
@@ -43,29 +68,14 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
             "type": self.type,
         }
         if self.type == "execution":
-            application = getattr(self, "application", None) or {}
-            executable = getattr(self, "executable", None) or {}
-            flavor = getattr(self, "flavor", None) or {}
-            unit_input = getattr(self, "input", None) or []
+            app = self._to_plain_dict(getattr(self, "application", None))
+            exe = self._to_plain_dict(getattr(self, "executable", None))
+            flv = self._to_plain_dict(getattr(self, "flavor", None))
 
-            hash_object["application"] = remove_timestampable_keys(
-                application.to_dict() if callable(getattr(application, "to_dict", None)) else application
-            )
-            hash_object["executable"] = remove_timestampable_keys(
-                executable.to_dict() if callable(getattr(executable, "to_dict", None)) else executable
-            )
-            hash_object["flavor"] = remove_timestampable_keys(
-                flavor.to_dict() if callable(getattr(flavor, "to_dict", None)) else flavor
-            )
-
-            object_for_hashing = [
-                remove_empty_lines_from_string(
-                    remove_comments_from_source_code(i.get("rendered") or i.get("content", ""))
-                )
-                for i in unit_input
-                if isinstance(i, dict)
-            ]
-            hash_object["input"] = calculate_hash_from_object(object_for_hashing)
+            hash_object["application"] = remove_timestampable_keys(self._pick(app, "name", "version", "build"))
+            hash_object["executable"] = remove_timestampable_keys(self._pick(exe, "name"))
+            hash_object["flavor"] = remove_timestampable_keys(self._pick(flv, "name"))
+            hash_object["input"] = self._hash_input_content(getattr(self, "input", None))
 
         return hash_object
 
