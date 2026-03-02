@@ -257,19 +257,12 @@ class Subworkflow extends BaseSubworkflow {
   calculateHash() {
     const config = this.toJSON();
     const meaningfulFields = {
-      application: _utils.Utils.specific.removeTimestampableKeysFromConfig(config.application),
-      model: this._calculateModelHash(),
+      application: new _ade.Application(config.application).calculateHash(),
+      model: new _mode.Model(config.model).calculateHash(),
       units: _underscore.default.map(this.units, u => u.calculateHash()).join()
     };
-    return _utils.Utils.hash.calculateHashFromObject(meaningfulFields);
-  }
-  _calculateModelHash() {
-    const {
-      model
-    } = this.toJSON();
-    // ignore empty data object
-    if (this.model.Method.omitInHashCalculation) delete model.method.data;
-    return _utils.Utils.hash.calculateHashFromObject(model);
+    const hash = _utils.Utils.hash.calculateHashFromObject(meaningfulFields);
+    return hash;
   }
   findUnitById(id) {
     // TODO: come back and refactor after converting flowchartId to id

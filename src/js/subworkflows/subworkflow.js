@@ -314,18 +314,12 @@ export class Subworkflow extends BaseSubworkflow {
     calculateHash() {
         const config = this.toJSON();
         const meaningfulFields = {
-            application: Utils.specific.removeTimestampableKeysFromConfig(config.application),
-            model: this._calculateModelHash(),
+            application: new Application(config.application).calculateHash(),
+            model: new Model(config.model).calculateHash(),
             units: _.map(this.units, (u) => u.calculateHash()).join(),
         };
-        return Utils.hash.calculateHashFromObject(meaningfulFields);
-    }
-
-    _calculateModelHash() {
-        const { model } = this.toJSON();
-        // ignore empty data object
-        if (this.model.Method.omitInHashCalculation) delete model.method.data;
-        return Utils.hash.calculateHashFromObject(model);
+        const hash = Utils.hash.calculateHashFromObject(meaningfulFields);
+        return hash;
     }
 
     findUnitById(id) {
