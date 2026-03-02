@@ -54,17 +54,12 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
     def method_data(self):
         return self.model.method.data
 
-    def _calculate_model_hash(self) -> str:
-        model_dict = self.model.to_dict()
-        if getattr(self.model.method, "omit_in_hash_calculation", False):
-            model_dict.get("method", {}).pop("data", None)
-        return calculate_hash_from_object(model_dict)
-
     def calculate_hash(self) -> str:
         app_dict = self.application.to_dict() if self.application else {}
+        model_dict = self.model.to_dict() if self.model else {}
         meaningful_fields = {
-            "application": remove_timestampable_keys(app_dict),
-            "model": self._calculate_model_hash(),
+            "application": Application.create(app_dict).calculate_hash(),
+            "model": Model.create(model_dict).calculate_hash(),
             "units": ",".join(u.calculate_hash() for u in self.units),
         }
         return calculate_hash_from_object(meaningful_fields)
