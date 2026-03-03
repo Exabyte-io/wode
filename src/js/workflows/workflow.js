@@ -372,15 +372,19 @@ export class Workflow extends BaseWorkflow {
     }
 
     /**
-     * @summary Calculates hash of the workflow. Meaningful fields are units and subworkflows.
+     * @summary
+     * Returns object for hashing of the workflow. Meaningful fields are units and subworkflows.
      * units and subworkflows must be sorted topologically before hashing (already sorted).
      */
-    calculateHash() {
-        const meaningfulFields = {
+    getHashObject() {
+        return {
             units: _.map(this.units, (u) => u.calculateHash()).join(),
             subworkflows: _.map(this.subworkflows, (sw) => sw.calculateHash()).join(),
             workflows: _.map(this.workflows, (w) => w.calculateHash()).join(),
         };
-        return Utils.hash.calculateHashFromObject(meaningfulFields);
+    }
+
+    calculateHash() {
+        return Utils.hash.calculateHashFromObject(this.getHashObject());
     }
 }

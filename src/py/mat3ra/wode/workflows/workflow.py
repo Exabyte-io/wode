@@ -83,14 +83,16 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
         if relaxation_definition is not None:
             self.add_subworkflow(relaxation_definition, head=True)
 
-    def calculate_hash(self) -> str:
+    def get_hash_object(self) -> Dict[str, Any]:
         nested_workflows = getattr(self, "workflows", []) or []
-        meaningful_fields = {
+        return {
             "units": ",".join(u.calculate_hash() for u in self.units),
             "subworkflows": ",".join(sw.calculate_hash() for sw in self.subworkflows),
             "workflows": ",".join(w.calculate_hash() for w in nested_workflows),
         }
-        return calculate_hash_from_object(meaningful_fields)
+
+    def calculate_hash(self) -> str:
+        return calculate_hash_from_object(self.get_hash_object())
 
     @property
     def hash(self) -> str:
