@@ -6,7 +6,6 @@ from mat3ra.utils import (
     calculate_hash_from_object,
     remove_comments_from_source_code,
     remove_empty_lines_from_string,
-    remove_timestampable_keys,
 )
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
@@ -61,23 +60,12 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
         return calculate_hash_from_object(object_for_hashing)
 
     def get_hash_object(self) -> Dict[str, Any]:
-        hash_object: Dict[str, Any] = {
+        return {
             "results": self.results or [],
             "preProcessors": self.preProcessors or [],
             "postProcessors": self.postProcessors or [],
             "type": self.type,
         }
-        if self.type == "execution":
-            app = self._to_plain_dict(getattr(self, "application", None))
-            exe = self._to_plain_dict(getattr(self, "executable", None))
-            flv = self._to_plain_dict(getattr(self, "flavor", None))
-
-            hash_object["application"] = remove_timestampable_keys(self._pick(app, "name", "version", "build"))
-            hash_object["executable"] = remove_timestampable_keys(self._pick(exe, "name"))
-            hash_object["flavor"] = remove_timestampable_keys(self._pick(flv, "name"))
-            hash_object["input"] = self._hash_input_content(getattr(self, "input", None))
-
-        return hash_object
 
     def calculate_hash(self) -> str:
         return calculate_hash_from_object(self.get_hash_object())
