@@ -195,13 +195,15 @@ class ExecutionUnit extends _base.BaseUnit {
    * The meaningful fields of processing unit are operation, flavor and input at the moment.
    */
   getHashObject() {
-    return {
+    const object = {
       ...super.getHashObject(),
       application: _utils.Utils.specific.removeTimestampableKeysFromConfig(this.application.toJSON()),
       executable: _utils.Utils.specific.removeTimestampableKeysFromConfig(this.executable.toJSON()),
       flavor: _utils.Utils.specific.removeTimestampableKeysFromConfig(this.flavor.toJSON()),
       input: this.hashFromArrayInputContent
     };
+    console.log("Hash object for unit", this.name, object);
+    return object;
   }
   toJSON() {
     const json = this.clean({
