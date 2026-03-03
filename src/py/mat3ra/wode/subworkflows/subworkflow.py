@@ -7,7 +7,7 @@ from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
 from mat3ra.utils import calculate_hash_from_object
 from mat3ra.utils.uuid import get_uuid
-from pydantic import Field, SerializeAsAny, field_validator
+from pydantic import Field, field_validator
 
 from ..mixins import FlowchartUnitsManager
 from ..units import ExecutionUnit, SubworkflowUnit, Unit
@@ -30,7 +30,7 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
         default_factory=lambda: Application(name="", version="", build="", shortName="", summary="")
     )
     model: Model = Field(default_factory=lambda: Model(type="", subtype="", method=Method(type="", subtype="")))
-    units: List[Union[Unit, ExecutionUnit]] = Field(default_factory=list)
+    units: List[Union[Unit, ExecutionUnit, SubworkflowUnit]] = Field(default_factory=list)
 
     @field_validator("units", mode="before")
     @classmethod
