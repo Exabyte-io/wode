@@ -9,9 +9,6 @@ from pydantic import Field
 from .unit import Unit
 
 
-EXECUTABLE_FLAVOR_MAP_BY_APPLICATION = ApplicationStandata.get_all_app_tree()
-
-
 class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
     type: Literal["execution"] = "execution"
     executable: Executable = None
@@ -19,22 +16,25 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
     application: Application = None
     input: List = Field(default_factory=list)
 
-
     @property
     def hash_from_array_input_content(self) -> str:
         return Unit._hash_input_content(self.input)
 
     def get_hash_object(self) -> Dict[str, Any]:
-        app = self._to_plain_dict(self.application)
-        exe = self._to_plain_dict(self.executable)
-        flv = self._to_plain_dict(self.flavor)
+        app = dict(self._to_plain_dict(self.application))
+        exe = dict(self._to_plain_dict(self.executable))
+        flv = dict(self._to_plain_dict(self.flavor))
 
-        hash_object = {
+        app_name, exe_name = app.get("name"), exe.get("name")
+        if app_name and exe_name and not exe.get("results"):
+            exe_full = ApplicationStandata.get_app_tree_for_application(app_name).get(exe_name) or {}
+            if isinstance(exe_full, dict) and exe_full.get("results"):
+                exe["results"] = exe_full["results"]
+
+        return {
             **super().get_hash_object(),
             "application": remove_timestampable_keys(app),
             "executable": remove_timestampable_keys(exe),
             "flavor": remove_timestampable_keys(flv),
             "input": self.hash_from_array_input_content,
         }
-        print(f"Hash object for execution unit '{self.name}': {hash_object}")
-        return hash_object
