@@ -80,8 +80,7 @@ export class ExecutionUnit extends BaseUnit {
      * @summary expects an array with elements containing field [{content: "..."}]
      */
     get hashFromArrayInputContent() {
-        const input = this.prop("input", []) || [];
-        const objectForHashing = input.map((i) => {
+        const objectForHashing = this._getInput().map((i) => {
             return Utils.str.removeEmptyLinesFromString(
                 Utils.str.removeCommentsFromSourceCode(i.content),
             );
@@ -237,18 +236,13 @@ export class ExecutionUnit extends BaseUnit {
      * The meaningful fields of processing unit are operation, flavor and input at the moment.
      */
     getHashObject() {
-        const application = this.prop("application", {}) || {};
-        const executable = this.prop("executable", {}) || {};
-        const flavor = this.prop("flavor", {}) || {};
         return {
             ...super.getHashObject(),
-            application: Utils.specific.removeTimestampableKeysFromConfig({
-                name: application.name,
-                version: application.version,
-                build: application.build,
-            }),
-            executable: Utils.specific.removeTimestampableKeysFromConfig({ name: executable.name }),
-            flavor: Utils.specific.removeTimestampableKeysFromConfig({ name: flavor.name }),
+            application: Utils.specific.removeTimestampableKeysFromConfig(
+                this.application.toJSON(),
+            ),
+            executable: Utils.specific.removeTimestampableKeysFromConfig(this.executable.toJSON()),
+            flavor: Utils.specific.removeTimestampableKeysFromConfig(this.flavor.toJSON()),
             input: this.hashFromArrayInputContent,
         };
     }
