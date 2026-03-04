@@ -1,9 +1,9 @@
 from typing import Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.code.mixins import HashedEntityMixin
 from mat3ra.esse.models.workflow import WorkflowSchema
 from mat3ra.standata.subworkflows import SubworkflowStandata
-from mat3ra.utils import calculate_hash_from_object
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
@@ -12,7 +12,7 @@ from ..subworkflows import Subworkflow
 from ..units import Unit
 
 
-class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
+class Workflow(WorkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     """
     Workflow class representing a complete workflow configuration.
 
@@ -90,13 +90,6 @@ class Workflow(WorkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
             "subworkflows": ",".join(sw.calculate_hash() for sw in self.subworkflows),
             "workflows": ",".join(w.calculate_hash() for w in nested_workflows),
         }
-
-    def calculate_hash(self) -> str:
-        return calculate_hash_from_object(self.get_hash_object())
-
-    @property
-    def hash(self) -> str:
-        return self.calculate_hash()
 
     def remove_relaxation(self) -> None:
         existing = self._find_relaxation_subworkflow()

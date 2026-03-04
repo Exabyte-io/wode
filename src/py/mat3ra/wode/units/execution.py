@@ -3,9 +3,12 @@ from typing import Any, Dict, List, Literal
 from mat3ra.ade import Application, Executable, Flavor
 from mat3ra.esse.models.workflow.unit.execution import ExecutionUnitSchemaBase
 from mat3ra.standata.applications import ApplicationStandata
-from mat3ra.utils import remove_timestampable_keys
+from mat3ra.utils import remove_timestampable_keys, calculate_hash_from_object
 from pydantic import Field
-
+from mat3ra.utils import (
+    remove_comments_from_source_code,
+    remove_empty_lines_from_string,
+)
 from .unit import Unit
 
 
@@ -16,9 +19,15 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
     application: Application = None
     input: List = Field(default_factory=list)
 
-    @property
-    def hash_from_array_input_content(self) -> str:
-        return Unit._hash_input_content(self.input)
+    @staticmethod
+    def _hash_input_content(input_items: Any) -> str:
+        items = input_items if isinstance(input_items, list) else []
+        object_for_hashing = [
+            remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
+            for i in items
+            if isinstance(i, dict)
+        ]
+        return calculate_hash_from_object(object_for_hashing)
 
     def get_hash_object(self) -> Dict[str, Any]:
         app = dict(self._to_plain_dict(self.application))
@@ -36,5 +45,5 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
             "application": remove_timestampable_keys(app),
             "executable": remove_timestampable_keys(exe),
             "flavor": remove_timestampable_keys(flv),
-            "input": self.hash_from_array_input_content,
+            "input": self._hash_input_content(self.input),
         }

@@ -1,17 +1,13 @@
 from typing import Any, Dict, List
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.code.mixins import HashedEntityMixin
 from mat3ra.esse.models.workflow.unit.base import WorkflowBaseUnitSchema
-from mat3ra.utils import (
-    calculate_hash_from_object,
-    remove_comments_from_source_code,
-    remove_empty_lines_from_string,
-)
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field
 
 
-class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
+class Unit(WorkflowBaseUnitSchema, HashedEntityMixin, InMemoryEntitySnakeCase):
     """
     Unit class representing a unit of computational work in a workflow.
 
@@ -49,16 +45,6 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
     def _pick(obj: Dict[str, Any], *keys: str) -> Dict[str, Any]:
         return Unit._compact_dict({k: obj.get(k) for k in keys})
 
-    @staticmethod
-    def _hash_input_content(input_items: Any) -> str:
-        items = input_items if isinstance(input_items, list) else []
-        object_for_hashing = [
-            remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
-            for i in items
-            if isinstance(i, dict)
-        ]
-        return calculate_hash_from_object(object_for_hashing)
-
     def get_hash_object(self) -> Dict[str, Any]:
         return {
             "results": self.results or [],
@@ -66,9 +52,6 @@ class Unit(WorkflowBaseUnitSchema, InMemoryEntitySnakeCase):
             "postProcessors": self.postProcessors or [],
             "type": self.type,
         }
-
-    def calculate_hash(self) -> str:
-        return calculate_hash_from_object(self.get_hash_object())
 
     def is_in_status(self, status: str) -> bool:
         return self.status == status

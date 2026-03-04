@@ -2,10 +2,10 @@ from typing import Any, List, Optional, Union
 
 from mat3ra.ade.application import Application
 from mat3ra.code.entity import InMemoryEntitySnakeCase
+from mat3ra.code.mixins import HashedEntityMixin
 from mat3ra.esse.models.workflow.subworkflow import Subworkflow as SubworkflowSchema
 from mat3ra.mode.method import Method
 from mat3ra.mode.model import Model
-from mat3ra.utils import calculate_hash_from_object
 from mat3ra.utils.uuid import get_uuid
 from pydantic import Field, field_validator
 
@@ -13,7 +13,7 @@ from ..mixins import FlowchartUnitsManager
 from ..units import ExecutionUnit, SubworkflowUnit, Unit
 
 
-class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsManager):
+class Subworkflow(SubworkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, FlowchartUnitsManager):
     """
     Subworkflow class representing a logical collection of workflow units.
 
@@ -74,15 +74,14 @@ class Subworkflow(SubworkflowSchema, InMemoryEntitySnakeCase, FlowchartUnitsMana
     def method_data(self):
         return self.model.method.data
 
-    def calculate_hash(self) -> str:
+    def get_hash_object(self) -> dict:
         app_dict = self.application.to_dict() if self.application else {}
         model_dict = self.model.to_dict() if self.model else {}
-        meaningful_fields = {
+        return {
             "application": Application.create(app_dict).calculate_hash(),
             "model": Model.create(model_dict).calculate_hash(),
             "units": ",".join(u.calculate_hash() for u in self.units),
         }
-        return calculate_hash_from_object(meaningful_fields)
 
     def get_as_unit(self) -> Unit:
         return Unit(type="subworkflow", id=self.id, name=self.name)
