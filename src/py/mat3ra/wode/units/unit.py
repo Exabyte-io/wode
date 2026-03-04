@@ -29,21 +29,6 @@ class Unit(WorkflowBaseUnitSchema, HashedEntityMixin, InMemoryEntitySnakeCase):
     results: List[Any] = Field(default_factory=list)
     context: Dict[str, Any] = Field(default_factory=dict)
 
-    @staticmethod
-    def _compact_dict(obj: Dict[str, Any]) -> Dict[str, Any]:
-        return {k: v for k, v in obj.items() if v is not None}
-
-    @staticmethod
-    def _to_plain_dict(obj: Any) -> Dict[str, Any]:
-        if callable(getattr(obj, "to_dict", None)):
-            return obj.to_dict()
-        if isinstance(obj, dict):
-            return obj
-        return {}
-
-    @staticmethod
-    def _pick(obj: Dict[str, Any], *keys: str) -> Dict[str, Any]:
-        return Unit._compact_dict({k: obj.get(k) for k in keys})
 
     def get_hash_object(self) -> Dict[str, Any]:
         return {

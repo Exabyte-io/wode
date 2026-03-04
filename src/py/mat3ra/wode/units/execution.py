@@ -20,7 +20,7 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
     input: List = Field(default_factory=list)
 
     @staticmethod
-    def _hash_input_content(input_items: Any) -> str:
+    def _input_items_for_hash(input_items: Any) -> str:
         items = input_items if isinstance(input_items, list) else []
         object_for_hashing = [
             remove_empty_lines_from_string(remove_comments_from_source_code(i.get("content", "")))
@@ -30,9 +30,13 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
         return calculate_hash_from_object(object_for_hashing)
 
     def get_hash_object(self) -> Dict[str, Any]:
-        app = dict(self._to_plain_dict(self.application))
-        exe = dict(self._to_plain_dict(self.executable))
-        flv = dict(self._to_plain_dict(self.flavor))
+        app = self.application.to_dict() if callable(getattr(self.application, "to_dict", None)) else (self.application or {})
+        exe = self.executable.to_dict() if callable(getattr(self.executable, "to_dict", None)) else (self.executable or {})
+        flv = self.flavor.to_dict() if callable(getattr(self.flavor, "to_dict", None)) else (self.flavor or {})
+
+        app = dict(app) if isinstance(app, dict) else {}
+        exe = dict(exe) if isinstance(exe, dict) else {}
+        flv = dict(flv) if isinstance(flv, dict) else {}
 
         app_name, exe_name = app.get("name"), exe.get("name")
         if app_name and exe_name and not exe.get("results"):
@@ -45,5 +49,5 @@ class ExecutionUnit(Unit, ExecutionUnitSchemaBase):
             "application": remove_timestampable_keys(app),
             "executable": remove_timestampable_keys(exe),
             "flavor": remove_timestampable_keys(flv),
-            "input": self._hash_input_content(self.input),
+            "input": self._input_items_for_hash(self.input),
         }
