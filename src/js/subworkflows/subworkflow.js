@@ -3,6 +3,7 @@ import {
     ContextAndRenderFieldsMixin,
     NamedDefaultableRepetitionImportantSettingsInMemoryEntity,
 } from "@mat3ra/code/dist/js/entity";
+import { HashedEntityMixin } from "@mat3ra/code/dist/js/entity/mixins/hash";
 import { Model, ModelFactory } from "@mat3ra/mode";
 import { Utils } from "@mat3ra/utils";
 import lodash from "lodash";
@@ -18,6 +19,7 @@ import { ConvergenceMixin } from "./convergence";
 class BaseSubworkflow extends mix(NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(
     ConvergenceMixin,
     ContextAndRenderFieldsMixin,
+    HashedEntityMixin,
 ) {}
 
 export class Subworkflow extends BaseSubworkflow {
@@ -308,18 +310,18 @@ export class Subworkflow extends BaseSubworkflow {
     }
 
     /**
-     * @summary Calculates hash of the subworkflow. Meaningful fields are units, app and model.
+     * @summary
+     * Returns object for hashing of the workflow. Meaningful fields are units, app and model.
      * units must be sorted topologically before hashing (already sorted).
      */
-    calculateHash() {
+    getHashObject() {
         const config = this.toJSON();
         const meaningfulFields = {
             application: new Application(config.application).calculateHash(),
             model: new Model(config.model).calculateHash(),
             units: _.map(this.units, (u) => u.calculateHash()).join(),
         };
-        const hash = Utils.hash.calculateHashFromObject(meaningfulFields);
-        return hash;
+        return meaningfulFields;
     }
 
     findUnitById(id) {

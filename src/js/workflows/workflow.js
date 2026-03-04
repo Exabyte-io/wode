@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { NamedDefaultableRepetitionContextAndRenderInMemoryEntity } from "@mat3ra/code/dist/js/entity";
+import { HashedEntityMixin } from "@mat3ra/code/dist/js/entity/mixins/hash";
 import workflowSchema from "@mat3ra/esse/dist/js/schema/workflow.json";
 import { ComputedEntityMixin, getDefaultComputeConfig } from "@mat3ra/ide";
 import { tree } from "@mat3ra/mode";
@@ -22,6 +23,7 @@ const { MODEL_NAMES } = tree;
 class BaseWorkflow extends mix(NamedDefaultableRepetitionContextAndRenderInMemoryEntity).with(
     ComputedEntityMixin,
     RelaxationLogicMixin,
+    HashedEntityMixin,
 ) {}
 
 export class Workflow extends BaseWorkflow {
@@ -382,9 +384,5 @@ export class Workflow extends BaseWorkflow {
             subworkflows: _.map(this.subworkflows, (sw) => sw.calculateHash()).join(),
             workflows: _.map(this.workflows, (w) => w.calculateHash()).join(),
         };
-    }
-
-    calculateHash() {
-        return Utils.hash.calculateHashFromObject(this.getHashObject());
     }
 }
