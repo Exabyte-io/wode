@@ -11,6 +11,7 @@ from pydantic import Field, field_validator
 
 from ..mixins import FlowchartUnitsManager
 from ..units import ExecutionUnit, SubworkflowUnit, Unit
+from ..units.builders import build_execution_unit_config
 
 
 class Subworkflow(SubworkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -45,7 +46,7 @@ class Subworkflow(SubworkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase,
                 continue
             unit_type = item.get("type")
             if unit_type == "execution":
-                instantiated.append(ExecutionUnit(**item))
+                instantiated.append(ExecutionUnit(**build_execution_unit_config(item)))
             elif unit_type == "subworkflow":
                 instantiated.append(SubworkflowUnit(**item))
             else:
