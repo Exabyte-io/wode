@@ -1,14 +1,8 @@
 from __future__ import annotations
 
-from functools import lru_cache
 from typing import Any, Dict
 
 from mat3ra.standata.applications import ApplicationStandata
-
-
-@lru_cache
-def _get_app_tree(app_name: str) -> Dict[str, Any]:
-    return ApplicationStandata.get_app_tree_for_application(app_name)
 
 
 def build_execution_unit_config(config: Dict[str, Any]) -> Dict[str, Any]:
@@ -20,7 +14,7 @@ def build_execution_unit_config(config: Dict[str, Any]) -> Dict[str, Any]:
     if not app_name or not exe_name or exe.get("results"):
         return config
 
-    exe_full = _get_app_tree(app_name).get(exe_name) or {}
+    exe_full = ApplicationStandata.get_executable_flavor_map_by_application_name(app_name).get(exe_name) or {}
     results = exe_full.get("results") if isinstance(exe_full, dict) else None
     if not results:
         return config

@@ -20,12 +20,12 @@ classifiers = [
 ]
 dependencies = [
     "numpy",
-    "mat3ra-code @ git+https://github.com/Exabyte-io/code.git@fdb3564163c243cdbe6b1476f50671b8b4f607e0",
+    "mat3ra-code",
     "mat3ra-utils",
     "mat3ra-esse",
     "mat3ra-mode",
     "mat3ra-ade",
-    "mat3ra-standata @ git+https://github.com/Exabyte-io/standata.git@13232e5fd82c0889c2fe6afc29178a60a4f32429"
+    "mat3ra-standata"
 ]
 
 [project.optional-dependencies]
