@@ -1,5 +1,6 @@
 /* eslint-disable max-classes-per-file */
 import { NamedDefaultableRepetitionContextAndRenderInMemoryEntity } from "@mat3ra/code/dist/js/entity";
+import { HashedEntityMixin } from "@mat3ra/code/dist/js/entity/mixins/hash";
 import workflowSchema from "@mat3ra/esse/dist/js/schema/workflow.json";
 import { ComputedEntityMixin, getDefaultComputeConfig } from "@mat3ra/ide";
 import { tree } from "@mat3ra/mode";
@@ -22,6 +23,7 @@ const { MODEL_NAMES } = tree;
 class BaseWorkflow extends mix(NamedDefaultableRepetitionContextAndRenderInMemoryEntity).with(
     ComputedEntityMixin,
     RelaxationLogicMixin,
+    HashedEntityMixin,
 ) {}
 
 export class Workflow extends BaseWorkflow {
@@ -372,15 +374,15 @@ export class Workflow extends BaseWorkflow {
     }
 
     /**
-     * @summary Calculates hash of the workflow. Meaningful fields are units and subworkflows.
+     * @summary
+     * Returns object for hashing of the workflow. Meaningful fields are units and subworkflows.
      * units and subworkflows must be sorted topologically before hashing (already sorted).
      */
-    calculateHash() {
-        const meaningfulFields = {
+    getHashObject() {
+        return {
             units: _.map(this.units, (u) => u.calculateHash()).join(),
             subworkflows: _.map(this.subworkflows, (sw) => sw.calculateHash()).join(),
             workflows: _.map(this.workflows, (w) => w.calculateHash()).join(),
         };
-        return Utils.hash.calculateHashFromObject(meaningfulFields);
     }
 }

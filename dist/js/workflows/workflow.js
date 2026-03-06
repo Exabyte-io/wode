@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Workflow = void 0;
 var _entity = require("@mat3ra/code/dist/js/entity");
+var _hash = require("@mat3ra/code/dist/js/entity/mixins/hash");
 var _workflow = _interopRequireDefault(require("@mat3ra/esse/dist/js/schema/workflow.json"));
 var _ide = require("@mat3ra/ide");
 var _mode = require("@mat3ra/mode");
@@ -27,7 +28,7 @@ function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = 
 const {
   MODEL_NAMES
 } = _mode.tree;
-class BaseWorkflow extends (0, _mixwith.mix)(_entity.NamedDefaultableRepetitionContextAndRenderInMemoryEntity).with(_ide.ComputedEntityMixin, _relaxation.RelaxationLogicMixin) {}
+class BaseWorkflow extends (0, _mixwith.mix)(_entity.NamedDefaultableRepetitionContextAndRenderInMemoryEntity).with(_ide.ComputedEntityMixin, _relaxation.RelaxationLogicMixin, _hash.HashedEntityMixin) {}
 class Workflow extends BaseWorkflow {
   constructor(config, _Subworkflow = _subworkflow.Subworkflow, _UnitFactory = _factory.UnitFactory, _Workflow = Workflow, _MapUnit = _units.MapUnit) {
     if (!config._id) {
@@ -292,16 +293,16 @@ class Workflow extends BaseWorkflow {
   }
 
   /**
-   * @summary Calculates hash of the workflow. Meaningful fields are units and subworkflows.
+   * @summary
+   * Returns object for hashing of the workflow. Meaningful fields are units and subworkflows.
    * units and subworkflows must be sorted topologically before hashing (already sorted).
    */
-  calculateHash() {
-    const meaningfulFields = {
+  getHashObject() {
+    return {
       units: _underscore.default.map(this.units, u => u.calculateHash()).join(),
       subworkflows: _underscore.default.map(this.subworkflows, sw => sw.calculateHash()).join(),
       workflows: _underscore.default.map(this.workflows, w => w.calculateHash()).join()
     };
-    return _utils.Utils.hash.calculateHashFromObject(meaningfulFields);
   }
 }
 exports.Workflow = Workflow;

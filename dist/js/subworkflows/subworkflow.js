@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", {
 exports.Subworkflow = void 0;
 var _ade = require("@mat3ra/ade");
 var _entity = require("@mat3ra/code/dist/js/entity");
+var _hash = require("@mat3ra/code/dist/js/entity/mixins/hash");
 var _mode = require("@mat3ra/mode");
 var _utils = require("@mat3ra/utils");
 var _lodash = _interopRequireDefault(require("lodash"));
@@ -20,7 +21,7 @@ function _defineProperty(e, r, t) { return (r = _toPropertyKey(r)) in e ? Object
 function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
 function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /* eslint max-classes-per-file:0 */
-class BaseSubworkflow extends (0, _mixwith.mix)(_entity.NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(_convergence.ConvergenceMixin, _entity.ContextAndRenderFieldsMixin) {}
+class BaseSubworkflow extends (0, _mixwith.mix)(_entity.NamedDefaultableRepetitionImportantSettingsInMemoryEntity).with(_convergence.ConvergenceMixin, _entity.ContextAndRenderFieldsMixin, _hash.HashedEntityMixin) {}
 class Subworkflow extends BaseSubworkflow {
   constructor(config, _Application = _ade.Application, _ModelFactory = _mode.ModelFactory, _UnitFactory = _units.UnitFactory) {
     super(config);
@@ -251,25 +252,18 @@ class Subworkflow extends BaseSubworkflow {
   }
 
   /**
-   * @summary Calculates hash of the subworkflow. Meaningful fields are units, app and model.
+   * @summary
+   * Returns object for hashing of the workflow. Meaningful fields are units, app and model.
    * units must be sorted topologically before hashing (already sorted).
    */
-  calculateHash() {
+  getHashObject() {
     const config = this.toJSON();
     const meaningfulFields = {
-      application: _utils.Utils.specific.removeTimestampableKeysFromConfig(config.application),
-      model: this._calculateModelHash(),
+      application: new _ade.Application(config.application).calculateHash(),
+      model: new _mode.Model(config.model).calculateHash(),
       units: _underscore.default.map(this.units, u => u.calculateHash()).join()
     };
-    return _utils.Utils.hash.calculateHashFromObject(meaningfulFields);
-  }
-  _calculateModelHash() {
-    const {
-      model
-    } = this.toJSON();
-    // ignore empty data object
-    if (this.model.Method.omitInHashCalculation) delete model.method.data;
-    return _utils.Utils.hash.calculateHashFromObject(model);
+    return meaningfulFields;
   }
   findUnitById(id) {
     // TODO: come back and refactor after converting flowchartId to id
