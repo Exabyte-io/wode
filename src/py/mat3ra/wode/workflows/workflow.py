@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.code.mixins import HashedEntityMixin
@@ -10,6 +10,9 @@ from pydantic import Field
 from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
+
+if TYPE_CHECKING:
+    from mat3ra.ade.application import Application
 
 
 class Workflow(WorkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -29,7 +32,7 @@ class Workflow(WorkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, Flowc
     isMultiMaterial: bool = Field(default=False)
 
     @property
-    def application(self):
+    def application(self) -> Optional["Application"]:
         if not self.subworkflows or len(self.subworkflows) == 0:
             return None
 
