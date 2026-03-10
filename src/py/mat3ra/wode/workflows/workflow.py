@@ -1,4 +1,4 @@
-from typing import TYPE_CHECKING, Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 from mat3ra.code.entity import InMemoryEntitySnakeCase
 from mat3ra.code.mixins import HashedEntityMixin
@@ -10,9 +10,6 @@ from pydantic import Field
 from ..mixins import FlowchartUnitsManager
 from ..subworkflows import Subworkflow
 from ..units import Unit
-
-if TYPE_CHECKING:
-    from mat3ra.ade.application import Application
 
 
 class Workflow(WorkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, FlowchartUnitsManager):
@@ -32,16 +29,11 @@ class Workflow(WorkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, Flowc
     isMultiMaterial: bool = Field(default=False)
 
     @property
-    def application(self) -> Optional["Application"]:
-        if not self.subworkflows or len(self.subworkflows) == 0:
-            return None
-
-        first_subworkflow = self.subworkflows[0]
-        return first_subworkflow.application if first_subworkflow.application else None
-
-    @property
     def relaxation_subworkflow(self) -> Optional[Subworkflow]:
-        application_name = self.application.name if self.application else None
+        application = self.application or (self.subworkflows[0].application if self.subworkflows else None)
+        application_name = (
+            application.get("name") if isinstance(application, dict) else (application.name if application else None)
+        )
         subworkflow_standata = SubworkflowStandata()
         relaxation_data = subworkflow_standata.get_relaxation_by_application(application_name)
         return Subworkflow(**relaxation_data) if relaxation_data else None
