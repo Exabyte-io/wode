@@ -11,7 +11,6 @@ class PointsPathDataProvider(ContextProvider):
     """
     Context provider for k-path configuration in band structure calculations.
 
-    Each path item follows the ESSE PointsPathDataProviderSchemaItem: {point: str, steps: int}.
     The 'point' is a high-symmetry label (e.g. "Γ", "K", "M") resolved to coordinates at render time.
     """
 
