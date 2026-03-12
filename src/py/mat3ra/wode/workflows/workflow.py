@@ -90,3 +90,10 @@ class Workflow(WorkflowSchema, HashedEntityMixin, InMemoryEntitySnakeCase, Flowc
         existing = self._find_relaxation_subworkflow()
         if existing is not None:
             self.remove_subworkflow_by_id(existing.id)
+
+    def to_clean_dict(self) -> Dict[str, Any]:
+        workflow_dict = self.to_dict()
+        for swf in workflow_dict.get("subworkflows", []):
+            for unit in swf.get("units", []):
+                unit["context"] = {}
+        return workflow_dict
